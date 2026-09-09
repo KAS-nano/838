@@ -1,0 +1,91 @@
+ETAPA 07 — OPERAÇÃO, PRIVACIDADE, ACESSIBILIDADE E MANUTENÇÃO
+Prioridade: P1 contínua
+
+OBSERVABILIDADE
+Aplicação:
+- Logs JSON com timestamp, nível, requestId, rota, duração, status e fornecedor; sem segredo, chave Pix em eventos, payload de hardware ou token.
+- Métricas: latência/erro por rota, cache hit, timeout externo, fila de moderação e versão do estimador.
+- Readiness verifica dependências necessárias; liveness apenas confirma processo vivo.
+- Alertas baseados em impacto e orçamento de erro, não em cada falha individual.
+Testes:
+- snapshot de redaction com segredos e dados pessoais;
+- fornecedor lento/indisponível;
+- requestId atravessa erro e log;
+- readiness falha quando banco obrigatório está indisponível.
+Aceite: uma falha em produção pode ser localizada sem expor dados do usuário.
+
+BACKUP E RECUPERAÇÃO
+Aplicação:
+- Definir RPO/RTO, backup criptografado, retenção e responsável.
+- Testar restauração regularmente numa instância isolada.
+- Fazer backup antes de migrations de risco e usar migrate deploy em produção.
+Testes:
+- restaurar usuários, perfis, snapshots e benchmarks;
+- verificar integridade e tempo de restauração;
+- confirmar que chaves de criptografia não ficam junto ao backup.
+Aceite: existe evidência recente de restauração, não apenas de criação do backup.
+
+PRIVACIDADE E LGPD
+Aplicação:
+- Inventário de dados, finalidade, base legal, retenção e destinatários.
+- Exportar, corrigir e excluir conta/perfis/submissões.
+- Versionar consentimento comunitário e registrar texto aceito/data.
+- Minimizar IP, user-agent e hostname; definir retenção curta quando necessários para segurança.
+- Informar claramente que a chave Pix é pública na interface.
+- Criar canal de contato e procedimento de incidente.
+Testes:
+- exportação contém somente dados do titular;
+- exclusão remove ou anonimiza relações conforme política;
+- consentimento antigo exige renovação quando a finalidade muda;
+- logs e analytics não recebem hardware detalhado inadvertidamente.
+Aceite: política descreve o comportamento real e os direitos podem ser exercidos.
+
+ACESSIBILIDADE
+Aplicação:
+- Integrar axe nos fluxos principais.
+- Testar teclado, foco, zoom 200/400%, contraste, movimento reduzido e leitor de tela.
+- Gráficos sempre têm legenda e tabela/texto equivalente.
+- Mensagens assíncronas usam status/alert corretamente e não dependem só de cor.
+Testes:
+- Playwright em Chromium, Firefox e WebKit;
+- axe sem violações sérias/críticas;
+- navegação completa sem mouse;
+- viewport 320 px e zoom sem overflow do documento.
+Aceite: catálogo, onboarding, dashboard, comparador, instalação e apoio completáveis por teclado.
+
+DEPENDÊNCIAS E SUPPLY CHAIN
+Aplicação:
+- Atualizar patches em PRs pequenos e majors isoladamente.
+- Não executar npm audit fix --force.
+- Acompanhar as quatro ocorrências atuais na árvore Prisma e atualizar quando houver solução estável validada.
+- npm ci em CI; lockfile obrigatório; scripts de instalação revisados.
+- SBOM e licença por release.
+Testes:
+- npm audit e análise de dependências registrados como evidência, com exceções datadas;
+- build, Prisma generate/validate e auth após qualquer atualização Prisma/Better Auth;
+- scanner de segredos e dependências na CI.
+Aceite: toda exceção possui risco, responsável, prazo de revisão e compensação.
+
+MANUTENÇÃO DO FRONTEND/PREVIEW
+Aplicação:
+- Manter src/data e src/features como fontes canônicas.
+- Avaliar gerar o preview a partir dos mesmos componentes React ou reduzir o preview a cenários essenciais.
+- Não duplicar regras de negócio ou dados públicos em JavaScript manual.
+- Adicionar teste que falha quando engine/QR gerados estão obsoletos.
+Testes:
+- paridade de resultados Next/preview para perfil, modelo, quantização e contexto;
+- comparação visual em viewports suportadas;
+- sem erros de console e sem assets 404.
+Aceite: uma alteração de regra acontece em um único módulo canônico.
+
+CHECKLIST DE RELEASE
+- CI verde no commit exato.
+- Migrations validadas e backup/restauração conferidos.
+- Flags e variáveis revisadas.
+- CSP/headers conferidos por HTTP.
+- Sem segredo no bundle, source maps públicos ou logs.
+- Links, receitas e preços com data de verificação.
+- Testes de acessibilidade e navegadores aprovados.
+- Changelog, versão, SBOM, hashes e assinaturas publicados.
+- Plano de rollback ensaiado.
+

@@ -1,0 +1,25 @@
+.project-support { margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--border); color: var(--muted); font-size: 12px; min-width: 0; }
+.project-support .project-support-summary { display: flex; gap: 8px; align-items: center; cursor: pointer; list-style: none; padding: 8px 0; font-size: 12px; font-weight: 500; color: var(--muted); }
+.project-support .project-support-summary::-webkit-details-marker { display: none; }
+.project-support-summary:hover { color: var(--foreground); }
+.project-support-summary svg { flex-shrink: 0; }
+.project-support-chevron { margin-left: auto; }
+.project-support[open] > .project-support-summary .project-support-chevron { transform: rotate(180deg); }
+.project-support-content { padding-top: 8px; min-width: 0; }
+.project-support .project-support-message { margin: 0 0 16px; font-size: 12px; line-height: 1.65; }
+.project-support .project-support-qr { margin: 0 0 16px; }
+.project-support-qr img { display: block; width: 100%; max-width: 216px; height: auto; background: #fff; image-rendering: pixelated; }
+.project-support-qr figcaption { margin-top: 7px; font-size: 11px; line-height: 1.5; }
+.project-support .project-support-recipient { display: grid; gap: 5px; margin: 0 0 16px; line-height: 1.4; }
+.project-support-recipient strong { color: var(--foreground); font-size: 12px; font-weight: 500; }
+.project-support .project-support-label { display: grid; gap: 6px; margin: 0; color: var(--muted); font-size: 11px; }
+.project-support input.project-support-key, .project-support textarea { display: block; width: 100%; min-width: 0; min-height: 38px; padding: 9px 7px; border: 1px solid var(--border); border-radius: 6px; background: var(--surface); color: var(--foreground); font-family: ui-monospace, monospace; font-size: 11px; line-height: 1.6; cursor: text; }
+.project-support textarea { resize: vertical; overflow-wrap: anywhere; }
+.project-support-actions { display: grid; gap: 8px; margin-top: 10px; }
+.project-support-actions button { display: flex; align-items: center; justify-content: center; gap: 7px; width: 100%; min-height: 36px; padding: 8px; border: 1px solid var(--border); border-radius: 6px; background: transparent; color: var(--muted); font-size: 11px; line-height: 1.4; cursor: pointer; }
+.project-support-actions button:hover { background: var(--surface-raised); color: var(--foreground); }
+.project-support-code { margin-top: 12px; }
+.project-support-code > summary { padding: 6px 0; font-size: 11px; cursor: pointer; }
+.project-support-code .project-support-label { margin-top: 8px; }
+.project-support .project-support-status { margin: 10px 0 0; color: var(--muted); font-size: 11px; line-height: 1.5; overflow-wrap: anywhere; }
+.project-support-status:empty { display: none; }

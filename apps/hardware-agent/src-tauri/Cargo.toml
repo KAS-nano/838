@@ -1,0 +1,19 @@
+[package]
+name = "agent838"
+version = "1.0.0"
+description = "838 Hardware Agent - leitura local de hardware com consentimento"
+edition = "2021"
+rust-version = "1.95"
+
+[lib]
+name = "agent838_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = "2.6.3"
+
+[dependencies]
+tauri = { version = "2.11.5", features = [] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+sysinfo = "0.39.6"

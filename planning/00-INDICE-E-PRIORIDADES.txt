@@ -1,0 +1,70 @@
+PLANO DE MELHORIAS DO 838
+Versão do plano: 2026-09-09
+
+OBJETIVO
+Transformar a auditoria técnica em trabalho implementável, revisável e testável. Este diretório é um plano; marcar um item como concluído somente após aplicar as mudanças e registrar evidências dos testes.
+
+COMO USAR
+0. Consultar e atualizar planning/PROGRESSO.txt; ele é a fonte de verdade do que já foi feito.
+1. Criar uma issue ou branch para uma etapa pequena.
+2. Copiar o checklist correspondente para a issue.
+3. Implementar na ordem indicada, mantendo as flags atuais desligadas até os critérios de ativação passarem.
+4. Executar os testes específicos e depois a regressão comum.
+5. Registrar versão, data, resultado e limitações em TEST_REPORT.md.
+6. Atualizar SECURITY.md, PRIVACY.md, ARCHITECTURE.md e KNOWN_ISSUES.md quando o comportamento mudar.
+
+DEFINIÇÃO DOS NÍVEIS
+P0 = necessário antes de publicar ou ativar recursos com dados persistentes.
+P1 = necessário para resultados confiáveis e operação sustentável.
+P2 = evolução de produto com alto valor para o usuário.
+P3 = refinamento, escala e conveniência.
+
+ORDEM RECOMENDADA
+P0.1  Criar baseline Git, proteção de branch e CI.
+P0.2  Criar camada comum de segurança para as APIs.
+P0.3  Fortalecer autenticação e testar PostgreSQL real.
+P0.4  Proteger e moderar submissões comunitárias.
+P0.5  Definir CSP de produção e política de dependências.
+P1.1  Criar catálogo persistente e sincronizador externo.
+P1.2  Criar protocolo reproduzível de benchmark.
+P1.3  Evoluir o estimador usando arquitetura e evidências reais.
+P1.4  Endurecer, testar e assinar o agente local.
+P1.5  Implantar observabilidade, backup e recuperação.
+P2.1  Detectar modelos locais e runtimes instalados.
+P2.2  Criar histórico e comparação comunitária de benchmarks.
+P2.3  Comparar custo total Local x API.
+P2.4  Salvar favoritos, cenários e comparações.
+P2.5  Criar instalação guiada com verificação.
+P3.1  Unificar a renderização do Next e do preview.
+P3.2  Adicionar PWA e cache offline controlado.
+
+DOCUMENTOS
+01-FUNDACAO-CI-E-RELEASES.txt
+02-SEGURANCA-WEB-APIS-E-AUTH.txt
+03-DADOS-CATALOGO-E-BANCO.txt
+04-BENCHMARKS-E-ESTIMADOR.txt
+05-AGENTE-LOCAL.txt
+06-FUNCOES-DE-PRODUTO.txt
+07-OPERACAO-PRIVACIDADE-E-QUALIDADE.txt
+
+REGRESSÃO COMUM OBRIGATÓRIA
+npm ci
+npm run preview:generate
+npm run typecheck
+npm run lint
+npm run test:stages
+npm run build
+npm run test:e2e
+npx prisma validate
+
+Não usar npm audit fix --force. Avaliar atualizações em branch isolada e revisar migrations, geração do Prisma e autenticação.
+
+CRITÉRIO GLOBAL DE PRONTO
+- Código revisado e sem segredo versionado.
+- Testes específicos e regressão comum aprovados.
+- Falhas externas têm timeout, limite e estado de fallback.
+- Dados exibem origem, data e confiança.
+- Fluxo funciona por teclado e em 390, 768, 1366, 1920 e 2560 px.
+- Documentação e variáveis de ambiente atualizadas.
+- Migrações possuem estratégia de avanço e reversão.
+- Recursos que dependem de infraestrutura permanecem desligados até um teste real de ativação.

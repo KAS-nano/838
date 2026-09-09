@@ -1,0 +1,57 @@
+
+> 838@1.0.0 prebuild
+> npm run preview:generate
+
+
+> 838@1.0.0 preview:generate
+> node scripts/export-preview-catalog.mjs
+
+Preview catalog and engine synchronized from 14 canonical modules.
+
+> 838@1.0.0 build
+> next build
+
+▲ Next.js 16.3.3 (Turbopack)
+✓ Running next.config.ts took 28ms
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 553ms
+  Running TypeScript ...
+  Finished TypeScript in 4.3s ...
+  Collecting page data using 19 workers ...
+  Generating static pages using 19 workers (0/23) ...
+  Generating static pages using 19 workers (5/23) 
+  Generating static pages using 19 workers (11/23) 
+  Generating static pages using 19 workers (17/23) 
+✓ Generating static pages using 19 workers (23/23) in 613ms
+  Finalizing page optimization ...
+
+Route (app)
+┌ ○ /
+├ ○ /_not-found
+├ ƒ /api/auth/[...all]
+├ ƒ /api/benchmarks/community
+├ ƒ /api/catalog/models
+├ ƒ /api/health
+├ ƒ /api/integrations/huggingface
+├ ƒ /api/integrations/openrouter
+├ ƒ /api/recommend
+├ ○ /benchmark
+├ ○ /benchmarks/comunidade
+├ ○ /comparar
+├ ○ /dashboard
+├ ○ /explorar
+├ ○ /ferramentas
+├ ○ /hardware/forca
+├ ○ /hardware/upgrades
+├ ○ /instalar
+├ ○ /modelos
+├ ○ /onboarding
+├ ○ /perfil
+├ ○ /recomendacoes
+└ ○ /sistemas
+
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+

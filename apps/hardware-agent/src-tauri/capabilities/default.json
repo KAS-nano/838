@@ -1,0 +1,7 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "default",
+  "description": "Somente comandos próprios de leitura de hardware; nenhum plugin de shell ou HTTP.",
+  "windows": ["main"],
+  "permissions": ["core:default"]
+}

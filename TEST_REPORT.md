@@ -1,0 +1,113 @@
+# 838 — validação da consolidação neon-noir
+
+Data: 2026-09-06. Este documento substitui o relatório de execução de 2026-09-03; relatórios em `reports/ETAPA-*` permanecem históricos.
+
+## Ambiente
+
+- Linux, Node 22.23.2 portátil, npm 10.9.8, Python 3.14.7.
+- Next.js 16.3.3 / React 19 / Prisma 7.10.0.
+- Playwright 1.63.0 com Brave/Chromium instalado em `/opt/brave-bin/brave`.
+- Node/npm estavam ausentes do PATH; runtime obtido com checksum validado. Nesta sessão: `export PATH=/tmp/838-toolchain/node-v22.23.2-linux-x64/bin:$PATH`.
+
+## Comandos e resultados
+
+| Verificação | Resultado |
+| --- | --- |
+| `npm install` | PASS — dependências e Prisma Client instalados/gerados; lockfile criado |
+| `npm run build` | PASS — compilação, TypeScript e geração das 23 páginas concluídas |
+| `npm run lint` | PASS — sem erros ou avisos |
+| `npx tsc --noEmit` | PASS |
+| `npx prisma validate` | PASS — schema válido |
+| `npm run test:stages` | PASS — 153 checks, incluindo regressões adicionais de motor/perfil |
+| `npm run test:e2e` | PASS — 22 testes (12 Next + 10 preview), 32,5 s; nenhuma falha ou teste ignorado |
+| `node scripts/export-preview-catalog.mjs --check` | PASS — preview sincronizado com 14 módulos TypeScript canônicos |
+| `node --check` nos JS/MJS de preview e agente | PASS |
+| Busca de cores/estilos legados nas fontes visuais | PASS — sem cyan/sky/blue ou hex legados verificados |
+| `npm audit` / `npm audit --omit=dev` | ALERTA — 4 entradas high; veja `KNOWN_ISSUES.md` |
+
+O encerramento de uma rodada de build ficou aguardando telemetria após imprimir a compilação concluída. A rodada final executou `npm run build` com `NEXT_TELEMETRY_DISABLED=1` no ambiente do processo e encerrou normalmente. Nenhuma dependência de telemetria foi incorporada ao projeto.
+
+## Navegador
+
+A última suíte conjunta passou os 22 cenários em 32,5 s. Após corrigir também os arcos dos gauges do preview, seus 10 cenários foram repetidos e passaram em 26,4 s. Os assets com versão `?v=20260906` tiveram HTTP 200 verificado novamente.
+
+A suíte valida as duas implementações em **1920×1080, 2560×1440, 1366×768, 768×1024 e 390×844**. Em cada tamanho visita home, onboarding e as 12 áreas principais, verifica HTTP 200, um header global, logo centralizado (tolerância de 3 px), um título visível e ausência de overflow horizontal do documento. Tabelas mantêm scroll próprio.
+
+Cenários funcionais:
+
+- Home → onboarding → validação de campos → objetivos/prioridade → salvar → dashboard.
+- Persistência após reload; editar hardware pré-carregado; mudança de RAM e retorno ao dashboard.
+- Pelo menos 17 modelos; alteração de quantização/contexto atualiza a análise; origem seed e faixa t/s visíveis.
+- Perfil corrompido, `null` ou malformado não provoca erro de runtime/NaN; preview migra a chave histórica.
+- Nomes da chuva são elementos independentes, não interativos e sem animação com movimento reduzido.
+- Menu móvel abre, navega ao comparador e fecha; seleção altera a coluna comparada.
+- Link de catálogo seleciona modelo no Next; troca de modelo de 128K para modelo de 16K ajusta slider e análise.
+- Health/catalog APIs retornam 200; recomendação rejeita JSON/hardware/contexto inválidos com 400; sem disco retorna incompatibilidade com razões e origem seed.
+
+As capturas de home, dashboard e onboarding foram inspecionadas. O ajuste visual dos gauges separou números e ponteiros e fez o comprimento dos arcos do preview representar a porcentagem de consumo. HTML, CSS e módulos JS do preview responderam 200 durante a suíte.
+
+## Falhas encontradas e corrigidas na validação
+
+- Referências de assets inexistentes e script errado no onboarding preview.
+- `demoBenchmarks` inexistente e schema Prisma com sintaxe compactada inválida.
+- Regras ESLint reais detectaram leituras de perfil repetidas, tipos `any` e caminhos de testes fixos; foram corrigidos sem desabilitar regras de aplicação.
+- Labels de select incluíam texto de options; rótulos acessíveis explícitos corrigidos.
+- Testes antigos esperavam copy/CTA antigos. Assertivas atualizadas para o fluxo único de onboarding.
+- Navegação por hash não faz nova requisição de documento: teste verifica 200 via request quando `page.goto` retorna null.
+- O menu muda o nome acessível ao abrir; teste usa `aria-controls` para observar o mesmo botão.
+- A contagem de options ocorria antes de a tela sair do fallback Suspense em uma rodada. O teste agora espera o seletor visível e usa uma assertiva com espera; não ignora a contagem.
+
+## NÃO EXECUTADO
+
+- Build nativo Rust/Tauri e leitura real de hardware pelo agente.
+- Migrations, autenticação e persistência PostgreSQL real.
+- Benchmark real em Ollama/LM Studio, instalação de modelos/runtimes e execução de receitas.
+- Sincronização real de catálogo/preços externos.
+- Safari, Firefox e dispositivos físicos.
+
+Nenhum desses itens está marcado como aprovado. Os resultados certificam o frontend e os cenários locais descritos, sem certificar produção ou integrações externas.
+
+## Rodada de 2026-09-09
+
+A página de modelos, o comparador e a seção opcional de apoio foram validados no Next e no preview independente.
+
+| Verificação | Resultado |
+| --- | --- |
+| `npm run build` | PASS — 23 páginas geradas |
+| `npm run typecheck` | PASS |
+| `npm run lint` | PASS |
+| `npm run test:stages` | PASS, incluindo motores do comparador e Pix |
+| `npm run test:support` | PASS — fixture BR Code, CRC, valor livre e leitura independente do QR |
+| `npm run test:e2e` | PASS — 38 testes em Next e preview |
+
+Os testes de navegador cobriram links e quantizações dos 17 modelos, filtros e ordenação do comparador, proporção dos gráficos, limites de contexto, responsividade, QR Pix, cópia da chave/código, fallback quando o clipboard é negado e foco do menu móvel. Nenhum pagamento foi realizado.
+
+## Rodada de segurança e CI — 2026-09-09
+
+| Verificação | Resultado |
+| --- | --- |
+| `npm run check:hygiene` | PASS — nenhum `.env`, certificado ou chave privada encontrado nas fontes |
+| `npm run check:versions` | PASS — package, Tauri e Cargo em 1.0.0 |
+| `npm run preview:check` | PASS — catálogo/motor e QR sincronizados |
+| `npm run typecheck` | PASS |
+| `npm run lint` | PASS |
+| `npm run test:stages` | PASS — inclui limites HTTP, localhost e configuração de autenticação |
+| `npx prisma validate` | PASS — fingerprint comunitário único e índice de moderação válidos |
+| `npm run build` | PASS — 23 rotas/páginas |
+| `npm run test:e2e` | PASS — 38 testes em Next e preview |
+
+A primeira execução E2E encontrou um servidor Next antigo ainda ocupando a porta 3000 depois de um novo build; seus assets antigos já não existiam. O processo obsoleto foi encerrado e a suíte, executada com o build atual, passou integralmente. Isso não foi tratado como falha do código.
+
+## Rodada do catálogo persistente — 2026-09-09
+
+| Verificação | Resultado |
+| --- | --- |
+| `node scripts/stage25-check.mjs` | PASS — schema, migration, repositórios, bootstrap e contrato versionado |
+| `bash scripts/stage26-check.sh` | PASS — candidato válido, hash estável, referências, HTTPS, redirects e falha externa |
+| `npx prisma validate` | PASS |
+| `npm run typecheck` | PASS |
+| `npm run lint` | PASS |
+| `npm run build` | PASS — catálogo permaneceu como rota dinâmica |
+| `playwright regressions.next.spec.ts` | PASS — 2 testes, incluindo contrato dos 17 modelos |
+
+PostgreSQL real não estava disponível no ambiente. A execução de `migrate deploy`, bootstrap repetido e promoção transacional permanece marcada como dependência externa no controle de progresso.

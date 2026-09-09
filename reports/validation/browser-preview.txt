@@ -1,0 +1,174 @@
+
+> 838@1.0.0 test:e2e
+> playwright test --project=preview
+
+[WebServer] (node:27758) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:40] "GET /home.html HTTP/1.1" 200 -
+
+Running 10 tests using 1 worker
+
+(node:27793) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:41] "GET /home.html HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:41] "GET /styles.css HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:41] "GET /shared.mjs HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:41] "GET /theme.css HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:41] "GET /engine.mjs HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:41] "GET /onboarding.html HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:41] "GET /styles.css HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:41] "GET /app.mjs HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:41] "GET /validation.mjs HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:42] "GET /index.html HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:42] "GET /styles.css HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:42] "GET /app.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:42] "GET /index.html HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:43] "GET /index.html HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:43] "GET /index.html HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:43] "GET /index.html HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:43] "GET /index.html HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:43] "GET /index.html HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:44] "GET /index.html HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:44] "GET /index.html HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:44] "GET /index.html HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:44] "GET /index.html HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:44] "GET /index.html HTTP/1.1" 200 -
+  ✓   1 [preview] › tests/browser/frontend.spec.ts:45:7 › responsive navigation full-hd 1920×1080 (4.2s)
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:45] "GET /home.html HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:45] "GET /styles.css HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:45] "GET /shared.mjs HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:45] "GET /theme.css HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:45] "GET /engine.mjs HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:45] "GET /onboarding.html HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:45] "GET /app.mjs HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:45] "GET /styles.css HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:45] "GET /validation.mjs HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:46] "GET /index.html HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:46] "GET /styles.css HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:46] "GET /app.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:46] "GET /index.html HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:47] "GET /index.html HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:47] "GET /index.html HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:47] "GET /index.html HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:47] "GET /index.html HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:47] "GET /index.html HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:47] "GET /index.html HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:48] "GET /index.html HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:48] "GET /index.html HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:48] "GET /index.html HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:48] "GET /index.html HTTP/1.1" 200 -
+  ✓   2 [preview] › tests/browser/frontend.spec.ts:45:7 › responsive navigation qhd 2560×1440 (3.9s)
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:49] "GET /home.html HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:49] "GET /styles.css HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:49] "GET /shared.mjs HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:49] "GET /theme.css HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:49] "GET /engine.mjs HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:49] "GET /onboarding.html HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:49] "GET /app.mjs HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:49] "GET /validation.mjs HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:50] "GET /index.html HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:50] "GET /app.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:50] "GET /index.html HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:50] "GET /index.html HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:50] "GET /index.html HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:51] "GET /index.html HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:51] "GET /index.html HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:51] "GET /index.html HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:51] "GET /index.html HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:51] "GET /index.html HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:51] "GET /index.html HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:52] "GET /index.html HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:52] "GET /index.html HTTP/1.1" 200 -
+  ✓   3 [preview] › tests/browser/frontend.spec.ts:45:7 › responsive navigation laptop 1366×768 (3.6s)
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:52] "GET /home.html HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:52] "GET /shared.mjs HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:52] "GET /styles.css HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:52] "GET /theme.css HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:52] "GET /engine.mjs HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:53] "GET /onboarding.html HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:53] "GET /app.mjs HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:53] "GET /validation.mjs HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:53] "GET /index.html HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:53] "GET /app.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:53] "GET /styles.css HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:54] "GET /index.html HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:54] "GET /index.html HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:54] "GET /index.html HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:54] "GET /index.html HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:54] "GET /index.html HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:54] "GET /index.html HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:55] "GET /index.html HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:55] "GET /index.html HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:55] "GET /index.html HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:55] "GET /index.html HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:55] "GET /index.html HTTP/1.1" 200 -
+  ✓   4 [preview] › tests/browser/frontend.spec.ts:45:7 › responsive navigation tablet 768×1024 (3.3s)
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:56] "GET /home.html HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:56] "GET /shared.mjs HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:56] "GET /styles.css HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:56] "GET /theme.css HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:56] "GET /engine.mjs HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:56] "GET /onboarding.html HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:56] "GET /app.mjs HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:56] "GET /validation.mjs HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:56] "GET /index.html HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:56] "GET /app.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:57] "GET /index.html HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:57] "GET /index.html HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:57] "GET /index.html HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:57] "GET /index.html HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:58] "GET /index.html HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:58] "GET /index.html HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:58] "GET /index.html HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:58] "GET /index.html HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:58] "GET /index.html HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:58] "GET /index.html HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:58] "GET /index.html HTTP/1.1" 200 -
+  ✓   5 [preview] › tests/browser/frontend.spec.ts:45:7 › responsive navigation phone 390×844 (3.3s)
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:59] "GET /home.html HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:59] "GET /shared.mjs HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:59] "GET /styles.css HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:59] "GET /theme.css HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:59] "GET /engine.mjs HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:59] "GET /onboarding.html HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:59] "GET /app.mjs HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:55:59] "GET /validation.mjs HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:56:00] "GET /index.html HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:56:00] "GET /app.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:56:00] "GET /index.html HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:56:01] "GET /styles.css HTTP/1.1" 304 -
+  ✓   6 [preview] › tests/browser/frontend.spec.ts:64:5 › home → onboarding → saved profile → dashboard → edit hardware (2.2s)
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:56:01] "GET /index.html HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:56:01] "GET /app.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:56:01] "GET /styles.css HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:56:01] "GET /theme.css HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:56:01] "GET /engine.mjs HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:56:01] "GET /shared.mjs HTTP/1.1" 200 -
+  ✓   7 [preview] › tests/browser/frontend.spec.ts:102:5 › model, quantization and context update the analysis (831ms)
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:56:02] "GET /index.html HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:56:02] "GET /styles.css HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:56:02] "GET /app.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:56:02] "GET /theme.css HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:56:02] "GET /engine.mjs HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:56:02] "GET /shared.mjs HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:56:02] "GET /index.html HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:56:02] "GET /index.html HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:56:03] "GET /index.html HTTP/1.1" 304 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:56:03] "GET /index.html HTTP/1.1" 304 -
+  ✓   8 [preview] › tests/browser/frontend.spec.ts:123:5 › malformed saved profile recovers without runtime errors (1.2s)
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:56:03] "GET /index.html HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:56:03] "GET /app.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:56:03] "GET /styles.css HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:56:03] "GET /theme.css HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:56:03] "GET /engine.mjs HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:56:03] "GET /shared.mjs HTTP/1.1" 200 -
+  ✓   9 [preview] › tests/browser/frontend.spec.ts:145:5 › rain names are independent, noninteractive and respect reduced motion (649ms)
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:56:04] "GET /index.html HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:56:04] "GET /styles.css HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:56:04] "GET /app.js HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:56:04] "GET /theme.css HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:56:04] "GET /shared.mjs HTTP/1.1" 200 -
+[WebServer] 127.0.0.1 - - [06/Sep/2026 01:56:04] "GET /engine.mjs HTTP/1.1" 200 -
+  ✓  10 [preview] › tests/browser/frontend.spec.ts:158:5 › mobile menu navigates to comparison and updates a compared model (989ms)
+
+  10 passed (26.4s)

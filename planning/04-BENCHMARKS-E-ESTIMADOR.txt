@@ -1,0 +1,73 @@
+ETAPA 04 — BENCHMARKS CONFIÁVEIS E ESTIMADOR
+Prioridade: P1
+
+PROBLEMAS OBSERVADOS
+- measured: true é hoje uma declaração do cliente.
+- O fingerprint não possui restrição única no schema.
+- A medição não registra todos os fatores necessários para reprodução.
+- Estimativa de memória e velocidade usa fórmulas amplas, adequadas para seed, mas insuficientes para confiança média/alta.
+
+RESULTADO ESPERADO
+Medições são reproduzíveis, deduplicadas e rastreáveis. O estimador explica cobertura, incerteza e quais diferenças existem entre a evidência e o computador do usuário.
+
+PROTOCOLO DE BENCHMARK V2
+- protocolVersion e agentVersion.
+- modelId canônico, arquivo/hash, quantização e tamanho.
+- runtime, runtimeVersion e argumentos relevantes.
+- backend, driverVersion, GPU, VRAM, CPU, RAM e SO.
+- contexto, promptTokens, generatedTokens, batch, threads e gpuLayers.
+- warmup separado de pelo menos 3 amostras medidas.
+- t/s por amostra, mediana, p25/p75, tempo de carga e pico de RAM/VRAM quando disponível.
+- prompt público padronizado ou hash de fixture; nunca prompt pessoal.
+- timestamp e assinatura da instalação do agente.
+
+COMO APLICAR — COLETA
+1. Criar fixtures versionadas por classe de tarefa.
+2. Executar warmup e múltiplas repetições, com cancelamento e limite térmico/temporal.
+3. Mostrar ao usuário exatamente os dados antes do envio.
+4. O servidor valida assinatura, versão aceita, ranges e coerência entre tokens/duração/taxa.
+5. Tornar fingerprint único e tratar repetição de forma idempotente.
+6. Criar fila de moderação com estados pending, accepted, rejected, quarantined e reasonCode.
+7. Detectar outliers por grupo comparável; nunca excluir automaticamente sem registro.
+8. Não transformar uma medição isolada em confiança alta.
+
+COMO APLICAR — ESTIMADOR
+1. Separar pesos, KV cache, buffers, runtime e reserva do sistema.
+2. Adicionar metadados de arquitetura: layers, hidden size, heads, KV heads, KV dtype, experts/active experts e vision projector.
+3. Modelar Apple unified memory separadamente de VRAM discreta.
+4. Modelar backend/runtime e porcentagem real de camadas na GPU.
+5. Escolher evidência por distância: mesmo arquivo/hardware/runtime -> mesma GPU -> mesma arquitetura -> heurística.
+6. Calcular intervalo pela dispersão observada, não apenas percentual fixo.
+7. Exibir evidenceCount, sampleAge, matchingFields, differingFields e confidenceReason.
+8. Versionar o algoritmo. Uma recomendação salva deve registrar estimatorVersion.
+9. Criar avaliação offline que compare previsão contra medições ocultas e produza erro por categoria.
+
+ARQUIVOS PREVISTOS
+src/features/benchmarks/protocol-v2.ts
+src/features/benchmarks/statistics.ts
+src/features/benchmarks/verifier.ts
+src/features/benchmarks/estimator.ts
+src/features/estimation/memory.ts
+src/app/api/benchmarks/community/route.ts
+prisma/schema.prisma
+apps/hardware-agent/**
+
+COMO TESTAR
+- Unitários com vetores conhecidos para mediana, quartis, MAD, agrupamento e distância.
+- Property tests: memória nunca negativa; aumentar contexto não reduz KV; reduzir camadas GPU não aumenta VRAM alocada.
+- Fixtures de MoE, multimodal, GPU discreta, CPU-only e Apple unified memory.
+- Assinatura válida, alterada, expirada e versão de protocolo incompatível.
+- Reenvio do mesmo benchmark retorna o mesmo resultado sem duplicação.
+- E2E local com Ollama real em máquina de teste, registrando versão e modelo pequeno conhecido.
+- Avaliação offline reporta MAE/MAPE e cobertura por classe; definir limite antes de elevar confiança.
+
+CRITÉRIOS DE ACEITE
+- Servidor não confia apenas em measured enviado pelo cliente.
+- Toda faixa informa quantidade, idade e proximidade da evidência.
+- Algoritmo é versionado e reproduzível.
+- Confiança alta exige protocolo válido e amostra suficiente definida em documentação.
+- Usuário pode apagar uma medição local e solicitar exclusão de uma submissão vinculada.
+
+REVERSÃO
+Manter engine-v1 para recomendações salvas. Publicar engine-v2 atrás de flag, comparar resultados silenciosamente e promover somente após avaliação.
+

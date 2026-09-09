@@ -1,0 +1,29 @@
+name: Release metadata
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: read
+
+jobs:
+  metadata:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+          cache: npm
+      - run: npm ci
+      - run: npm run check:versions
+      - name: Generate CycloneDX SBOM
+        run: npm sbom --sbom-format cyclonedx > sbom.cdx.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: release-metadata-${{ github.ref_name }}
+          path: |
+            sbom.cdx.json
+            THIRD_PARTY_NOTICES.md
+          retention-days: 90

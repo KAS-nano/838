@@ -1,0 +1,67 @@
+# Dependências
+/node_modules/
+
+# Next.js e ferramentas de frontend
+/.next/
+/out/
+/.turbo/
+/.vercel/
+/.cache/
+/.eslintcache
+
+# Cobertura e testes locais
+/coverage/
+/.nyc_output/
+/test-results/
+/playwright-report/
+/blob-report/
+/.test-*/
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts.bak
+
+# Prisma
+/src/generated/prisma/
+/prisma/*.db
+/prisma/*.db-journal
+/prisma/*.sqlite
+/prisma/*.sqlite-journal
+
+# Rust e Tauri
+/apps/hardware-agent/src-tauri/target/
+/apps/hardware-agent/src-tauri/gen/schemas/
+**/*.rs.bk
+
+# Variáveis locais e segredos
+.env*
+!.env.example
+*.key
+*.pem
+*.p12
+*.pfx
+id_rsa
+id_ed25519
+
+# Logs e diagnósticos de gerenciadores
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Sistema operacional e editores
+.DS_Store
+Thumbs.db
+Desktop.ini
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Arquivos temporários e patches locais
+*.tmp
+*.temp
+*.orig
+*.rej

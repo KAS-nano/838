@@ -1,0 +1,34 @@
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "09:00"
+      timezone: America/Sao_Paulo
+    open-pull-requests-limit: 10
+    groups:
+      patch-and-minor:
+        update-types: [patch, minor]
+        exclude-patterns: [next, eslint-config-next, prisma, "@prisma/*", better-auth, "@better-auth/*"]
+      next:
+        patterns: [next, eslint-config-next]
+      prisma:
+        patterns: [prisma, "@prisma/*"]
+      authentication:
+        patterns: [better-auth, "@better-auth/*"]
+    versioning-strategy: increase
+
+  - package-ecosystem: cargo
+    directory: /apps/hardware-agent/src-tauri
+    schedule:
+      interval: weekly
+      day: monday
+      time: "09:00"
+      timezone: America/Sao_Paulo
+    groups:
+      tauri:
+        patterns: [tauri, tauri-build]
+      rust-patch-and-minor:
+        update-types: [patch, minor]

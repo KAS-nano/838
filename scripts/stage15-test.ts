@@ -1,0 +1,5 @@
+import { suggestUpgrades, simulateUpgrade } from "../src/features/hardware/upgrades";
+import type { HardwareProfile } from "../src/features/onboarding/types";
+const weak:HardwareProfile={deviceType:"desktop",cpu:"Core i3",gpu:"integrada",vramGb:2,ramGb:8,storageTotalGb:256,storageFreeGb:20,os:"windows",distro:"",preference:"both",objectives:["Programação"],priority:"quality"};
+const s=suggestUpgrades(weak);const sim=simulateUpgrade(weak,{vramGb:16,ramGb:32,storageFreeGb:200,cpu:"Ryzen 7"});
+const tests:[string,boolean][]=[["suggest RAM",s.some(x=>x.kind==="RAM")],["suggest GPU",s.some(x=>x.kind==="VRAM/GPU")],["suggest storage",s.some(x=>x.kind==="Armazenamento")],["sorted priority",s.every((x,i)=>i===0||s[i-1].priority>=x.priority)],["simulation gains",sim.delta.reduce((n,x)=>n+x.gain,0)>0],["no negative gains for stronger patch",sim.delta.every(x=>x.gain>=0)]];let f=false;for(const[n,p]of tests){console.log(`${p?"PASS":"FAIL"} ${n}`);if(!p)f=true}if(f)throw new Error("stage15 failed");

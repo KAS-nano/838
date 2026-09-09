@@ -1,0 +1,175 @@
+===== scripts/static-check.mjs =====
+PASS package.json
+PASS tsconfig.json
+PASS src/app/page.tsx
+PASS src/app/layout.tsx
+PASS src/app/globals.css
+PASS preview/index.html
+PASS Next.js 16.3.3
+===== scripts/stage2-check.mjs =====
+PASS headline
+PASS primary CTA
+PASS manual CTA
+PASS explore CTA
+PASS responsive preview viewport
+PASS preview description
+PASS preview main experience
+===== scripts/stage3-check.mjs =====
+PASS valid hardware
+PASS empty CPU rejected
+PASS negative VRAM rejected
+PASS free disk > total rejected
+PASS Linux distro required
+PASS goals required
+PASS preview onboarding exists
+PASS localStorage persistence
+===== scripts/stage4-check.mjs =====
+PASS syntax src/features/dashboard/metrics.ts
+PASS syntax src/components/gauges/speed-gauge.tsx
+PASS syntax src/app/dashboard/page.tsx
+PASS comfortable
+PASS moderate
+PASS limit
+PASS insufficient
+PASS clamp high
+PASS clamp invalid
+===== scripts/stage5-check.mjs =====
+PASS at least 10 models
+PASS quantizations
+PASS catalog page
+PASS seed warning
+PASS syntax src/features/catalog/types.ts
+PASS syntax src/data/seed-models.ts
+PASS syntax src/app/modelos/page.tsx
+===== scripts/stage6-check.sh =====
+PASS full gpu fit
+PASS backend AMD Linux
+PASS low memory not gpu
+PASS ranking returns all
+PASS ranking descending
+PASS score bounded
+===== scripts/stage7-check.mjs =====
+PASS postgres provider
+PASS all core models
+PASS prisma pinned
+PASS client pinned
+PASS repository fallback
+PASS database env
+===== scripts/stage8-check.sh =====
+PASS official host
+PASS query encoded
+PASS limit clamped
+PASS mapping id
+PASS tag sanitization
+===== scripts/stage9-check.sh =====
+PASS context raises kv
+PASS vram bounded
+PASS low vram offloads
+PASS ram positive
+PASS disk includes overhead
+PASS percent bounded
+===== scripts/stage10-check.sh =====
+PASS exact path
+PASS demo exact not high confidence
+PASS range valid
+PASS neighbor path
+PASS heuristic path
+PASS heuristic low confidence
+===== scripts/stage11-check.mjs =====
+PASS syntax
+PASS three selectors
+PASS compat metric
+PASS performance range
+PASS memory estimator
+===== scripts/stage12-check.sh =====
+PASS ollama tags endpoint
+PASS lm models endpoint
+PASS ollama normalize
+PASS lm normalize
+PASS openrouter endpoint
+PASS pricing per million
+PASS localhost architecture warning
+===== scripts/stage13-check.sh =====
+PASS mixed list
+PASS sorted
+PASS privacy favors local
+PASS cost notes
+===== scripts/stage14-check.sh =====
+PASS six categories
+PASS scores bounded
+PASS stronger hardware scores higher
+PASS weak bottleneck returned
+===== scripts/stage15-check.sh =====
+PASS suggest RAM
+PASS suggest GPU
+PASS suggest storage
+PASS sorted priority
+PASS simulation gains
+PASS no negative gains for stronger patch
+===== scripts/stage16-check.sh =====
+PASS non-Apple excludes macOS
+PASS Apple includes macOS
+PASS sorted
+PASS scores bounded
+PASS AMD Linux rationale
+===== scripts/stage17-check.sh =====
+PASS recipes exist
+PASS CachyOS AMD uses rocm
+PASS CachyOS NVIDIA uses cuda
+PASS Windows installer
+PASS LM Studio Linux AppImage
+PASS all sources HTTPS
+PASS all verification dates
+===== scripts/stage18-check.mjs =====
+PASS Prisma 7 generator
+PASS auth models
+PASS Better Auth pinned
+PASS auth disabled by default
+PASS route guard before dynamic import
+PASS profile export/import
+===== scripts/stage19-check.py =====
+PASS tauri current pinned
+PASS sysinfo pinned
+PASS rust minimum
+PASS local CSP
+PASS global Tauri enabled
+PASS no external frontend CDN
+PASS no shell/http permission
+PASS no network crate
+PASS consent privacy note
+PASS read-only command
+===== scripts/stage20-check.sh =====
+PASS generation math
+PASS prompt math
+PASS seconds conversion
+PASS local endpoint
+PASS short max tokens
+PASS non streaming
+PASS measured flag
+===== scripts/stage21-check.sh =====
+PASS valid accepted
+PASS consent required
+PASS range guard
+PASS measured only
+PASS control chars stripped
+PASS median
+PASS normal not outlier
+PASS extreme outlier
+===== scripts/stage22-check.mjs =====
+PASS README.md
+PASS ARCHITECTURE.md
+PASS SECURITY.md
+PASS PRIVACY.md
+PASS KNOWN_ISSUES.md
+PASS preview/index.html
+PASS preview/styles.css
+PASS preview/app.js
+PASS src/app/api/health/route.ts
+PASS src/components/navigation/site-frame.tsx
+PASS package v1.0.0
+PASS security X-Content-Type-Options
+PASS security X-Frame-Options
+PASS security Permissions-Policy
+PASS agent offline frontend
+PASS TS/TSX syntax (55 files)
+PASS preview JS syntax

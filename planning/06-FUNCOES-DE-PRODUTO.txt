@@ -1,0 +1,97 @@
+ETAPA 06 — FUNÇÕES ADICIONAIS DE PRODUTO
+Prioridade: P2/P3
+
+PRINCÍPIO
+Cada função deve ajudar a responder: qual modelo usar, como configurá-lo e o que esperar nesta máquina. Evitar transformar o 838 em catálogo genérico ou instalador automático sem controle.
+
+FUNÇÃO 1 — MODELOS E RUNTIMES INSTALADOS (P2)
+Aplicação:
+- Agente detecta Ollama/LM Studio e retorna modelo, tag, bytes, quantização quando conhecida e versão do runtime.
+- Dashboard cruza instalação com catálogo e mostra instalado, atualização disponível ou não reconhecido.
+- Usuário inicia a detecção e vê os dados antes de salvá-los.
+Testes:
+- fixtures vazia, duplicada, desconhecida e corrompida;
+- runtime desligado/antigo;
+- nenhum acesso do backend hospedado a localhost;
+- E2E com agente simulado e pelo menos um runtime real em ambiente dedicado.
+Aceite: detecção nunca altera, baixa ou remove modelos.
+
+FUNÇÃO 2 — CENÁRIOS DE USO (P2)
+Aplicação:
+- Criar cenário com tarefa, contexto, tamanho esperado da resposta, concorrência, latência e prioridade.
+- Motor recebe Scenario em vez de inferir tudo apenas do primeiro objetivo.
+- Presets: chat curto, documento longo, programação, visão, transcrição e lote.
+Testes:
+- aumento de contexto/concorrência aumenta recursos;
+- presets têm versão e valores válidos;
+- compartilhar cenário não inclui dados pessoais.
+Aceite: recomendação explica quais campos do cenário alteraram o resultado.
+
+FUNÇÃO 3 — HISTÓRICO DE BENCHMARKS (P2)
+Aplicação:
+- Gráfico por modelo/quant/runtime e comparação com percentis de pares.
+- Mostrar mediana, dispersão, temperatura quando disponível e versão.
+- Filtrar medições próprias, verificadas e comunitárias.
+Testes:
+- poucos dados, outliers, datas e unidades;
+- gráfico acessível com tabela equivalente;
+- exclusão local e remota autorizada.
+Aceite: comunidade nunca se mistura visualmente com medição da própria máquina.
+
+FUNÇÃO 4 — LOCAL x API E CUSTO TOTAL (P2)
+Aplicação:
+- Entrada: tokens/mês, horas de uso, energia opcional e horizonte.
+- Saída: custo API, custo energético estimado, privacidade, disponibilidade e ponto de equilíbrio.
+- Preço sempre tem moeda, unidade, data e fornecedor.
+Testes:
+- zero uso, moedas, preço ausente, mudança de tarifa e valores extremos;
+- cálculo reproduzível com fixtures;
+- sem promessa de economia universal.
+Aceite: custo estimado é separado de preço confirmado e não inclui hardware já adquirido sem escolha do usuário.
+
+FUNÇÃO 5 — FAVORITOS, COMPARAÇÕES E PERFIS SALVOS (P2)
+Aplicação:
+- Primeiro local; sincronização opcional após autenticação.
+- IDs versionados e migração do localStorage.
+- Compartilhamento por ID público com expiração ou link contendo apenas cenário não sensível.
+Testes:
+- migração, conflito local/nuvem, usuário A não acessa usuário B;
+- apagar conta remove dados conforme retenção;
+- link público não contém hardware identificável por padrão.
+Aceite: sincronização falha sem apagar a cópia local.
+
+FUNÇÃO 6 — INSTALAÇÃO GUIADA (P2)
+Aplicação:
+- Checklist de pré-requisitos, comandos copiáveis, verificação e reversão.
+- Agente pode verificar presença/versão; execução futura exige confirmação por etapa.
+- Receitas assinadas/versionadas e ligadas a fonte oficial.
+Testes:
+- matriz SO/GPU/runtime;
+- comandos sem interpolação de entrada livre;
+- receita antiga, assinatura inválida e verificação falha;
+- nenhuma execução automática pelo navegador.
+Aceite: usuário vê comando e efeito antes de qualquer execução.
+
+FUNÇÃO 7 — ALERTAS DE CATÁLOGO (P3)
+Aplicação:
+- Avisar arquivo removido, licença alterada, modelo substituído ou receita desatualizada.
+- Notificações opt-in e agrupadas, sem spam.
+Testes:
+- diff de snapshots, falso positivo e reativação;
+- preferências e cancelamento de notificações.
+Aceite: alerta sempre liga a evidência e data.
+
+FUNÇÃO 8 — PWA E OFFLINE (P3)
+Aplicação:
+- Cache apenas do shell, catálogo publicado e receitas marcadas como offline-safe.
+- Nunca cachear sessão, respostas privadas ou APIs mutáveis.
+- Mostrar data do snapshot offline.
+Testes:
+- offline real, atualização de service worker e cache antigo;
+- logout limpa dados privados;
+- instalação em mobile e desktop.
+Aceite: aplicação offline nunca apresenta dado antigo como atual.
+
+ORDEM INTERNA
+Modelos instalados -> cenários -> benchmark confiável/histórico -> Local x API -> salvos -> instalação guiada -> alertas -> PWA.
+

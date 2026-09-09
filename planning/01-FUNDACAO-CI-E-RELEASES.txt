@@ -1,0 +1,57 @@
+ETAPA 01 — FUNDAÇÃO, CI E RELEASES
+Prioridade: P0
+
+PROBLEMA
+O projeto precisa de um ponto de restauração confiável, verificações automáticas e processo previsível de publicação. Os arquivos atuais aparecem como uma grande alteração inicial, o que reduz a capacidade de localizar regressões.
+
+RESULTADO ESPERADO
+Cada mudança entra por uma unidade pequena, passa pelas mesmas verificações e produz artefatos rastreáveis. Nenhum deploy acontece se build, tipos, lint ou testes essenciais falharem.
+
+COMO APLICAR
+1. Revisar git status, confirmar que node_modules, .next, segredos, resultados temporários e chaves de assinatura estão ignorados.
+2. Criar o primeiro commit somente depois de revisar os arquivos staged. Criar tag de baseline, por exemplo v1.0.0-baseline.
+3. Adicionar .nvmrc ou .node-version com a versão LTS escolhida e remover do README o caminho temporário /tmp.
+4. Criar scripts agregadores:
+   - test:unit para motores puros;
+   - test:integration para banco e rotas;
+   - test:e2e para Playwright;
+   - check para typecheck + lint + unit + preview stale check.
+5. Criar workflow de CI com jobs independentes:
+   - install: npm ci e cache pelo package-lock;
+   - quality: typecheck e lint;
+   - unit: motores, Pix e geração do preview;
+   - build: NEXT_TELEMETRY_DISABLED=1 npm run build;
+   - integration: PostgreSQL efêmero e migrations;
+   - browser: Playwright com upload de trace apenas em falha.
+6. Proteger a branch principal: PR obrigatório, CI obrigatório e bloqueio de force push.
+7. Adicionar Renovate ou Dependabot em lotes separados: patch/minor, major, Prisma e Tauri.
+8. Criar CHANGELOG por release e política SemVer. Alinhar versões do package.json, Cargo.toml e tauri.conf.json.
+9. Gerar SBOM e notices de dependências em releases, sem colocar artefatos enormes no Git.
+
+ARQUIVOS PREVISTOS
+.github/workflows/ci.yml
+.github/dependabot.yml ou renovate.json
+.node-version
+package.json
+README.md
+CHANGELOG.md
+.gitignore
+apps/hardware-agent/src-tauri/Cargo.toml
+apps/hardware-agent/src-tauri/tauri.conf.json
+
+COMO TESTAR
+- Executar todos os comandos da regressão comum numa cópia limpa.
+- Alterar propositalmente um tipo numa branch de teste e confirmar que CI bloqueia.
+- Tornar preview/engine.mjs obsoleto e confirmar que o stale check falha.
+- Confirmar que nenhum arquivo .env, chave privada, target, node_modules ou .next aparece no artefato Git.
+- Restaurar o projeto a partir da tag de baseline numa pasta temporária e repetir npm ci + build.
+
+CRITÉRIOS DE ACEITE
+- Checkout limpo reproduz build e testes apenas com instruções do README.
+- Branch principal não aceita merge com job obrigatório vermelho.
+- Versões web/agente têm uma fonte de verdade ou verificação automática.
+- Artefatos de falha ficam disponíveis na CI sem registrar segredos.
+
+REVERSÃO
+Workflows podem ser desativados sem alterar o runtime. Não reescrever histórico compartilhado; corrigir o baseline com commits subsequentes.
+

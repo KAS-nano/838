@@ -1,0 +1,68 @@
+ETAPA 05 — AGENTE LOCAL SEGURO E DISTRIBUÍVEL
+Prioridade: P1
+
+ESTADO POSITIVO ATUAL
+O agente não possui plugin de shell ou HTTP, expõe um comando próprio de leitura e mantém CSP local. Essa superfície mínima deve ser preservada.
+
+PROBLEMAS A CORRIGIR
+- Hostname é coletado mesmo sem necessidade para recomendação.
+- Windows e macOS colocam JSON bruto de comandos no campo de nome da GPU.
+- Processos nativos não têm timeout ou limite explícito de saída.
+- Versões Cargo, produto e configuração não estão alinhadas.
+- Não há matriz de build nativa, assinatura, notarização ou atualização segura exercitada.
+
+COMO APLICAR — PRIVACIDADE E DETECÇÃO
+1. Remover hostname do snapshot padrão. Se houver diagnóstico, oferecer toggle separado e desligado.
+2. Criar tipos GPU por plataforma e parsear a saída nativa em estruturas limitadas.
+3. Limitar quantidade de GPUs, comprimento de nomes e bytes lidos.
+4. Adicionar timeout aos comandos fixos e encerrar o processo filho ao excedê-lo.
+5. Diferenciar memória dedicada, compartilhada e unificada.
+6. Retornar campoWarnings para falhas parciais sem esconder que a detecção foi incompleta.
+7. Versionar schema e manter parser compatível no web.
+
+COMO APLICAR — PAREAMENTO FUTURO
+1. Se o agente ganhar servidor loopback, vincular apenas em 127.0.0.1/::1.
+2. Gerar segredo de pareamento por instalação e exigir confirmação visual.
+3. Permitir origens do 838 explicitamente, sem wildcard CORS.
+4. Usar comandos enumerados e payloads tipados; nunca expor shell genérico.
+5. Pedir confirmação para benchmark, download e instalação, exibindo impacto.
+6. Registrar auditoria local apagável, sem prompt ou arquivo pessoal.
+
+COMO APLICAR — DISTRIBUIÇÃO
+1. Alinhar versão do crate, tauri.conf e release web.
+2. Criar builds nativos em runners Linux, Windows e macOS.
+3. Assinar Windows/macOS e publicar checksum/assinatura verificável para Linux.
+4. Se adicionar updater, usar HTTPS e assinaturas obrigatórias; guardar chave privada fora do repositório.
+5. Criar canal stable e, se necessário, beta separado.
+6. Gerar SBOM e anexar hashes à release.
+
+ARQUIVOS PREVISTOS
+apps/hardware-agent/src-tauri/src/lib.rs
+apps/hardware-agent/src-tauri/Cargo.toml
+apps/hardware-agent/src-tauri/tauri.conf.json
+apps/hardware-agent/src-tauri/capabilities/default.json
+apps/hardware-agent/src/app.js
+.github/workflows/agent-build.yml
+SECURITY.md
+PRIVACY.md
+
+COMO TESTAR
+- cargo fmt --check, cargo clippy -- -D warnings e cargo test.
+- Fixtures para sysfs, CIM e system_profiler sem depender do hardware do runner.
+- Processo lento, saída gigante, JSON quebrado, nenhuma GPU e múltiplas GPUs.
+- Confirmar que hostname não aparece no snapshot padrão.
+- Revisar capacidades geradas e provar que shell/http continuam indisponíveis.
+- Testar pacote instalado em cada SO, não apenas binário de desenvolvimento.
+- Alterar um byte do update e confirmar rejeição da assinatura.
+- Teste de downgrade, perda de rede e chave inválida no updater.
+
+CRITÉRIOS DE ACEITE
+- Snapshot contém somente campos necessários e documentados.
+- Detecção parcial não trava a aplicação.
+- Artefatos públicos são assinados ou acompanhados por verificação clara.
+- Nenhuma chave privada entra no Git, log ou bundle.
+- Toda nova permissão Tauri recebe revisão explícita.
+
+REVERSÃO
+Distribuir novos comandos atrás de versão de protocolo. O web mantém entrada manual quando o agente estiver ausente, antigo ou incompatível.
+

@@ -1,0 +1,36 @@
+.model-catalog-filters { display: grid; grid-template-columns: minmax(0, 1.6fr) repeat(2, minmax(0, 1fr)); align-items: end; gap: 14px; }
+.model-search { display: flex; align-items: center; gap: 10px; min-width: 0; min-height: var(--control-height, 46px); padding: 0 14px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface-raised); color: var(--muted); }
+.model-search svg { flex-shrink: 0; }
+.model-search input { width: 100%; min-width: 0; border: 0; background: transparent; color: var(--foreground); font-size: 14px; outline-offset: 3px; }
+.model-catalog-caption { margin: 18px 0 0; max-width: 980px; color: var(--muted); font-size: 12px; line-height: 1.8; }
+.model-catalog-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: stretch; gap: 18px; margin-top: 24px; }
+.model-catalog-card { display: flex; flex-direction: column; min-width: 0; padding: 22px; }
+.model-card-heading { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+.model-card-heading > div { min-width: 0; }
+.model-card-heading .badge { flex-shrink: 0; }
+.model-card-description { margin: 14px 0 0; color: var(--muted); font-size: 13px; line-height: 1.75; }
+.model-card-tags { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 14px; }
+.model-card-tags > span { padding: 5px 8px; border-radius: 6px; background: rgb(255 255 255 / 4%); color: var(--muted); font-size: 10px; }
+.model-source-section { margin: 20px 0 18px; padding-top: 18px; border-top: 1px solid var(--border); }
+.model-official-link { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 52px; color: var(--foreground); text-decoration: none; }
+.model-official-link > span { min-width: 0; }
+.model-official-link > svg { flex-shrink: 0; color: var(--accent); }
+.model-official-link strong { display: block; font-size: 13px; font-weight: 600; }
+.model-platform { display: inline-block; margin-left: 6px; color: var(--accent); font-size: 10px; font-weight: 500; }
+.model-official-link small { display: block; margin-top: 6px; overflow-wrap: anywhere; color: var(--muted); font-size: 11px; line-height: 1.5; }
+.model-official-link:hover strong { color: var(--accent); }
+.model-artifact-heading { margin: 15px 0 10px; color: var(--muted); font-size: 11px; }
+.model-artifact-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.model-artifact-link { display: flex; flex-direction: column; gap: 6px; min-width: 0; min-height: 96px; padding: 11px; border: 1px solid var(--border); border-radius: 9px; color: var(--foreground); text-decoration: none; background: rgb(255 255 255 / 2%); }
+.model-artifact-link:hover, .model-artifact-link.is-selected { border-color: rgb(89 255 123 / 45%); background: var(--accent-soft); }
+.model-artifact-title { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 12px; }
+.model-artifact-title svg { flex-shrink: 0; color: var(--muted); }
+.model-artifact-link > span:not(.model-artifact-title), .model-artifact-link small { color: var(--muted); font-size: 10px; line-height: 1.4; overflow-wrap: anywhere; }
+.model-source-note { margin: 13px 0 0; color: var(--muted); font-size: 11px; line-height: 1.7; }
+.model-source-verified { margin: 12px 0 0; color: var(--muted); font-size: 10px; line-height: 1.7; }
+.model-card-footer { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; margin-top: auto; padding-top: 15px; border-top: 1px solid var(--border); }
+.model-card-footer > span { color: var(--muted); font-size: 10px; }
+.model-card-footer > a { color: var(--accent); font-size: 12px; font-weight: 500; }
+@media (min-width: 1900px) { .model-catalog-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 767px) { .model-catalog-filters { grid-template-columns: repeat(2, minmax(0, 1fr)); } .model-search { grid-column: 1 / -1; } .model-catalog-grid { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 399px) { .model-catalog-card { padding: 17px; } .model-catalog-filters { grid-template-columns: minmax(0, 1fr); } .model-card-heading { flex-wrap: wrap; } }

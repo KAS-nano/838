@@ -1,0 +1,88 @@
+ETAPA 02 — SEGURANÇA WEB, APIs E AUTENTICAÇÃO
+Prioridade: P0
+
+PROBLEMAS OBSERVADOS
+- Rotas públicas não possuem uma política comum de rate limit, timeout e tamanho do corpo.
+- A busca do Hugging Face aceita consulta arbitrária sem limite explícito de caracteres.
+- Autenticação está feature-gated, mas a configuração é mínima para produção.
+- O Next possui bons headers básicos, mas ainda não possui CSP.
+- O benchmark no navegador aceita uma URL base informada pelo usuário e precisa deixar claro quais destinos locais são permitidos.
+
+RESULTADO ESPERADO
+Toda entrada externa é limitada e validada. Falhas de fornecedores não esgotam workers. Autenticação só é ativada com e-mail, sessões, proxy, origem e recuperação configurados. A CSP reduz injeção sem quebrar hidratação.
+
+COMO APLICAR — CAMADA DE API
+1. Criar src/server/http com:
+   - parseJsonWithLimit(request, bytes);
+   - withTimeout(fetch, milliseconds);
+   - validateContentType;
+   - resposta de erro padronizada com requestId;
+   - rateLimit(key, policy) com interface trocável.
+2. Usar armazenamento distribuído em produção. Memória local serve apenas para desenvolvimento de uma única instância.
+3. Políticas iniciais sugeridas, ajustadas por métricas:
+   - /api/recommend: 30/min por IP, corpo <= 16 KiB;
+   - /api/integrations/huggingface: 20/min, q entre 2 e 80 caracteres;
+   - /api/integrations/openrouter: 10/min, cache compartilhado;
+   - /api/benchmarks/community: 5/min por IP e 20/dia por instalação autenticada;
+   - auth: regras mais estritas para login, cadastro e reset.
+4. Aplicar timeout de 5–10 segundos aos fornecedores e limite de resposta processada.
+5. Não devolver mensagens internas, URLs com segredos ou stacks. Registrar detalhes no servidor com requestId.
+6. Definir Cache-Control por rota. Catálogo público pode usar stale-while-revalidate; dados de usuário e autenticação usam no-store.
+7. Validar Origin em mutações próprias e deixar a proteção CSRF do framework de autenticação ativa.
+
+COMO APLICAR — AUTENTICAÇÃO
+1. Manter AUTH_ENABLED=false até esta etapa terminar.
+2. Definir BETTER_AUTH_URL/baseURL e trustedOrigins explicitamente por ambiente.
+3. Exigir verificação de e-mail antes de criar sessão útil.
+4. Implementar envio de verificação/reset sem escrever tokens nos logs.
+5. Configurar mínimo/máximo de senha, expiração de reset e revogação de sessões após troca de senha.
+6. Decidir se cadastro será público, por convite ou lista de espera.
+7. Configurar cookies Secure, HttpOnly e SameSite de acordo com HTTPS e proxy.
+8. Definir o cabeçalho de IP confiável do provedor e impedir acesso direto à origem quando usar proxy.
+9. Adicionar tela para listar e revogar sessões.
+
+COMO APLICAR — CSP
+1. Começar com Content-Security-Policy-Report-Only em staging.
+2. Medir violações no Next, QR data:image e estilos atuais.
+3. Escolher conscientemente:
+   - nonce por requisição, aceitando renderização dinâmica; ou
+   - hashes/SRI quando a estratégia suportada preservar páginas estáticas.
+4. Política mínima: default-src self; object-src none; base-uri self; frame-ancestors none; form-action self; fontes/imagens/conexões estritamente listadas.
+5. Separar a CSP do preview e do agente Tauri. Não liberar unsafe-inline globalmente apenas para silenciar erros.
+6. Depois do período de observação, promover de Report-Only para bloqueio.
+
+COMO APLICAR — LOCALHOST
+1. Criar parser de endpoint local que aceite apenas http/https, host loopback permitido e portas conhecidas/configuradas.
+2. Exibir destino e ação antes do benchmark.
+3. Bloquear credenciais embutidas na URL, redirects externos e protocolos diferentes.
+4. Preferir o agente pareado quando disponível.
+
+ARQUIVOS PREVISTOS
+src/server/http/*
+src/app/api/**/route.ts
+src/lib/auth.ts
+next.config.ts
+proxy.ts, se a estratégia CSP usar nonce
+src/features/benchmarks/local-runner.ts
+.env.example
+SECURITY.md
+
+COMO TESTAR
+- Unitários: limites, MIME, query, IP key, timeout, redirect e sanitização de erro.
+- Integração: 413 para corpo grande, 415 para tipo errado, 429 após limite e Retry-After presente.
+- Simular Hugging Face/OpenRouter lentos, 500, JSON inválido e resposta grande.
+- Auth: cadastro, verificação, login, logout, reset, senha expirada, revogação e origem inválida.
+- Proxy: testar cabeçalhos falsificados e o cabeçalho real da plataforma.
+- CSP: Playwright captura console/pageerror e confirma bloqueio de script injetado em staging.
+- Localhost: rejeitar file:, javascript:, credenciais, host remoto e redirect para rede externa.
+
+CRITÉRIOS DE ACEITE
+- Nenhuma rota mutável aceita corpo ilimitado ou tipo inesperado.
+- Toda chamada externa tem timeout e fallback.
+- Autenticação real funciona em PostgreSQL e HTTPS antes de ativar a flag.
+- CSP bloqueante não gera violações da própria aplicação.
+- Testes não dependem do relógio ou do IP real.
+
+REVERSÃO
+Manter flags por recurso. CSP volta temporariamente para Report-Only se houver regressão. Rate limiter deve permitir fail-open somente em rotas públicas de leitura; autenticação e submissão devem falhar fechadas.
+

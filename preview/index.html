@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>838 · Dashboard</title>
+<meta name="description" content="Preview independente do 838 com front-end neon noir">
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="styles.css?v=20260906">
+<link rel="stylesheet" href="comparison.css?v=20260908">
+<link rel="stylesheet" href="model-links.css?v=20260908">
+<link rel="stylesheet" href="support.css?v=20260908">
+</head>
+<body>
+<a class="skip-link" href="#main">Pular para o conteúdo</a>
+<div class="llm-rain" id="llmRain" aria-hidden="true"></div>
+<div class="app-shell">
+  <header class="topbar">
+    <div class="topbar-side topbar-side--left">
+      <button class="menu-toggle" id="mobileMenu" type="button" aria-label="Abrir menu" aria-controls="sidebar" aria-expanded="false">☰ <span>Menu</span></button>
+    </div>
+    <a class="brand-center" href="home.html" aria-label="Ir para a home do 838">838</a>
+    <div class="topbar-side topbar-side--right">
+      <span class="topbar-chip">Estimativas transparentes</span>
+    </div>
+  </header>
+
+  <div class="layout-shell">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-panel">
+        <div class="sidebar-kicker">Central de IA</div>
+        <p class="sidebar-copy">Escolha modelos, compare opções, veja limites do seu PC e gere instruções de instalação.</p>
+      </div>
+<nav id="nav" aria-label="Navegação principal"><div class="nav-group"><span class="nav-group-label">VISÃO GERAL</span><a href="#dashboard" data-page="dashboard">Visão geral</a></div><div class="nav-group"><span class="nav-group-label">IA</span><a href="#modelos" data-page="modelos">Modelos</a><a href="#recomendacoes" data-page="recomendacoes">Recomendações</a><a href="#comparar" data-page="comparar">Comparar</a></div><div class="nav-group"><span class="nav-group-label">ECOSSISTEMA</span><a href="#ferramentas" data-page="ferramentas">Ferramentas</a></div><div class="nav-group"><span class="nav-group-label">HARDWARE</span><a href="#forca" data-page="forca">Força do PC</a><a href="#upgrades" data-page="upgrades">Upgrades</a><a href="#sistemas" data-page="sistemas">Sistemas</a></div><div class="nav-group"><span class="nav-group-label">CONFIGURAÇÃO</span><a href="#instalar" data-page="instalar">Instalação</a><a href="#benchmark" data-page="benchmark">Benchmark</a><a href="#comunidade" data-page="comunidade">Comunidade</a><a href="#perfil" data-page="perfil">Perfil</a></div></nav>
+      <div class="side-note">Dados seed e heurísticas continuam identificados como demonstração. Resultados medidos têm prioridade.</div>
+      <div id="project-support"></div>
+    </aside>
+
+    <button id="menuBackdrop" class="menu-backdrop" type="button" aria-label="Fechar menu" tabindex="-1"></button>
+    <main class="content" id="main">
+      <section class="page" id="page-dashboard">
+        <div class="page-head">
+          <div>
+            <div class="eyebrow">838 / DASHBOARD</div>
+            <h1>Modelo × sua máquina</h1>
+            <p id="hardwareLine" class="muted"></p>
+          </div>
+          <a class="ghost" href="onboarding.html">Editar hardware</a>
+        </div>
+
+        <p class="notice amber" id="demoNotice" hidden>Perfil de demonstração. <a href="onboarding.html">Informe seu hardware</a> para personalizar a análise.</p>
+        <div class="dashboard-layout">
+          <section class="panel panel-hero">
+            <div class="mini-kicker">Seleção ativa</div>
+            <div class="controls controls-main">
+              <label>Modelo<select id="modelSelect" aria-label="Modelo"></select></label>
+              <label>Quantização<select id="quantSelect" aria-label="Quantização"></select></label>
+              <label><span>Contexto <span id="contextLabel">8K</span></span><input id="contextRange" type="range" min="1" max="128" value="8"></label>
+            </div>
+          </section>
+
+          <section class="gauge-grid" id="gauges"></section>
+
+          <div class="info-grid">
+            <article class="panel">
+              <div class="row row-start">
+                <div>
+                  <div class="mini-kicker">Compatibilidade</div>
+                  <h2 id="compatScore">—</h2>
+                </div>
+                <span id="fitBadge" class="badge">—</span>
+              </div>
+              <div class="bar"><i id="compatBar"></i></div>
+              <ul id="compatReasons" class="clean"></ul>
+            </article>
+            <article class="panel">
+              <div class="mini-kicker">Qualidade dos dados</div>
+              <h2 id="confidence">—</h2>
+              <p id="evidence" class="muted"></p>
+              <div class="notice amber">Dados seed não são medições. Valores de memória e desempenho são estimativas; benchmarks medidos têm prioridade quando disponíveis.</div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="page" id="page-modelos">
+        <div class="page-head compact">
+          <div>
+            <div class="eyebrow">CATÁLOGO</div>
+            <h1>Modelos de IA</h1>
+            <p class="muted">Explore as páginas oficiais e os arquivos por quantização. Cada link identifica a precisão e o publicador. Tamanhos e desempenho do simulador continuam sendo estimativas seed.</p>
+          </div>
+        </div>
+        <div class="model-catalog-filters">
+          <label class="model-search"><input id="modelSearch" aria-label="Buscar modelo" placeholder="Modelo, família ou tarefa" type="search"></label>
+          <label class="field-label">Modalidade<select id="modelModality" class="control" aria-label="Modalidade"><option value="all">Todas as modalidades</option><option value="text">Texto</option><option value="vision">Visão</option></select></label>
+          <label class="field-label">Quantização / precisão<select id="modelPrecision" class="control" aria-label="Quantização dos links"><option value="all">Todas as versões</option></select></label>
+        </div>
+        <p class="model-catalog-caption">GGUF: versões para runtimes compatíveis. BF16 e FP16: precisões dos pesos originais, em Safetensors. Os requisitos no analisador continuam sendo estimativas seed.</p>
+        <p id="modelCount" class="model-catalog-caption" role="status"></p>
+        <div id="modelGrid" class="model-catalog-grid"></div>
+      </section>
+
+      <section class="page" id="page-recomendacoes">
+        <div class="page-head compact">
+          <div>
+            <div class="eyebrow">MOTOR 838</div>
+            <h1>Recomendações</h1>
+            <p class="muted">Ranking da configuração atual combinando objetivo, memória, disco e adequação.</p>
+          </div>
+        </div>
+        <div id="recommendations" class="stack"></div>
+      </section>
+
+      <section class="page compare-page" id="page-comparar">
+        <div class="page-head compact"><div><div class="eyebrow">COMPARADOR</div><h1>Leia as opções lado a lado</h1><p class="muted">Compare versões, consumo e velocidade para a sua máquina. Você também pode selecionar duas quantizações do mesmo modelo.</p></div><a href="#modelos" class="ghost">Ver catálogo</a></div>
+        <p class="compare-profile" id="compareProfile"></p>
+        <div class="compare-slots" id="compareControls"></div>
+        <section class="compare-filters" aria-label="Filtros da comparação">
+          <div class="compare-filter-row"><label>Buscar no catálogo<input id="compareSearch" type="search" placeholder="Nome, família ou objetivo"></label><label>Família<select id="compareFamily"></select></label><label>Contexto solicitado (K)<input id="compareContext" type="number" min="1" max="256" step="1" value="8" aria-describedby="compareContextHelp"></label></div>
+          <p class="compare-help" id="compareCatalogCount" role="status"></p><p class="compare-help" id="compareContextHelp">Contexto de 1K a 256K tokens, limitado ao máximo de cada modelo. As quantizações acima são estimativas do catálogo; consulte os arquivos disponíveis na página de modelos.</p>
+          <div class="compare-filter-row"><label>Compatibilidade<select id="compareFit" aria-label="Filtro de compatibilidade"></select></label><label>Ordenar por<select id="compareSort" aria-label="Ordenar comparação"></select></label><label>Métrica do gráfico<select id="compareMetric"></select></label></div>
+          <div class="compare-filter-footer"><p class="compare-help" id="compareResultCount" role="status"></p><button id="compareReset" type="button">Limpar filtros e ordenação</button></div>
+        </section>
+        <div class="compare-empty" id="compareEmpty" hidden><h2>Nenhum modelo com esse encaixe</h2><p>Escolha outro filtro de compatibilidade ou ajuste as versões selecionadas.</p><button id="compareShowAll" type="button">Mostrar todos os encaixes</button></div>
+        <div id="compareResults">
+          <figure class="compare-chart-panel" aria-labelledby="compareChartTitle" aria-describedby="compareChartCaption"><h2 id="compareChartTitle"></h2><figcaption id="compareChartCaption"></figcaption><div id="compareChart"></div></figure>
+          <div class="compare-cards" id="compareCards"></div>
+          <div class="compare-table-wrap" tabindex="0" role="region" aria-label="Tabela de comparação com rolagem horizontal"><table class="compare-table" id="compareTable"></table></div>
+          <p class="compare-help compare-footnote">VRAM para carga total indica a memória necessária para colocar o modelo inteiro na GPU. A VRAM alocada respeita a reserva do seu perfil; o restante pode exigir RAM/CPU. Memória e disco usam heurísticas de baixa confiança. Compatibilidade não mede a qualidade das respostas.</p>
+        </div>
+      </section>
+
+      <section class="page" id="page-ferramentas">
+        <div class="page-head compact">
+          <div>
+            <div class="eyebrow">ECOSSISTEMA</div>
+            <h1>Ferramentas e runtimes</h1>
+          </div>
+        </div>
+        <div id="toolGrid" class="card-grid"></div>
+      </section>
+
+      <section class="page" id="page-forca">
+        <div class="page-head compact">
+          <div>
+            <div class="eyebrow">HARDWARE</div>
+            <h1>Força do seu PC</h1>
+          </div>
+        </div>
+        <div id="strengthList" class="stack"></div>
+        <article class="panel mt-16">
+          <div class="mini-kicker">Gargalo principal</div>
+          <h2 id="bottleneck">—</h2>
+          <p id="bottleneckText" class="muted"></p>
+        </article>
+      </section>
+
+      <section class="page" id="page-upgrades">
+        <div class="page-head compact">
+          <div>
+            <div class="eyebrow">SIMULADOR</div>
+            <h1>Upgrades</h1>
+            <p class="muted">O 838 só sugere mudanças quando existe benefício provável.</p>
+          </div>
+        </div>
+        <div id="upgradeList" class="stack"></div>
+      </section>
+
+      <section class="page" id="page-sistemas">
+        <div class="page-head compact">
+          <div>
+            <div class="eyebrow">SISTEMA OPERACIONAL</div>
+            <h1>Sistemas recomendados</h1>
+          </div>
+        </div>
+        <div id="systemList" class="stack"></div>
+      </section>
+
+      <section class="page" id="page-instalar">
+        <div class="page-head compact">
+          <div>
+            <div class="eyebrow">CENTRAL DE INSTALAÇÃO</div>
+            <h1>Instalação adaptada</h1>
+          </div>
+        </div>
+        <div class="controls controls-two">
+          <label>Ferramenta<select id="installTool" aria-label="Ferramenta"><option>Ollama</option><option>LM Studio</option></select></label>
+          <label>Sistema<select id="installOs" aria-label="Sistema de instalação"><option value="auto">Usar perfil</option><option value="linux">Linux</option><option value="windows">Windows</option><option value="macos">macOS</option></select></label>
+        </div>
+        <article class="panel" id="installCard"></article>
+      </section>
+
+      <section class="page" id="page-benchmark">
+        <div class="page-head compact">
+          <div>
+            <div class="eyebrow">BENCHMARK LOCAL</div>
+            <h1>Medir em vez de adivinhar</h1>
+            <p class="muted">O preview demonstra a apresentação do resultado. Para executar uma medição com Ollama, use a aplicação Next.js.</p>
+          </div>
+        </div>
+        <article class="panel">
+          <label>Modelo do benchmark<input value="modelo-local" disabled></label>
+          <button class="primary" id="fakeBenchmark">Simular visualização</button>
+          <pre id="benchmarkOutput">Nenhum benchmark executado.</pre>
+        </article>
+        <div class="notice">Resultados comunitários são opcionais e exigem consentimento explícito.</div>
+      </section>
+
+      <section class="page" id="page-perfil">
+        <div class="page-head compact">
+          <div>
+            <div class="eyebrow">PERFIL LOCAL</div>
+            <h1>Sua máquina</h1>
+          </div>
+        </div>
+        <article class="panel"><dl id="profileSummary" class="summary"></dl><div class="actions"><a class="primary" href="onboarding.html">Editar hardware e objetivos</a><a class="ghost" href="#dashboard">Voltar ao dashboard</a></div></article>
+        <p class="notice" id="profileMessage">Este preview armazena o perfil somente em localStorage.</p>
+      </section>
+      <section class="page" id="page-comunidade"><div class="page-head"><div><div class="eyebrow">COMUNIDADE</div><h1>Conhecimento compartilhado</h1><p class="muted">Resultados medidos ajudam a reduzir a incerteza das recomendações.</p></div></div><article class="panel"><h2>Seu perfil continua local</h2><p class="muted">Este preview não envia hardware nem benchmarks. Publicação comunitária depende de conta e consentimento na aplicação.</p><a class="ghost" href="#benchmark">Ver benchmark</a></article></section>
+    </main>
+  </div>
+</div>
+<script type="module" src="app.js?v=20260906"></script>
+</body>
+</html>

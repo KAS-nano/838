@@ -1,0 +1,58 @@
+/* Shared by the Next.js comparator and its standalone preview. */
+.compare-page { min-width: 0; }
+.compare-profile { margin: 0 0 22px; color: var(--muted); font-size: 12px; line-height: 1.7; }
+.compare-profile a { color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+.compare-slots, .compare-cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.compare-slot { min-width: 0; margin: 0; padding: 12px 16px 18px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); }
+.compare-slot legend { padding: 0 8px; color: var(--accent); font-size: 12px; font-weight: 600; }
+.compare-slot label + label { margin-top: 14px; }
+.compare-slot label, .compare-filters label { display: block; min-width: 0; color: var(--muted); font-size: 12px; font-weight: 500; }
+.compare-slot select, .compare-filters select, .compare-filters input { display: block; box-sizing: border-box; width: 100%; min-width: 0; max-width: 100%; min-height: 44px; margin-top: 7px; padding: 10px 11px; border: 1px solid var(--border); border-radius: 9px; color: var(--foreground); background: var(--surface-raised); font: inherit; font-size: 13px; text-overflow: ellipsis; }
+.compare-filters { margin-top: 20px; padding: 18px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); }
+.compare-filter-row { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.compare-filter-row + .compare-help { margin-top: 12px; }
+.compare-help { margin: 8px 0; color: var(--muted); font-size: 12px; line-height: 1.7; }
+.compare-help + .compare-filter-row { margin-top: 18px; padding-top: 18px; border-top: 1px solid var(--border); }
+.compare-filter-footer { display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; margin-top: 14px; }
+.compare-filter-footer button, .compare-empty button { min-height: 44px; padding: 10px 13px; border: 1px solid var(--border); border-radius: 9px; background: transparent; color: var(--foreground); font-size: 12px; cursor: pointer; }
+.compare-filter-footer button:hover, .compare-empty button:hover { background: var(--accent-soft); }
+.compare-chart-panel { margin: 20px 0; padding: 22px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); }
+.compare-chart-panel h2 { margin: 0; font-size: 16px; font-weight: 600; }
+.compare-chart-panel figcaption { margin: 7px 0 22px; max-width: 80ch; color: var(--muted); font-size: 12px; line-height: 1.7; }
+.compare-chart-row { display: grid; grid-template-columns: minmax(130px, 1fr) minmax(0, 2fr) minmax(90px, auto); gap: 18px; align-items: center; margin-top: 20px; }
+.compare-chart-label { display: grid; gap: 3px; min-width: 0; }
+.compare-chart-label strong { font-size: 13px; font-weight: 600; overflow-wrap: anywhere; }
+.compare-chart-label span { color: var(--muted); font-size: 11px; }
+.compare-chart-row > b { text-align: right; font-size: 13px; font-variant-numeric: tabular-nums; }
+.compare-chart-track { height: 10px; overflow: hidden; border-radius: 3px; background: rgb(255 255 255 / 6%); }
+.compare-chart-track i { display: block; height: 100%; background: var(--accent); border-radius: inherit; }
+.compare-cards { margin-top: 20px; }
+.compare-card { min-width: 0; padding: 20px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); }
+.compare-kicker { margin: 0 0 8px; color: var(--muted); font-size: 10px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; }
+.compare-card h2 { margin: 0; font-size: 17px; line-height: 1.4; font-weight: 600; overflow-wrap: anywhere; }
+.compare-version { margin: 7px 0 13px; color: var(--muted); font-size: 12px; }
+.compare-fit { display: inline-flex; max-width: 100%; padding: 5px 8px; border: 1px solid var(--border); border-radius: 6px; font-size: 11px; line-height: 1.4; }
+.compare-fit[data-fit="gpu"] { color: var(--accent); background: var(--accent-soft); }
+.compare-fit[data-fit="offload"] { color: var(--warning); }
+.compare-fit[data-fit="incompatible"] { color: var(--danger); }
+.compare-metrics { display: grid; gap: 12px; margin: 22px 0 18px; }
+.compare-metrics div { display: flex; justify-content: space-between; gap: 12px; font-size: 12px; }
+.compare-metrics dt { color: var(--muted); }
+.compare-metrics dd { margin: 0; flex-shrink: 0; color: var(--foreground); font-weight: 600; font-variant-numeric: tabular-nums; }
+.compare-evidence { margin: 0; padding-top: 14px; border-top: 1px solid var(--border); color: var(--muted); font-size: 11px; }
+.compare-reason { margin: 9px 0 0; color: var(--muted); font-size: 12px; line-height: 1.6; }
+.compare-table-wrap { max-width: 100%; margin-top: 22px; overflow-x: auto; overscroll-behavior-x: contain; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); }
+.compare-table { width: 100%; min-width: 740px; border-collapse: collapse; table-layout: fixed; text-align: left; font-size: 12px; line-height: 1.6; }
+.compare-table caption { padding: 16px; color: var(--foreground); text-align: left; font-size: 14px; font-weight: 600; }
+.compare-table th, .compare-table td { padding: 14px 16px; border-bottom: 1px solid var(--border); vertical-align: top; overflow-wrap: anywhere; }
+.compare-table thead th { color: var(--foreground); background: var(--surface-raised); font-weight: 600; }
+.compare-table th small { display: block; margin-top: 6px; color: var(--accent); font-size: 10px; font-weight: 400; }
+.compare-table tbody th { color: var(--muted); font-weight: 500; }
+.compare-table tbody tr:last-child > * { border-bottom: 0; }
+.compare-footnote { margin: 16px 0 0; max-width: 100ch; }
+.compare-empty { margin: 20px 0; padding: 30px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); }
+.compare-empty h2 { margin: 0 0 8px; font-size: 17px; }
+.compare-empty p { margin: 0 0 16px; color: var(--muted); font-size: 13px; }
+@media (max-width: 1180px) and (min-width: 901px) { .compare-slot, .compare-card { padding-left: 12px; padding-right: 12px; } .compare-metrics div { display: grid; gap: 4px; } }
+@media (max-width: 760px) { .compare-slots, .compare-cards { grid-template-columns: 1fr; } .compare-slot { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; } .compare-slot label + label { margin-top: 0; } .compare-filter-row { grid-template-columns: 1fr; } .compare-chart-row { grid-template-columns: 1fr auto; gap: 10px; } .compare-chart-track { grid-row: 2; grid-column: 1 / -1; } .compare-chart-row > b { grid-column: 2; grid-row: 1; } .compare-chart-panel { padding: 18px; } }
+@media (max-width: 420px) { .compare-slot { grid-template-columns: 1fr; } .compare-slot label + label { margin-top: 2px; } .compare-filter-footer { align-items: stretch; } .compare-filter-footer button { width: 100%; } }

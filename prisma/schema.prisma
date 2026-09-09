@@ -1,0 +1,336 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum DeviceType {
+  DESKTOP
+  NOTEBOOK
+}
+
+enum OsType {
+  WINDOWS
+  LINUX
+  MACOS
+}
+
+enum BenchmarkConfidence {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+model User {
+  id               String            @id @default(cuid())
+  name             String
+  email            String            @unique
+  emailVerified    Boolean           @default(false)
+  image            String?
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  sessions         Session[]
+  accounts         Account[]
+  hardwareProfiles HardwareProfile[]
+  recommendations  Recommendation[]
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  expiresAt DateTime
+  token     String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model Account {
+  id                    String    @id @default(cuid())
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@index([userId])
+}
+
+model Verification {
+  id         String   @id @default(cuid())
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([identifier])
+}
+
+model HardwareProfile {
+  id              String           @id @default(cuid())
+  userId          String?
+  user            User?            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name            String           @default("Meu computador")
+  deviceType      DeviceType
+  cpu             String
+  gpu             String
+  vramGb          Float
+  ramGb           Float
+  storageTotalGb  Float
+  storageFreeGb   Float
+  os              OsType
+  distro          String?
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  benchmarks      Benchmark[]
+  recommendations Recommendation[]
+}
+
+model AiModel {
+  id              String           @id
+  name            String
+  family          String
+  paramsB         Float
+  activeParamsB   Float?
+  contextK        Int
+  license         String
+  source          String
+  sourceUrl       String?
+  description     String
+  modalities      String[]
+  objectives      String[]
+  benchmarkClass  String
+  updatedAt       DateTime         @updatedAt
+  variants        ModelVariant[]
+  artifacts       ModelArtifact[]
+  sources         ModelSource[]
+  capabilities    ModelCapability[]
+  licenseInfo     ModelLicense?
+  benchmarks      Benchmark[]
+  recommendations Recommendation[]
+
+  @@index([family])
+}
+
+model ModelVariant {
+  id            String      @id @default(cuid())
+  modelId       String
+  model         AiModel     @relation(fields: [modelId], references: [id], onDelete: Cascade)
+  quantization  String
+  diskGb        Float
+  weightVramGb  Float
+  qualityFactor Float
+  format        String      @default("GGUF")
+  availability  String      @default("available")
+  benchmarks    Benchmark[]
+
+  @@unique([modelId, quantization])
+  @@index([quantization, availability])
+}
+
+model ModelSource {
+  id          String   @id @default(cuid())
+  modelId     String
+  model       AiModel  @relation(fields: [modelId], references: [id], onDelete: Cascade)
+  provider    String
+  externalId  String
+  url         String
+  fetchedAt   DateTime
+  etag        String?
+  payloadHash String
+
+  @@unique([provider, externalId])
+  @@index([modelId, fetchedAt])
+}
+
+model ModelArtifact {
+  id           String    @id @default(cuid())
+  modelId      String
+  model        AiModel   @relation(fields: [modelId], references: [id], onDelete: Cascade)
+  filename     String
+  format       String
+  quantization String
+  bytes        BigInt?
+  sha256       String?
+  url          String
+  publisher    String
+  community    Boolean   @default(false)
+  splitGroup   String?
+  verifiedAt   DateTime?
+  availability String    @default("available")
+  updatedAt    DateTime  @updatedAt
+
+  @@unique([url])
+  @@index([modelId, format, quantization, availability])
+}
+
+model ModelCapability {
+  id             String   @id @default(cuid())
+  modelId        String
+  model          AiModel  @relation(fields: [modelId], references: [id], onDelete: Cascade)
+  modality       String
+  objective      String?
+  evidenceSource String
+  observedAt     DateTime
+
+  @@unique([modelId, modality, objective, evidenceSource])
+}
+
+model ModelLicense {
+  id                 String  @id @default(cuid())
+  modelId            String  @unique
+  model               AiModel @relation(fields: [modelId], references: [id], onDelete: Cascade)
+  identifier         String
+  url                String?
+  requiresAcceptance Boolean @default(false)
+  commercialUseKnown Boolean?
+}
+
+model CatalogSnapshot {
+  id               String   @id @default(cuid())
+  version          String   @unique
+  generatedAt      DateTime @default(now())
+  sourceCount      Int
+  status           String   @default("candidate")
+  validationReport Json
+  publishedAt      DateTime?
+
+  @@index([status, generatedAt])
+}
+
+model DataProvenance {
+  id         String   @id @default(cuid())
+  entityType String
+  entityId   String
+  field      String
+  sourceUrl  String
+  observedAt DateTime
+  confidence String
+
+  @@index([entityType, entityId])
+  @@index([observedAt])
+}
+
+model Runtime {
+  id              String                 @id
+  name            String                 @unique
+  homepage        String?
+  compatibilities RuntimeCompatibility[]
+  benchmarks      Benchmark[]
+}
+
+model RuntimeCompatibility {
+  id        String  @id @default(cuid())
+  runtimeId String
+  runtime   Runtime @relation(fields: [runtimeId], references: [id], onDelete: Cascade)
+  os        OsType
+  backend   String
+  notes     String?
+
+  @@unique([runtimeId, os, backend])
+}
+
+model Benchmark {
+  id                String              @id @default(cuid())
+  hardwareProfileId String?
+  hardwareProfile   HardwareProfile?    @relation(fields: [hardwareProfileId], references: [id], onDelete: SetNull)
+  modelId           String
+  model             AiModel             @relation(fields: [modelId], references: [id], onDelete: Cascade)
+  variantId         String?
+  variant           ModelVariant?       @relation(fields: [variantId], references: [id], onDelete: SetNull)
+  runtimeId         String?
+  runtime           Runtime?            @relation(fields: [runtimeId], references: [id], onDelete: SetNull)
+  contextK          Int
+  backend           String
+  os                OsType
+  generationTps     Float
+  promptTps         Float?
+  vramGb            Float?
+  ramGb             Float?
+  source            String
+  measured          Boolean             @default(false)
+  confidence        BenchmarkConfidence
+  createdAt         DateTime            @default(now())
+
+  @@index([modelId, variantId])
+}
+
+model Tool {
+  id          String  @id
+  slug        String  @unique
+  name        String
+  category    String
+  description String
+  homepage    String?
+  githubRepo  String?
+}
+
+model ApiModel {
+  id            String   @id
+  provider      String
+  name          String
+  contextK      Int?
+  inputUsdPerM  Float?
+  outputUsdPerM Float?
+  source        String
+  updatedAt     DateTime @updatedAt
+
+  @@index([provider])
+}
+
+model Recommendation {
+  id                String              @id @default(cuid())
+  userId            String?
+  user              User?               @relation(fields: [userId], references: [id], onDelete: SetNull)
+  hardwareProfileId String
+  hardwareProfile   HardwareProfile     @relation(fields: [hardwareProfileId], references: [id], onDelete: Cascade)
+  modelId           String
+  model             AiModel             @relation(fields: [modelId], references: [id], onDelete: Cascade)
+  objective         String
+  score             Int
+  confidence        BenchmarkConfidence
+  payload           Json
+  createdAt         DateTime            @default(now())
+}
+
+model InstallationRecipe {
+  id           String   @id @default(cuid())
+  slug         String
+  os           OsType
+  distro       String?
+  toolSlug     String
+  version      String
+  requirements Json
+  steps        Json
+  verification Json
+  uninstall    Json?
+  updatedAt    DateTime @updatedAt
+
+  @@unique([slug, os, distro, version])
+}
+
+model CommunitySubmission {
+  id          String   @id @default(cuid())
+  fingerprint String?  @unique
+  payload     Json
+  status      String   @default("pending")
+  createdAt   DateTime @default(now())
+
+  @@index([status, createdAt])
+}

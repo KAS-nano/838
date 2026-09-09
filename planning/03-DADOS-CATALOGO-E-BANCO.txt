@@ -1,0 +1,65 @@
+ETAPA 03 — DADOS, CATÁLOGO E POSTGRESQL
+Prioridade: P1, com preparação P0 antes de ativar persistência
+
+PROBLEMAS OBSERVADOS
+- CatalogRepository usa apenas seed.
+- O schema não representa completamente modalidades, objetivos, arquivos, checksums, licença e proveniência exibidos pelo frontend.
+- Links verificados manualmente podem desaparecer ou mudar.
+- Migrations e operações reais ainda não foram testadas contra PostgreSQL.
+
+RESULTADO ESPERADO
+O banco mantém um catálogo normalizado, versionado e auditável. Dados externos entram como candidatos, passam por validação e só depois se tornam o snapshot publicado. O sistema conserva o último snapshot válido quando fornecedores falham.
+
+MODELO DE DADOS PROPOSTO
+ModelSource: provider, externalId, url, fetchedAt, etag, payloadHash.
+ModelArtifact: modelId, filename, format, quantization, bytes, sha256, url, publisher, community, splitGroup, verifiedAt, availability.
+ModelCapability: modelId, modality, objective, evidenceSource.
+ModelLicense: modelId, identifier, url, requiresAcceptance, commercialUseKnown.
+CatalogSnapshot: version, generatedAt, sourceCount, status, validationReport.
+DataProvenance: entityType, entityId, field, sourceUrl, observedAt, confidence.
+
+COMO APLICAR
+1. Subir PostgreSQL local/CI e executar prisma migrate dev a partir de um banco vazio.
+2. Criar migrations pequenas; nunca editar migration já publicada.
+3. Adicionar índices para consultas por família, formato, quantização, disponibilidade, updatedAt e benchmark.
+4. Implementar PrismaCatalogRepository e selecionar implementação por configuração.
+5. Criar processo de ingestão separado da rota de leitura:
+   buscar -> limitar -> validar schema -> normalizar -> comparar -> revisar -> publicar snapshot.
+6. Usar ETag/If-None-Match quando disponível e backoff para 429/5xx.
+7. Guardar payload bruto somente se necessário e com retenção definida.
+8. Criar verificador diário/semanal de links e arquivos sem baixar pesos.
+9. Marcar artifact como unavailable; não apagar imediatamente histórico usado por recomendações.
+10. Disponibilizar no frontend data da observação e diferença entre publicação oficial e quantizador da comunidade.
+11. Implementar seed idempotente para desenvolvimento e bootstrap.
+12. Criar processo explícito para promover um snapshot, sem publicar automaticamente dados malformados.
+
+ARQUIVOS PREVISTOS
+prisma/schema.prisma
+prisma/migrations/**
+prisma/seed.ts
+src/server/repositories/prisma-catalog-repository.ts
+src/server/catalog/ingest-*.ts
+src/server/catalog/validate-snapshot.ts
+src/app/api/catalog/**
+src/data/model-links.ts, posteriormente gerado ou usado como fallback
+
+COMO TESTAR
+- Banco vazio -> migrate deploy -> seed -> consulta de 17 modelos.
+- Rodar seed duas vezes sem duplicar registros.
+- Ingestão com fixtures válidas, campos ausentes, arquivos divididos, licença restrita, 429 e timeout.
+- Simular remoção de arquivo: snapshot anterior permanece consultável e novo status aparece.
+- Testar concorrência de dois sincronizadores com lock/advisory lock.
+- Testar rollback restaurando backup numa instância temporária.
+- Contract test compara resposta da API com schema versionado.
+- Testar paginação e índices com volume sintético realista.
+
+CRITÉRIOS DE ACEITE
+- Frontend não depende de uma resposta externa ao vivo para abrir o catálogo.
+- Cada campo crítico possui origem e data.
+- Publicação é atômica: usuário nunca vê meio snapshot.
+- Seeds continuam identificados e nunca são promovidos a medidos.
+- Migrate deploy funciona num banco novo e num backup da versão anterior.
+
+REVERSÃO
+Manter SeedCatalogRepository disponível como fallback controlado. Antes de migration destrutiva, usar expansão/contração: adicionar campo, preencher, migrar leitura, só depois remover o antigo.
+

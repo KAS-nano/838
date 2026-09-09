@@ -1,0 +1,109 @@
+CONTROLE DE PROGRESSO DAS MELHORIAS DO 838
+Atualizado em: 2026-09-09
+Progresso global: 25%
+
+LEGENDA
+[x] concluído e validado
+[~] parcialmente implementado
+[ ] pendente
+[!] depende de configuração ou serviço externo
+
+COMO ATUALIZAR
+1. Alterar o percentual somente depois de executar os testes indicados na etapa.
+2. Ao chegar a 100%, trocar [~] por [x] e registrar as evidências abaixo.
+3. Não marcar dependências externas como concluídas com simulações locais.
+4. Registrar arquivos, comandos e limitações para evitar que outra pessoa repita a auditoria.
+
+P0.1 — FUNDAÇÃO, CI E RELEASES: 80% [~]
+[x] Node 22.23.2 fixado em .node-version.
+[x] Scripts check, unit, integration, higiene, versões e preview stale check criados.
+[x] CI separada em quality, unit, build, PostgreSQL e navegador.
+[x] Dependabot agrupado para npm, Prisma, autenticação, Next e Cargo.
+[x] Workflow de release gera SBOM CycloneDX e inclui notices.
+[x] Versões package.json, Cargo.toml e tauri.conf.json alinhadas em 1.0.0.
+[x] README não depende mais de /tmp e usa npm ci.
+[x] .gitignore cobre artefatos reais de Next, testes, Prisma, Tauri/Rust, segredos, logs e editores sem ocultar evidências versionadas.
+[!] Criar o primeiro commit/tag requer revisar e consolidar o grande conjunto de arquivos já existente.
+[!] Proteção da branch main requer configuração no GitHub após o primeiro push da CI.
+Evidências: npm run check:hygiene; npm run check:versions; npm run preview:check; npm run typecheck; npm run lint.
+
+P0.2 — SEGURANÇA WEB E APIs: 85% [~]
+[x] Parser JSON limita bytes e exige application/json.
+[x] Rate limit aplicado a recomendação, Hugging Face, OpenRouter e benchmark comunitário.
+[x] Erros públicos sanitizados com requestId e Cache-Control no-store.
+[x] Retry-After devolvido em HTTP 429.
+[x] Fornecedores externos possuem timeout e limite de resposta.
+[x] Busca Hugging Face limitada a 2–80 caracteres.
+[x] Mutação comunitária valida Origin.
+[x] Ollama aceita somente loopback, porta 11434 e URL sem credenciais/caminho.
+[x] CSP inicial adicionada em Report-Only.
+[!] Rate limit distribuído precisa de um armazenamento externo antes de múltiplas instâncias.
+[ ] Medir violações da CSP em staging e promover uma política com nonce para bloqueio.
+Evidências: typecheck, lint, stage20-check.sh e stage23-check.sh aprovados.
+
+P0.3 — AUTENTICAÇÃO E POSTGRESQL REAL: 55% [~]
+[x] Recurso continua desativado por padrão.
+[x] Ativação exige banco, segredo aleatório com 32+ caracteres e origens explícitas.
+[x] Produção rejeita URLs sem HTTPS.
+[x] Verificação de e-mail obrigatória e recuperação por webhook autenticado.
+[x] Senhas de 12–128 caracteres; reset expira em 30 minutos; sessão em 7 dias.
+[!] Entrega real de e-mail, HTTPS e PostgreSQL dependem de infraestrutura e credenciais.
+[ ] Criar telas de sessão e executar todos os fluxos contra PostgreSQL real.
+
+P0.4 — SUBMISSÕES COMUNITÁRIAS: 60% [~]
+[x] Consentimento, validação, corpo limitado, Origin e rate limit inicial.
+[x] Submissões entram com status pending.
+[x] Fingerprint único impede duplicação, inclusive em requisições concorrentes.
+[ ] Interface de moderação, limite diário por instalação e política de retenção.
+
+P0.5 — CSP E DEPENDÊNCIAS: 55% [~]
+[x] Headers básicos e CSP Report-Only.
+[x] Dependabot segmentado e SBOM de release.
+[ ] CSP bloqueante validada em staging.
+[ ] Resolver alertas de dependências sem atualização forçada.
+
+P1.1 — CATÁLOGO PERSISTENTE: 75% [~]
+[x] Schema normalizado para fontes, artefatos, capacidades, licença, proveniência e snapshots.
+[x] Índices para quantização, disponibilidade, fontes e publicação de snapshots.
+[x] Migration PostgreSQL inicial gerada a partir do schema validado.
+[x] PrismaCatalogRepository e SeedCatalogRepository selecionáveis por CATALOG_SOURCE.
+[x] API versionada informa origem, estado, observação e fallback controlado.
+[x] Bootstrap idempotente implementado com upsertSeedCatalog para os 17 modelos.
+[x] Candidatos são validados integralmente e recebem hash canônico antes da publicação.
+[x] Promoção transacional arquiva o snapshot anterior e publica modelos/artefatos de forma atômica.
+[x] Verificador de disponibilidade usa HEAD, timeout e não segue redirecionamentos automaticamente.
+[ ] Criar coleta externa com ETag/backoff e popular artefatos/proveniência no banco.
+[!] Executar migrate deploy e o bootstrap duas vezes em PostgreSQL real.
+P1.2 — PROTOCOLO DE BENCHMARK: 0% [ ]
+P1.3 — ESTIMADOR COM EVIDÊNCIAS: 0% [ ]
+P1.4 — AGENTE LOCAL: 5% [~]
+[x] Versão alinhada com o produto.
+[ ] Demais itens de endurecimento, testes nativos e assinatura.
+P1.5 — OBSERVABILIDADE, BACKUP E RECUPERAÇÃO: 0% [ ]
+P2.1 — MODELOS E RUNTIMES LOCAIS: 0% [ ]
+P2.2 — HISTÓRICO COMUNITÁRIO: 0% [ ]
+P2.3 — CUSTO LOCAL X API: 0% [ ]
+P2.4 — FAVORITOS, CENÁRIOS E COMPARAÇÕES: 0% [ ]
+P2.5 — INSTALAÇÃO GUIADA: 0% [ ]
+P3.1 — RENDERIZAÇÃO NEXT/PREVIEW: 0% [ ]
+P3.2 — PWA E CACHE OFFLINE: 0% [ ]
+
+ÚLTIMA VALIDAÇÃO
+Data: 2026-09-09
+PASS npm run check:hygiene
+PASS npm run check:versions
+PASS npm run preview:check
+PASS npm run typecheck
+PASS npm run lint
+PASS bash scripts/stage20-check.sh
+PASS bash scripts/stage23-check.sh
+PASS bash scripts/stage24-check.sh
+PASS npm run test:stages
+PASS npm run build — build de produção compilado; catálogo mantido como rota dinâmica
+PASS npm run test:e2e — 38 testes em Next e preview
+PASS git check-ignore — 15 classes de artefatos ignoradas e 6 arquivos canônicos confirmados como versionáveis
+PASS git ls-files -ci --exclude-standard — nenhum arquivo versionado foi ocultado pelas regras
+PASS node scripts/stage25-check.mjs — schema, migration, repositório, fallback, contrato e bootstrap
+PASS bash scripts/stage26-check.sh — validação, hash, referências, HTTPS e falhas do verificador
+PASS Playwright regressions.next — contrato do catálogo e recomendação, 2 testes
+LIMITAÇÃO npm install --package-lock-only não foi executado porque este ambiente bloqueou download remoto; nenhuma dependência nova foi adicionada nesta rodada.
