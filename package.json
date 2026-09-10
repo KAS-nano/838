@@ -62,7 +62,7 @@
     "prisma": "7.10.0",
     "qrcode": "^1.5.4",
     "tailwindcss": "^4.3.0",
-    "typescript": "^5.8.3"
+    "typescript": "^7.0.2"
   },
   "allowScripts": {
     "@prisma/engines@7.10.0": true,
