@@ -1,6 +1,6 @@
 CONTROLE DE PROGRESSO DAS MELHORIAS DO 838
 Atualizado em: 2026-09-09
-Progresso global: 40%
+Progresso global: 41%
 
 LEGENDA
 [x] concluído e validado
@@ -110,12 +110,13 @@ P2.2 — HISTÓRICO COMUNITÁRIO: 0% [ ]
 P2.3 — CUSTO LOCAL X API: 0% [ ]
 P2.4 — FAVORITOS, CENÁRIOS E COMPARAÇÕES: 0% [ ]
 P2.5 — INSTALAÇÃO GUIADA: 0% [ ]
-P3.1 — RENDERIZAÇÃO NEXT/PREVIEW E PUBLICAÇÃO: 70% [~]
+P3.1 — RENDERIZAÇÃO NEXT/PREVIEW E PUBLICAÇÃO: 75% [~]
 [x] Build Next de produção e preview gerado validados.
 [x] Primeira publicação funciona em modo seed, sem banco ou autenticação.
 [x] Guia de Vercel documenta configuração, variáveis e domínio próprio.
 [x] Verificador deploy:check bloqueia segredos, Pix antigo, preview obsoleto e falhas de build/teste.
 [x] Smoke test público verifica HTTPS, páginas, health, headers e ausência do e-mail pessoal.
+[x] Identidade oficial aplicada ao cabeçalho, favicon, manifest, instalação e compartilhamento social.
 [ ] Publicar a URL .vercel.app e executar deploy:smoke contra ela.
 [ ] Validar dispositivo físico e criar a primeira tag de release.
 P3.2 — PWA E CACHE OFFLINE: 0% [ ]
@@ -144,5 +145,6 @@ PASS stage28 — memória unificada, compatibilidade acelerada sem VRAM dedicada
 PASS npm run test:stages — todas as etapas, incluindo stage27 e stage28
 PASS npm run build — build de produção com 22 rotas/páginas
 PASS Playwright frontend.spec.ts — 10 testes em 5 resoluções e fluxos de análise/comparação
-PASS npm run deploy:check — prontidão, higiene, preview, tipagem, lint, etapas e build de 22 rotas
+PASS npm run deploy:check — prontidão, higiene, preview, tipagem, lint, etapas e build de produção
+PASS logo mobile 390x844 — imagem carregada, 36x36 CSS / 48px otimizada, sem deslocamento do cabeçalho
 LIMITAÇÃO npm install --package-lock-only não foi executado porque este ambiente bloqueou download remoto; nenhuma dependência nova foi adicionada nesta rodada.

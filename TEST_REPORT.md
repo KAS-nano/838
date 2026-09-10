@@ -161,3 +161,16 @@ O cálculo usa a RAM total como orçamento compartilhado quando o perfil declara
 | build Next de produção | PASS — 22 rotas/páginas |
 
 O lançamento inicial foi preparado para catálogo seed, autenticação desligada e submissões comunitárias desligadas. O smoke test externo foi criado, mas depende da URL HTTPS fornecida pela hospedagem e ainda não está marcado como executado.
+
+## Rodada de identidade visual — 2026-09-09
+
+| Verificação | Resultado |
+| --- | --- |
+| dimensões dos assets | PASS — 180, 192, 512, favicon e Open Graph 1200×630 |
+| `npm run typecheck` | PASS |
+| `npm run lint` | PASS |
+| `npm run preview:check` | PASS |
+| `npm run build` | PASS — 23 rotas, incluindo manifest.webmanifest |
+| navegador móvel 390×844 | PASS — logo carregada e cabeçalho sem deslocamento |
+
+A arte fornecida pelo proprietário foi recortada apenas para remover margens excedentes e redimensionada para cada uso. O símbolo e suas cores foram preservados.
