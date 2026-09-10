@@ -4,6 +4,10 @@
 
 `HardwareProfile` diferencia a arquitetura da CPU da organização da memória. Perfis com memória dedicada mantêm VRAM e RAM como capacidades separadas. Perfis com memória unificada usam a RAM total como um único orçamento para pesos, cache KV, buffers, runtime e reserva do sistema; os valores exibidos não devem ser somados. Campos novos são opcionais no contrato persistido para manter a leitura de perfis locais anteriores.
 
+## Saúde e logs operacionais
+
+`/api/health` é o sinal de liveness do processo. `/api/ready` verifica somente dependências exigidas pelas flags ativas; no lançamento seed, PostgreSQL aparece como `not-required`. Logs de falha são JSON e aceitam apenas campos operacionais fechados. Objetos de erro e suas mensagens não são serializados para evitar vazamento de credenciais, payloads de hardware ou dados pessoais.
+
 ## Web
 
 Browser → Next.js → motor 838 → catálogo/repositórios → PostgreSQL quando configurado.

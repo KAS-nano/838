@@ -11,11 +11,12 @@ async function get(path) {
   return { response, text: await response.text() };
 }
 
-const [home, models, health] = await Promise.all([get("/"), get("/modelos"), get("/api/health")]);
+const [home, models, health, readiness] = await Promise.all([get("/"), get("/modelos"), get("/api/health"), get("/api/ready")]);
 assert.match(home.text, /838/, "A página inicial não contém a identidade do produto.");
 assert.doesNotMatch(home.text + models.text, /alastorlluar@gmail\.com/i, "O e-mail pessoal apareceu no site publicado.");
 assert.equal(home.response.headers.get("x-content-type-options"), "nosniff");
 assert.equal(home.response.headers.get("x-frame-options"), "DENY");
 assert.equal(JSON.parse(health.text).status, "ok", "Health check inválido.");
+assert.equal(JSON.parse(readiness.text).status, "ready", "Readiness check inválido.");
 
 console.log(`PASS deployment smoke: ${origin.origin} respondeu por HTTPS, páginas e health estão disponíveis e headers básicos estão ativos.`);

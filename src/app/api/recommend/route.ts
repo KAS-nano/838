@@ -6,6 +6,7 @@ import { isHardwareProfile } from "@/features/onboarding/validation";
 import { errorResponse, HttpError, parseJsonWithLimit, rateLimit, requestId } from "@/server/http";
 
 export async function POST(request: Request) {
+  const startedAt = Date.now();
   const id = requestId(request);
   try {
     rateLimit(request, { name: "recommend", limit: 30, windowMs: 60_000 });
@@ -39,6 +40,6 @@ export async function POST(request: Request) {
   }));
     return NextResponse.json({ objective, source: "838-engine-v1", dataState: "seed", warning: "Requisitos e compatibilidade heurísticos baseados no catálogo seed.", result }, { headers: { "Cache-Control": "no-store", "X-Request-Id": id } });
   } catch (error) {
-    return errorResponse(error, id);
+    return errorResponse(error, id, { route: "/api/recommend", startedAt });
   }
 }

@@ -2,6 +2,7 @@ import { listOpenRouterModels } from "@/features/integrations/openrouter";
 import { errorResponse, HttpError, jsonResponse, rateLimit, requestId } from "@/server/http";
 
 export async function GET(request: Request) {
+  const startedAt = Date.now();
   const id = requestId(request);
   try {
     rateLimit(request, { name: "openrouter", limit: 10, windowMs: 60_000 });
@@ -12,7 +13,6 @@ export async function GET(request: Request) {
       id,
     );
   } catch (error) {
-    if (!(error instanceof HttpError)) console.error(`[${id}] OpenRouter indisponível`, error);
-    return errorResponse(error instanceof HttpError ? error : new HttpError(502, "upstream_error", "OpenRouter indisponível."), id);
+    return errorResponse(error instanceof HttpError ? error : new HttpError(502, "upstream_error", "OpenRouter indisponível."), id, { route: "/api/integrations/openrouter", startedAt, provider: "openrouter" });
   }
 }

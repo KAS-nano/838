@@ -1,9 +1,11 @@
 import { getCatalogRepository, SeedCatalogRepository } from "@/server/repositories/catalog-repository";
 import { jsonResponse, requestId } from "@/server/http";
+import { operationalLog, safeErrorType } from "@/server/observability/logger";
 
 export const dynamic = "force-dynamic";
 
 export async function GET(request: Request) {
+  const startedAt = Date.now();
   const id = requestId(request);
   const selected = process.env.CATALOG_SOURCE === "database" ? "database" : "seed";
   try {
@@ -21,7 +23,7 @@ export async function GET(request: Request) {
       id,
     );
   } catch (error) {
-    console.error(`[${id}] Catálogo persistente indisponível`, error);
+    operationalLog({ level: "error", event: "dependency_failure", requestId: id, route: "/api/catalog/models", status: 200, durationMs: Date.now() - startedAt, provider: "postgresql", errorType: safeErrorType(error) });
     const models = await new SeedCatalogRepository().listModels();
     return jsonResponse(
       {

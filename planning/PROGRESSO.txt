@@ -1,6 +1,6 @@
 CONTROLE DE PROGRESSO DAS MELHORIAS DO 838
-Atualizado em: 2026-09-09
-Progresso global: 41%
+Atualizado em: 2026-09-10
+Progresso global: 44%
 
 LEGENDA
 [x] concluído e validado
@@ -104,20 +104,26 @@ P1.3 — ESTIMADOR COM EVIDÊNCIAS: 80% [~]
 P1.4 — AGENTE LOCAL: 5% [~]
 [x] Versão alinhada com o produto.
 [ ] Demais itens de endurecimento, testes nativos e assinatura.
-P1.5 — OBSERVABILIDADE, BACKUP E RECUPERAÇÃO: 0% [ ]
+P1.5 — OBSERVABILIDADE, BACKUP E RECUPERAÇÃO: 30% [~]
+[x] Logs operacionais JSON usam campos fechados, requestId, rota, status, duração e fornecedor.
+[x] Erros desconhecidos registram somente o tipo e não serializam mensagem, payload ou segredo.
+[x] Liveness em /api/health e readiness em /api/ready separados.
+[x] Readiness exige PostgreSQL somente quando catálogo, autenticação ou comunidade dependem dele.
+[ ] Métricas agregadas, alertas por orçamento de erro e painel operacional.
+[ ] Política de backup com RPO/RTO e ensaio de restauração em PostgreSQL real.
 P2.1 — MODELOS E RUNTIMES LOCAIS: 0% [ ]
 P2.2 — HISTÓRICO COMUNITÁRIO: 0% [ ]
 P2.3 — CUSTO LOCAL X API: 0% [ ]
 P2.4 — FAVORITOS, CENÁRIOS E COMPARAÇÕES: 0% [ ]
 P2.5 — INSTALAÇÃO GUIADA: 0% [ ]
-P3.1 — RENDERIZAÇÃO NEXT/PREVIEW E PUBLICAÇÃO: 75% [~]
+P3.1 — RENDERIZAÇÃO NEXT/PREVIEW E PUBLICAÇÃO: 90% [~]
 [x] Build Next de produção e preview gerado validados.
 [x] Primeira publicação funciona em modo seed, sem banco ou autenticação.
 [x] Guia de Vercel documenta configuração, variáveis e domínio próprio.
 [x] Verificador deploy:check bloqueia segredos, Pix antigo, preview obsoleto e falhas de build/teste.
 [x] Smoke test público verifica HTTPS, páginas, health, headers e ausência do e-mail pessoal.
 [x] Logo fornecida aplicada exclusivamente ao favicon; cabeçalhos mantêm a marca textual 838.
-[ ] Publicar a URL .vercel.app e executar deploy:smoke contra ela.
+[x] URL https://838.vercel.app publicada e validada com deploy:smoke.
 [ ] Validar dispositivo físico e criar a primeira tag de release.
 P3.2 — PWA E CACHE OFFLINE: 0% [ ]
 
@@ -147,4 +153,6 @@ PASS npm run build — build de produção com 22 rotas/páginas
 PASS Playwright frontend.spec.ts — 10 testes em 5 resoluções e fluxos de análise/comparação
 PASS npm run deploy:check — prontidão, higiene, preview, tipagem, lint, etapas e build de produção
 PASS favicon — arte oficial disponível no Next e no preview; cabeçalhos sem imagem
+PASS npm run deploy:smoke -- https://838.vercel.app — HTTPS, páginas, health e headers públicos
+PASS stage29 — logs estruturados sem segredos e flags de dependência da readiness
 LIMITAÇÃO npm install --package-lock-only não foi executado porque este ambiente bloqueou download remoto; nenhuma dependência nova foi adicionada nesta rodada.

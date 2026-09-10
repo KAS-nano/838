@@ -27,11 +27,11 @@ export function jsonResponse(
   return new Response(JSON.stringify(body), { ...init, headers });
 }
 
-export function errorResponse(error: unknown, id: string) {
+export function errorResponse(error: unknown, id: string, context: { route?: string; startedAt?: number; provider?: string } = {}) {
   const known = error instanceof HttpError;
   const status = known ? error.status : 500;
   const code = known ? error.code : "internal_error";
-  if (!known) console.error(`[${id}]`, error);
+  operationalLog({ level: "error", event: "http_request", requestId: id, route: context.route ?? "unknown", status, durationMs: context.startedAt ? Date.now() - context.startedAt : 0, provider: context.provider, errorType: known ? undefined : safeErrorType(error) });
   const headers: Record<string, string> = { "Cache-Control": "no-store" };
   const retryAfter = known && status === 429
     ? (error as HttpError & { retryAfter?: number }).retryAfter
@@ -43,3 +43,4 @@ export function errorResponse(error: unknown, id: string) {
     id,
   );
 }
+import { operationalLog, safeErrorType } from "../observability/logger";

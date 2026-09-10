@@ -174,3 +174,15 @@ O lançamento inicial foi preparado para catálogo seed, autenticação desligad
 | cabeçalhos | PASS — marca textual 838, sem imagem |
 
 A arte fornecida pelo proprietário é usada somente como miniatura da aba do navegador. O cabeçalho do Next e o cabeçalho do preview continuam exibindo apenas “838”.
+
+## Rodada de produção e observabilidade — 2026-09-10
+
+| Verificação | Resultado |
+| --- | --- |
+| `npm run deploy:smoke -- https://838.vercel.app` | PASS — HTTPS, home, modelos, health e headers |
+| `bash scripts/stage29-check.sh` | PASS — log JSON e readiness por flags |
+| teste de mensagem sensível | PASS — URL do banco, senha e token ausentes do log |
+| `npm run typecheck` | PASS |
+| `npm run lint` | PASS |
+
+O smoke público foi executado antes da inclusão de `/api/ready`. O script atualizado passará a exigir esse endpoint no próximo deploy. Banco, métricas agregadas, alertas e restauração continuam pendentes e não foram simulados.

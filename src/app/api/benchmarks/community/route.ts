@@ -8,6 +8,7 @@ import { assertAllowedOrigin, errorResponse, HttpError, parseJsonWithLimit, rate
 const noStoreHeaders = (id: string) => ({ "Cache-Control": "no-store", "X-Request-Id": id });
 
 export async function POST(request: Request) {
+  const startedAt = Date.now();
   const id = requestId(request);
   try {
     if (process.env.COMMUNITY_BENCHMARKS_ENABLED !== "true") {
@@ -84,6 +85,6 @@ export async function POST(request: Request) {
       { status: 202, headers: noStoreHeaders(id) },
     );
   } catch (error) {
-    return errorResponse(error, id);
+    return errorResponse(error, id, { route: "/api/benchmarks/community", startedAt });
   }
 }

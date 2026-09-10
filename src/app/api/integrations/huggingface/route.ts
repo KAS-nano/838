@@ -2,6 +2,7 @@ import { searchHuggingFaceModels } from "@/features/integrations/huggingface";
 import { errorResponse, HttpError, jsonResponse, rateLimit, requestId } from "@/server/http";
 
 export async function GET(request: Request) {
+  const startedAt = Date.now();
   const id = requestId(request);
   try {
     rateLimit(request, { name: "huggingface", limit: 20, windowMs: 60_000 });
@@ -14,7 +15,6 @@ export async function GET(request: Request) {
       id,
     );
   } catch (error) {
-    if (!(error instanceof HttpError)) console.error(`[${id}] Hugging Face indisponível`, error);
-    return errorResponse(error instanceof HttpError ? error : new HttpError(502, "upstream_error", "Hugging Face indisponível."), id);
+    return errorResponse(error instanceof HttpError ? error : new HttpError(502, "upstream_error", "Hugging Face indisponível."), id, { route: "/api/integrations/huggingface", startedAt, provider: "huggingface" });
   }
 }
