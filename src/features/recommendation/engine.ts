@@ -23,18 +23,18 @@ export function calculateCompatibility(profile:HardwareProfile, model:AiModel, v
   const ramEstimatedGb=memory.ramGb;
   const flags:string[]=[]; const reasons:string[]=[];
   let fit:FitState="gpu";
-  if(memory.gpuLayersPercent<100){fit=ramEstimatedGb<=profile.ramGb*.82?"offload":"incompatible";flags.push("VRAM insuficiente para carga total, incluindo KV cache e reserva do sistema");}
+  if(memory.gpuLayersPercent<100){fit=profile.memoryArchitecture==="unified"?"incompatible":ramEstimatedGb<=profile.ramGb*.82?"offload":"incompatible";flags.push(profile.memoryArchitecture==="unified"?"Memória unificada insuficiente para carga total e reserva do sistema":"VRAM insuficiente para carga total, incluindo KV cache e reserva do sistema");}
   if(memory.diskGb>profile.storageFreeGb){fit="incompatible";flags.push("Espaço em disco insuficiente para modelo, runtime e cache");}
   if(ramEstimatedGb>profile.ramGb*.9){fit="incompatible";flags.push("RAM insuficiente");}
   const memoryScore=fit==="gpu"?30:fit==="offload"?18:2;
-  const backendScore=profile.vramGb>0?20:8;
+  const backendScore=profile.vramGb>0||profile.memoryArchitecture==="unified"?20:8;
   const relevance=!objective||model.objectives.includes(objective)?15:5;
   const performance=model.benchmarkClass==="small"?20:model.benchmarkClass==="medium"?17:model.benchmarkClass==="moe"?16:13;
   const diskScore=memory.diskGb<=profile.storageFreeGb?10:0;
   const easeScore=5;
   let score=Math.round(memoryScore+backendScore+performance+relevance+diskScore+easeScore);
   if(fit==="incompatible") score=Math.min(score,49);
-  reasons.push(fit==="gpu"?"Modelo cabe integralmente na GPU.":fit==="offload"?"Modelo pode funcionar com offload para RAM/CPU.":"A configuração atual não atende aos requisitos estimados.");
+  reasons.push(fit==="gpu"?(profile.memoryArchitecture==="unified"?"Modelo cabe no orçamento estimado de memória unificada.":"Modelo cabe integralmente na GPU."):fit==="offload"?"Modelo pode funcionar com offload para RAM/CPU.":"A configuração atual não atende aos requisitos estimados.");
   if(objective&&model.objectives.includes(objective)) reasons.push(`Adequado para ${objective}.`);
   if(objective&&!model.objectives.includes(objective)) reasons.push(`Modelo não priorizado para ${objective}.`);
   reasons.push(...flags);

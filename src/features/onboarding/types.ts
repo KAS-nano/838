@@ -2,6 +2,8 @@ export type DeviceType = "desktop" | "notebook";
 export type OsType = "windows" | "linux" | "macos";
 export type AiPreference = "local" | "api" | "both";
 export type Priority = "quality" | "speed" | "efficiency" | "privacy" | "ease" | "cost";
+export type CpuArchitecture = "x86_64" | "arm64" | "other";
+export type MemoryArchitecture = "dedicated" | "unified" | "shared";
 
 export const objectives = [
   "Programação",
@@ -25,7 +27,9 @@ export type Objective = (typeof objectives)[number];
 export type HardwareProfile = {
   deviceType: DeviceType;
   cpu: string;
+  cpuArchitecture?: CpuArchitecture;
   gpu: string;
+  memoryArchitecture?: MemoryArchitecture;
   vramGb: number;
   ramGb: number;
   storageTotalGb: number;
@@ -40,7 +44,9 @@ export type HardwareProfile = {
 export const initialHardwareProfile: HardwareProfile = {
   deviceType: "desktop",
   cpu: "",
+  cpuArchitecture: "x86_64",
   gpu: "",
+  memoryArchitecture: "dedicated",
   vramGb: 0,
   ramGb: 16,
   storageTotalGb: 512,

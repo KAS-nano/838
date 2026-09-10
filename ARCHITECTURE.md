@@ -1,5 +1,9 @@
 # Arquitetura do 838
 
+## Perfil e orçamento de memória
+
+`HardwareProfile` diferencia a arquitetura da CPU da organização da memória. Perfis com memória dedicada mantêm VRAM e RAM como capacidades separadas. Perfis com memória unificada usam a RAM total como um único orçamento para pesos, cache KV, buffers, runtime e reserva do sistema; os valores exibidos não devem ser somados. Campos novos são opcionais no contrato persistido para manter a leitura de perfis locais anteriores.
+
 ## Web
 
 Browser → Next.js → motor 838 → catálogo/repositórios → PostgreSQL quando configurado.
@@ -28,6 +32,8 @@ Pesos + KV cache + overhead + contexto + offload.
 4. heurística.
 
 O resultado é uma faixa com confiança e método. O 838 não deve converter heurística em falsa precisão.
+
+O estimador 2.0.0 ordena medições por distância entre GPU, CPU, sistema, memória, contexto, runtime e backend. Faixas medidas usam mediana e quartis; a resposta inclui quantidade, idade, campos iguais/diferentes e razão da confiança. Confiança alta exige pelo menos cinco amostras exatas, recentes e com baixa dispersão. A avaliação offline produz MAE, MAPE e cobertura do intervalo por categoria.
 
 ## Banco
 

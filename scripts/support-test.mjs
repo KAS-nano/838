@@ -43,7 +43,7 @@ assert.equal(fields.get("60"), "SAO PAULO");
 assert.equal(fields.has("54"), false, "No fixed donation amount");
 assert.equal(fields.has("01"), false, "Reusable static QR");
 assert.equal(parseFields(fields.get("26")).get("00"), "br.gov.bcb.pix");
-assert.equal(parseFields(fields.get("26")).get("01"), "alastorlluar@gmail.com");
+assert.equal(parseFields(fields.get("26")).get("01"), "8a8fbfbe-0cb5-4c9d-9648-058c58f95617");
 assert.equal(parseFields(fields.get("62")).get("05"), "***");
 assert.equal(fields.get("63"), pixCrc16(supportPayment.payload.slice(0, -4)));
 assert.throws(() => createPixPayload({ ...projectSupport.pix, key: "wrong key" }));

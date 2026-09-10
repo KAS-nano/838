@@ -23,7 +23,9 @@ exports.objectives = [
 exports.initialHardwareProfile = {
     deviceType: "desktop",
     cpu: "",
+    cpuArchitecture: "x86_64",
     gpu: "",
+    memoryArchitecture: "dedicated",
     vramGb: 0,
     ramGb: 16,
     storageTotalGb: 512,
@@ -49,6 +51,10 @@ function validateHardware(profile) {
         errors.deviceType = "Selecione Desktop ou Notebook.";
     if (!["windows", "linux", "macos"].includes(profile.os))
         errors.os = "Selecione um sistema operacional válido.";
+    if (profile.cpuArchitecture !== undefined && !["x86_64", "arm64", "other"].includes(profile.cpuArchitecture))
+        errors.cpuArchitecture = "Selecione uma arquitetura de CPU válida.";
+    if (profile.memoryArchitecture !== undefined && !["dedicated", "unified", "shared"].includes(profile.memoryArchitecture))
+        errors.memoryArchitecture = "Selecione uma arquitetura de memória válida.";
     if (profile.cpu.trim().length < 2)
         errors.cpu = "Informe o modelo do processador.";
     if (profile.gpu.trim().length < 2)
@@ -229,7 +235,7 @@ exports.projectSupport = {
     title: "Apoie o projeto",
     message: "Se o 838 foi útil para você, uma contribuição pode ajudar na manutenção e no desenvolvimento. Fique à vontade, sem compromisso.",
     pix: {
-        key: "alastorlluar@gmail.com",
+        key: "8a8fbfbe-0cb5-4c9d-9648-058c58f95617",
         recipientName: "Kawan Alves da Silva",
         city: "SAO PAULO",
     },
@@ -241,11 +247,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.supportPayment = void 0;
 // Generated locally by scripts/generate-support-qr.mjs. Do not edit.
 exports.supportPayment = {
-    "key": "alastorlluar@gmail.com",
+    "key": "8a8fbfbe-0cb5-4c9d-9648-058c58f95617",
     "recipientName": "Kawan Alves da Silva",
     "city": "SAO PAULO",
-    "payload": "00020126440014br.gov.bcb.pix0122alastorlluar@gmail.com5204000053039865802BR5920Kawan Alves da Silva6009SAO PAULO62070503***630400BC",
-    "qrDataUrl": "data:image/png;base64,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"
+    "payload": "00020126580014br.gov.bcb.pix01368a8fbfbe-0cb5-4c9d-9648-058c58f956175204000053039865802BR5920Kawan Alves da Silva6009SAO PAULO62070503***630496FC",
+    "qrDataUrl": "data:image/png;base64,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"
 };
 },
 "src/data/seed-api-models.ts": (exports, load) => {
@@ -279,28 +285,37 @@ function estimateMemory(profile, model, variant, contextK) {
     const kvCacheGb = +(Math.max(.15, (model.paramsB * (context / 8) * 0.014) * architectureFactor).toFixed(2));
     const overheadGb = +(Math.max(.45, variant.weightVramGb * .045).toFixed(2));
     const totalGpuTarget = variant.weightVramGb + kvCacheGb + overheadGb;
-    const reserve = Math.min(1.5, Math.max(.5, profile.vramGb * .06));
-    const usable = Math.max(0, profile.vramGb - reserve);
+    const unified = profile.memoryArchitecture === "unified";
+    const acceleratorCapacity = unified ? profile.ramGb : profile.vramGb;
+    const reserve = unified ? Math.max(4, profile.ramGb * .15) : Math.min(1.5, Math.max(.5, profile.vramGb * .06));
+    const usable = Math.max(0, acceleratorCapacity - reserve);
     const gpuLayersPercent = Math.max(0, Math.min(100, Math.floor((usable / Math.max(.1, totalGpuTarget)) * 100)));
     const vramGb = +(Math.min(totalGpuTarget, usable > 0 ? Math.max(.3, usable) : 0).toFixed(2));
     const offloadedWeights = variant.weightVramGb * (1 - gpuLayersPercent / 100);
-    const ramGb = +(Math.max(3.5, 3.5 + offloadedWeights * 1.08 + kvCacheGb * (1 - gpuLayersPercent / 100) + (gpuLayersPercent < 100 ? 1.2 : .35)).toFixed(2));
+    const unifiedMemoryGb = unified ? +(3.5 + totalGpuTarget).toFixed(2) : undefined;
+    const ramGb = unified ? unifiedMemoryGb : +(Math.max(3.5, 3.5 + offloadedWeights * 1.08 + kvCacheGb * (1 - gpuLayersPercent / 100) + (gpuLayersPercent < 100 ? 1.2 : .35)).toFixed(2));
     const diskGb = +(variant.diskGb * 1.08 + .6).toFixed(2);
     const notes = [];
     if (context !== contextK)
         notes.push("Contexto limitado ao máximo do modelo.");
     if (gpuLayersPercent < 100)
-        notes.push("Offload estimado para RAM/CPU.");
+        notes.push(unified ? "A memória unificada disponível não comporta toda a carga estimada." : "Offload estimado para RAM/CPU.");
+    if (unified)
+        notes.push("RAM e memória da GPU compartilham o mesmo orçamento; os valores não devem ser somados.");
     notes.push("Memória e armazenamento calculados por heurística; pesos do catálogo seed não são medições.");
-    return { vramGb, ramGb, diskGb, gpuLayersPercent, kvCacheGb, overheadGb, totalGpuTargetGb: +totalGpuTarget.toFixed(2), confidence: "low", notes };
+    return { vramGb, ramGb, diskGb, gpuLayersPercent, kvCacheGb, overheadGb, totalGpuTargetGb: +totalGpuTarget.toFixed(2), unifiedMemoryGb, confidence: "low", notes };
 }
 },
 "src/features/benchmarks/estimator.ts": (exports, load) => {
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.ESTIMATOR_VERSION = void 0;
 exports.gpuFamily = gpuFamily;
+exports.evidenceDistance = evidenceDistance;
 exports.estimatePerformance = estimatePerformance;
 const memory_1 = load("src/features/estimation/memory.ts");
+const statistics_1 = load("src/features/benchmarks/statistics.ts");
+exports.ESTIMATOR_VERSION = "2.0.0";
 function gpuFamily(profile) {
     const gpu = profile.gpu.toLowerCase();
     const suffix = Math.max(4, Math.round(profile.vramGb / 4) * 4);
@@ -314,53 +329,139 @@ function gpuFamily(profile) {
         return `intel-${suffix}`;
     return `generic-${suffix}`;
 }
-function estimatePerformance(profile, model, variant, contextK, records) {
+const normalize = (name) => name?.trim().toLowerCase();
+const same = (a, b) => Boolean(a && b && normalize(a) === normalize(b));
+function evidenceDistance(record, profile, contextK, target = {}) {
+    let distance = 0;
+    if (!same(record.gpu, profile.gpu))
+        distance += record.gpuFamily === gpuFamily(profile) ? 1.5 : 4;
+    if (!same(record.cpu, profile.cpu))
+        distance += 1;
+    if (record.os !== profile.os)
+        distance += 2;
+    distance += Math.min(3, Math.abs(record.vramGb - profile.vramGb) / 4);
+    distance += record.ramGb === undefined ? 0.5 : Math.min(2, Math.abs(record.ramGb - profile.ramGb) / 16);
+    distance += Math.min(3, Math.abs(record.contextK - contextK) / Math.max(1, contextK));
+    if (target.runtime && !same(record.runtime, target.runtime))
+        distance += 2;
+    if (target.backend && !same(record.backend, target.backend))
+        distance += 2;
+    return +distance.toFixed(3);
+}
+function comparisonFields(record, profile, contextK, target) {
+    const checks = [
+        ["GPU", same(record.gpu, profile.gpu)],
+        ["CPU", same(record.cpu, profile.cpu)],
+        ["sistema", record.os === profile.os],
+        ["VRAM", record.vramGb === profile.vramGb],
+        ["RAM", record.ramGb === profile.ramGb],
+        ["contexto", record.contextK === contextK],
+    ];
+    if (target.runtime)
+        checks.push(["runtime", same(record.runtime, target.runtime)]);
+    if (target.backend)
+        checks.push(["backend", same(record.backend, target.backend)]);
+    return {
+        matchingFields: checks.filter(([, match]) => match).map(([field]) => field),
+        differingFields: checks.filter(([, match]) => !match).map(([field]) => field),
+    };
+}
+function sampleAgeDays(records, now) {
+    const timestamps = records.map((record) => Date.parse(record.measuredAt ?? "")).filter(Number.isFinite);
+    if (!timestamps.length)
+        return null;
+    return Math.max(0, Math.floor((now.getTime() - Math.max(...timestamps)) / 86_400_000));
+}
+function estimatePerformance(profile, model, variant, contextK, records, target = {}) {
     const context = Math.max(1, Math.min(Number.isFinite(contextK) ? contextK : 8, model.contextK));
-    const family = gpuFamily(profile);
     const candidates = records.filter((record) => record.modelId === model.id && record.quantization === variant.quantization && Number.isFinite(record.generationTps) && record.generationTps > 0);
-    // A VRAM bucket alone cannot establish an exact hardware match. Seed records
-    // never enter the measured branch, even if their hardware bucket matches.
-    const measured = candidates.filter((record) => record.measured && !/seed|demo/i.test(record.source));
-    const normalize = (name) => name?.trim().toLowerCase();
-    const exact = measured.filter((record) => record.gpu && record.cpu && normalize(record.gpu) === normalize(profile.gpu) && normalize(record.cpu) === normalize(profile.cpu) && record.os === profile.os && record.ramGb === profile.ramGb && record.vramGb === profile.vramGb && record.contextK === context);
-    if (exact.length) {
-        return fromRecords(exact, "medium", "exact", "measured", "Medido em hardware, modelo, quantização e contexto correspondentes. Runtime e drivers podem alterar o resultado local.");
-    }
+    const measured = candidates.filter((record) => record.measured && record.verified !== false && !/seed|demo/i.test(record.source));
     if (measured.length) {
-        const peers = measured.filter((record) => record.gpuFamily === family);
-        return fromRecords(peers.length ? peers : measured, "low", "neighbor", "estimated", "Estimado a partir de medições do mesmo modelo; hardware, contexto ou runtime diferem. Não é uma medição desta máquina.");
+        const ranked = measured.map((record) => ({ record, distance: evidenceDistance(record, profile, context, target) })).sort((a, b) => a.distance - b.distance);
+        const minimum = ranked[0].distance;
+        const selected = ranked.filter((item) => item.distance <= minimum + 0.5).slice(0, 20).map((item) => item.record);
+        const fields = comparisonFields(selected[0], profile, context, target);
+        const age = sampleAgeDays(selected, target.now ?? new Date());
+        const generationStats = (0, statistics_1.sampleStatistics)(selected.map((record) => record.generationTps));
+        const relativeIqr = (generationStats.p75 - generationStats.p25) / generationStats.median;
+        const exact = minimum === 0;
+        const recent = age !== null && age <= 180;
+        const confidence = exact && selected.length >= 5 && recent && relativeIqr <= 0.15 ? "high" : exact || (minimum <= 2 && selected.length >= 3) ? "medium" : "low";
+        const reason = confidence === "high"
+            ? "Cinco ou mais medições recentes e próximas, com baixa dispersão."
+            : confidence === "medium"
+                ? "A evidência é próxima, mas ainda não cumpre todos os requisitos de confiança alta."
+                : "Poucas amostras ou diferenças relevantes de hardware, contexto, runtime ou idade.";
+        return fromRecords(selected, confidence, exact ? "exact" : "neighbor", exact ? "measured" : "estimated", fields, age, reason);
     }
     const memory = (0, memory_1.estimateMemory)(profile, model, variant, context);
     const offloadFactor = memory.gpuLayersPercent === 100 ? 1 : Math.max(0.12, memory.gpuLayersPercent / 100 * 0.65);
     const contextFactor = 1 / (1 + Math.max(0, context - 8) * 0.004);
     const seeds = candidates.filter((record) => !record.measured || /seed|demo/i.test(record.source));
     if (seeds.length) {
-        const familySeeds = seeds.filter((record) => record.gpuFamily === family);
+        const familySeeds = seeds.filter((record) => record.gpuFamily === gpuFamily(profile));
         const selected = familySeeds.length ? familySeeds : seeds;
         const center = average(selected.map((record) => record.generationTps)) * offloadFactor * contextFactor;
-        return range(center, "low", "seed", "seed", 0, "Seed demonstrativo ajustado por heurística de contexto e offload. Nenhum benchmark real sustenta esta faixa.");
+        return fixedRange(center, "low", "seed", "seed", "Seeds demonstrativos não contam como evidência medida.", "Seed demonstrativo ajustado por heurística de contexto e offload. Nenhum benchmark real sustenta esta faixa.");
     }
     const active = model.activeParamsB ?? model.paramsB;
     const base = Math.max(2, 140 / Math.pow(active, 0.72));
     const quantBoost = variant.quantization === "Q4_K_M" ? 1.08 : variant.quantization === "Q3_K_M" ? 1.14 : variant.quantization === "Q8_0" ? 0.82 : 1;
-    return range(base * offloadFactor * quantBoost * contextFactor, "low", "heuristic", "heuristic", 0, "Heurística sem benchmark suficientemente próximo; não tratar como medição.");
+    return fixedRange(base * offloadFactor * quantBoost * contextFactor, "low", "heuristic", "heuristic", "Não há benchmark medido ou seed próximo.", "Heurística sem benchmark suficientemente próximo; não tratar como medição.");
 }
-function average(values) {
-    return values.reduce((sum, value) => sum + value, 0) / values.length;
-}
-function fromRecords(records, confidence, method, dataState, note) {
-    const prompts = records.map((record) => record.promptTps).filter((value) => typeof value === "number" && Number.isFinite(value) && value > 0);
-    return range(average(records.map((record) => record.generationTps)), confidence, method, dataState, records.length, note, prompts.length ? average(prompts) : undefined);
-}
-function range(center, confidence, method, dataState, evidence, note, prompt) {
-    const spread = confidence === "high" ? 0.08 : confidence === "medium" ? 0.14 : 0.28;
+function average(values) { return values.reduce((sum, value) => sum + value, 0) / values.length; }
+function fromRecords(records, confidence, method, dataState, fields, age, reason) {
+    const stats = (0, statistics_1.sampleStatistics)(records.map((record) => record.generationTps));
+    const promptStats = (0, statistics_1.sampleStatistics)(records.map((record) => record.promptTps ?? 0));
+    const minimumSpread = confidence === "high" ? 0.05 : confidence === "medium" ? 0.1 : 0.2;
+    const low = Math.min(stats.p25, stats.median * (1 - minimumSpread));
+    const high = Math.max(stats.p75, stats.median * (1 + minimumSpread));
     return {
-        center: +center.toFixed(1),
-        low: Math.max(0.1, +(center * (1 - spread)).toFixed(1)),
-        high: +(center * (1 + spread)).toFixed(1),
-        promptLow: prompt ? +(prompt * (1 - spread)).toFixed(1) : undefined,
-        promptHigh: prompt ? +(prompt * (1 + spread)).toFixed(1) : undefined,
-        confidence, method, dataState, evidence, note,
+        center: +stats.median.toFixed(1), low: Math.max(0.1, +low.toFixed(1)), high: +high.toFixed(1),
+        promptLow: promptStats ? +Math.min(promptStats.p25, promptStats.median * (1 - minimumSpread)).toFixed(1) : undefined,
+        promptHigh: promptStats ? +Math.max(promptStats.p75, promptStats.median * (1 + minimumSpread)).toFixed(1) : undefined,
+        confidence, method, dataState, evidence: records.length, evidenceCount: records.length, sampleAgeDays: age,
+        ...fields, confidenceReason: reason, dispersion: { p25: stats.p25, p75: stats.p75, mad: stats.mad }, estimatorVersion: exports.ESTIMATOR_VERSION,
+        note: method === "exact" ? "Faixa derivada de medições no hardware e contexto correspondentes." : "Faixa estimada pelas medições mais próximas; diferenças listadas reduzem a confiança.",
+    };
+}
+function fixedRange(center, confidence, method, dataState, confidenceReason, note) {
+    const spread = 0.28;
+    return {
+        center: +center.toFixed(1), low: Math.max(0.1, +(center * (1 - spread)).toFixed(1)), high: +(center * (1 + spread)).toFixed(1),
+        confidence, method, dataState, evidence: 0, evidenceCount: 0, sampleAgeDays: null, matchingFields: [], differingFields: [],
+        confidenceReason, estimatorVersion: exports.ESTIMATOR_VERSION, note,
+    };
+}
+},
+"src/features/benchmarks/statistics.ts": (exports, load) => {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.percentile = percentile;
+exports.sampleStatistics = sampleStatistics;
+function percentile(values, probability) {
+    if (!values.length)
+        return null;
+    const sorted = [...values].sort((a, b) => a - b);
+    const position = Math.max(0, Math.min(1, probability)) * (sorted.length - 1);
+    const lower = Math.floor(position);
+    const fraction = position - lower;
+    return sorted[lower + 1] === undefined ? sorted[lower] : sorted[lower] + fraction * (sorted[lower + 1] - sorted[lower]);
+}
+function sampleStatistics(values) {
+    const valid = values.filter((value) => Number.isFinite(value) && value > 0);
+    if (!valid.length)
+        return null;
+    const median = percentile(valid, 0.5);
+    const mad = percentile(valid.map((value) => Math.abs(value - median)), 0.5);
+    return {
+        count: valid.length,
+        median: +median.toFixed(3),
+        p25: +percentile(valid, 0.25).toFixed(3),
+        p75: +percentile(valid, 0.75).toFixed(3),
+        mad: +mad.toFixed(3),
+        min: Math.min(...valid),
+        max: Math.max(...valid),
     };
 }
 },
@@ -391,8 +492,8 @@ function calculateCompatibility(profile, model, variant, objective, contextK = 8
     const reasons = [];
     let fit = "gpu";
     if (memory.gpuLayersPercent < 100) {
-        fit = ramEstimatedGb <= profile.ramGb * .82 ? "offload" : "incompatible";
-        flags.push("VRAM insuficiente para carga total, incluindo KV cache e reserva do sistema");
+        fit = profile.memoryArchitecture === "unified" ? "incompatible" : ramEstimatedGb <= profile.ramGb * .82 ? "offload" : "incompatible";
+        flags.push(profile.memoryArchitecture === "unified" ? "Memória unificada insuficiente para carga total e reserva do sistema" : "VRAM insuficiente para carga total, incluindo KV cache e reserva do sistema");
     }
     if (memory.diskGb > profile.storageFreeGb) {
         fit = "incompatible";
@@ -403,7 +504,7 @@ function calculateCompatibility(profile, model, variant, objective, contextK = 8
         flags.push("RAM insuficiente");
     }
     const memoryScore = fit === "gpu" ? 30 : fit === "offload" ? 18 : 2;
-    const backendScore = profile.vramGb > 0 ? 20 : 8;
+    const backendScore = profile.vramGb > 0 || profile.memoryArchitecture === "unified" ? 20 : 8;
     const relevance = !objective || model.objectives.includes(objective) ? 15 : 5;
     const performance = model.benchmarkClass === "small" ? 20 : model.benchmarkClass === "medium" ? 17 : model.benchmarkClass === "moe" ? 16 : 13;
     const diskScore = memory.diskGb <= profile.storageFreeGb ? 10 : 0;
@@ -411,7 +512,7 @@ function calculateCompatibility(profile, model, variant, objective, contextK = 8
     let score = Math.round(memoryScore + backendScore + performance + relevance + diskScore + easeScore);
     if (fit === "incompatible")
         score = Math.min(score, 49);
-    reasons.push(fit === "gpu" ? "Modelo cabe integralmente na GPU." : fit === "offload" ? "Modelo pode funcionar com offload para RAM/CPU." : "A configuração atual não atende aos requisitos estimados.");
+    reasons.push(fit === "gpu" ? (profile.memoryArchitecture === "unified" ? "Modelo cabe no orçamento estimado de memória unificada." : "Modelo cabe integralmente na GPU.") : fit === "offload" ? "Modelo pode funcionar com offload para RAM/CPU." : "A configuração atual não atende aos requisitos estimados.");
     if (objective && model.objectives.includes(objective))
         reasons.push(`Adequado para ${objective}.`);
     if (objective && !model.objectives.includes(objective))

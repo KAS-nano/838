@@ -6,6 +6,8 @@ export function validateHardware(profile: HardwareProfile): ValidationErrors {
   const errors: ValidationErrors = {};
   if (!["desktop", "notebook"].includes(profile.deviceType)) errors.deviceType = "Selecione Desktop ou Notebook.";
   if (!["windows", "linux", "macos"].includes(profile.os)) errors.os = "Selecione um sistema operacional válido.";
+  if (profile.cpuArchitecture !== undefined && !["x86_64", "arm64", "other"].includes(profile.cpuArchitecture)) errors.cpuArchitecture = "Selecione uma arquitetura de CPU válida.";
+  if (profile.memoryArchitecture !== undefined && !["dedicated", "unified", "shared"].includes(profile.memoryArchitecture)) errors.memoryArchitecture = "Selecione uma arquitetura de memória válida.";
   if (profile.cpu.trim().length < 2) errors.cpu = "Informe o modelo do processador.";
   if (profile.gpu.trim().length < 2) errors.gpu = "Informe a GPU ou use 'Integrada/sem GPU dedicada'.";
   if (!Number.isFinite(profile.vramGb) || profile.vramGb < 0 || profile.vramGb > 192) errors.vramGb = "VRAM deve estar entre 0 e 192 GB.";

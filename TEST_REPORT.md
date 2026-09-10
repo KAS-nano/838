@@ -122,3 +122,42 @@ PostgreSQL real não estava disponível no ambiente. A execução de `migrate de
 | `npx prisma validate` | PASS |
 
 Os testes usam um par Ed25519 efêmero e não simulam atestado de hardware. A integração da chave privada com o armazenamento protegido do agente e o benchmark real continuam pendentes.
+
+## Rodada do estimador 2.0.0 — 2026-09-09
+
+| Verificação | Resultado |
+| --- | --- |
+| `bash scripts/stage28-check.sh` | PASS — confiança alta, mediana/IQR, idade, campos divergentes, distância e versão |
+| avaliação offline sintética | PASS — MAE, MAPE, cobertura e categorias |
+| `npm run typecheck` | PASS |
+| `npm run lint` | PASS |
+| `npm run test:stages` | PASS — inclui os estágios 27 e 28 e verifica o preview gerado |
+| `npm run build` | PASS — 22 rotas/páginas compiladas |
+| `playwright frontend.spec.ts` | PASS — 10 testes em desktop, QHD, laptop, tablet e celular |
+
+A avaliação sintética valida a matemática e o contrato. Ela não substitui um conjunto real oculto, que permanece requisito antes de usar o estimador para elevar recomendações em produção.
+
+## Rodada de arquitetura de memória — 2026-09-09
+
+| Verificação | Resultado |
+| --- | --- |
+| `bash scripts/stage28-check.sh` | PASS — 12 casos, incluindo memória unificada e perfil legado |
+| `npm run typecheck` | PASS |
+| `npm run lint` | PASS |
+| `npm run test:stages` | PASS — todas as etapas históricas |
+| `npm run build` | PASS — 22 rotas/páginas |
+| Playwright do perfil | PASS — salvamento, dashboard, edição e recuperação de dados inválidos |
+
+O cálculo usa a RAM total como orçamento compartilhado quando o perfil declara memória unificada. A compatibilidade anterior foi mantida: perfis sem esse metadado continuam usando VRAM dedicada e RAM separadas.
+
+## Rodada de prontidão para publicação — 2026-09-09
+
+| Verificação | Resultado |
+| --- | --- |
+| `npm run deploy:check` | PASS |
+| higiene de segredos e chave Pix | PASS |
+| preview, tipagem e lint | PASS |
+| todas as etapas automatizadas | PASS |
+| build Next de produção | PASS — 22 rotas/páginas |
+
+O lançamento inicial foi preparado para catálogo seed, autenticação desligada e submissões comunitárias desligadas. O smoke test externo foi criado, mas depende da URL HTTPS fornecida pela hospedagem e ainda não está marcado como executado.

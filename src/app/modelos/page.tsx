@@ -46,7 +46,7 @@ export default function ModelsPage() {
             <span><strong>Página oficial <span className="model-platform">Hugging Face</span></strong><small>{links.official.publisher} · {links.official.label}</small></span><ExternalLink size={16} aria-hidden="true"/>
           </a>
           <p className="model-artifact-heading">Arquivos por quantização / precisão</p>
-          <div className="model-artifact-grid">{links.variants.map((variant) => <a key={variant.url} href={variant.url} target="_blank" rel="noopener noreferrer" className={`model-artifact-link${precision === variant.quantization ? " is-selected" : ""}`} aria-label={`${model.name}: ${variant.quantization} em ${variant.format}, ${variant.community ? "comunidade" : "publicação oficial"}, ${variant.publisher}${variant.split ? ", arquivo em partes" : ""} (nova aba)`}>
+          <div className="model-artifact-grid">{links.variants.map((variant) => <a key={`${variant.quantization}:${variant.url}`} href={variant.url} target="_blank" rel="noopener noreferrer" className={`model-artifact-link${precision === variant.quantization ? " is-selected" : ""}`} aria-label={`${model.name}: ${variant.quantization} em ${variant.format}, ${variant.community ? "comunidade" : "publicação oficial"}, ${variant.publisher}${variant.split ? ", arquivo em partes" : ""} (nova aba)`}>
             <span className="model-artifact-title"><strong>{variant.quantization}</strong><ExternalLink size={12} aria-hidden="true"/></span>
             <span>{variant.format}{variant.split ? " · em partes" : ""}</span><small>{variant.community ? "Comunidade" : "Oficial"} · {variant.publisher}</small>
           </a>)}</div>

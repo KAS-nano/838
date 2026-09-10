@@ -64,6 +64,10 @@ npm run lint
 npm run build
 ```
 
+## Colocar no ar
+
+O site está preparado para uma primeira publicação na Vercel sem banco de dados, usando o catálogo empacotado e mantendo autenticação e comunidade desligadas. Execute `npm run deploy:check` e siga o passo a passo em [DEPLOYMENT.md](DEPLOYMENT.md). Depois do deploy, valide o endereço com `npm run deploy:smoke -- https://seu-site.vercel.app`.
+
 ## Banco e autenticação
 
 Copie `.env.example` para `.env.local` e configure `DATABASE_URL`. Depois:

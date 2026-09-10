@@ -34,7 +34,7 @@ export function ProjectSupport() {
         <figcaption>Pix · você escolhe o valor</figcaption>
       </figure>
       <p className="project-support-recipient"><span>Recebedor</span><strong>{supportPayment.recipientName}</strong><span>São Paulo · SP</span></p>
-      <label className="project-support-label">Chave Pix · e-mail<input ref={keyInput} className="project-support-key" aria-label="Chave Pix" readOnly value={supportPayment.key} spellCheck={false} onFocus={event => event.target.select()} /></label>
+      <label className="project-support-label">Chave Pix · aleatória<input ref={keyInput} className="project-support-key" aria-label="Chave Pix" readOnly value={supportPayment.key} spellCheck={false} onFocus={event => event.target.select()} /></label>
       <div className="project-support-actions">
         <button type="button" onClick={() => copy("key")}><Copy size={13} aria-hidden="true" />Copiar chave Pix</button>
         <button type="button" onClick={() => copy("code")}><Copy size={13} aria-hidden="true" />Copiar Pix Copia e Cola</button>

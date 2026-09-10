@@ -1,5 +1,12 @@
 # Changelog
 
+## Em desenvolvimento — arquitetura de memória
+
+- O perfil de hardware passa a registrar arquitetura da CPU e organização da memória.
+- O estimador trata memória unificada como um único orçamento e evita somar RAM e VRAM compartilhadas.
+- Dashboard e onboarding explicam os valores adequadamente para máquinas com memória unificada.
+- Publicação inicial na Vercel documentada, com verificação local completa e smoke test para a URL pública.
+
 ## Em desenvolvimento
 - CI separada para qualidade, motores, build, PostgreSQL e navegador; atualização agrupada de dependências e SBOM em tags.
 - Node fixado, versões web/Tauri/Rust sincronizadas e verificações automáticas de higiene, versões e previews gerados.
@@ -9,6 +16,7 @@
 - Submissões comunitárias validam origem e agora possuem deduplicação garantida pelo banco.
 - Catálogo persistente modela fontes, artefatos, capacidades, licenças, proveniência e snapshots, com migration inicial, bootstrap idempotente e fallback seed explícito.
 - Benchmark comunitário v2 adiciona fixture pública, amostras reproduzíveis, estatísticas, assinatura Ed25519, limite diário, idempotência e quarentena para payload legado.
+- Estimador 2.0.0 seleciona evidências por distância, usa dispersão observada, explica confiança/idade/diferenças e oferece métricas para avaliação offline.
 
 ## 2026-09-06 — consolidação neon-noir
 - Tema compartilhado noir/carvão/neon, header global centralizado e navegação agrupada completa no mobile.

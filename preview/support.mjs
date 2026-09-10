@@ -14,7 +14,7 @@ export function initProjectSupport() {
       <p class="project-support-message"></p>
       <figure class="project-support-qr"><img width="424" height="424" /><figcaption>Pix · você escolhe o valor</figcaption></figure>
       <p class="project-support-recipient"><span>Recebedor</span><strong></strong><span>São Paulo · SP</span></p>
-      <label class="project-support-label">Chave Pix · e-mail<input class="project-support-key" aria-label="Chave Pix" readonly spellcheck="false" /></label>
+      <label class="project-support-label">Chave Pix · aleatória<input class="project-support-key" aria-label="Chave Pix" readonly spellcheck="false" /></label>
       <div class="project-support-actions"><button type="button" data-copy="key">Copiar chave Pix</button><button type="button" data-copy="code">Copiar Pix Copia e Cola</button></div>
       <details class="project-support-code"><summary>Ver Pix Copia e Cola</summary><label class="project-support-label">Pix Copia e Cola<textarea aria-label="Pix Copia e Cola" readonly rows="4" spellcheck="false"></textarea></label></details>
       <p class="project-support-status" role="status" aria-live="polite"></p>

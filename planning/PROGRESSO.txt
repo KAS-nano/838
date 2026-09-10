@@ -1,6 +1,6 @@
 CONTROLE DE PROGRESSO DAS MELHORIAS DO 838
 Atualizado em: 2026-09-09
-Progresso global: 30%
+Progresso global: 40%
 
 LEGENDA
 [x] concluído e validado
@@ -23,7 +23,8 @@ P0.1 — FUNDAÇÃO, CI E RELEASES: 80% [~]
 [x] Versões package.json, Cargo.toml e tauri.conf.json alinhadas em 1.0.0.
 [x] README não depende mais de /tmp e usa npm ci.
 [x] .gitignore cobre artefatos reais de Next, testes, Prisma, Tauri/Rust, segredos, logs e editores sem ocultar evidências versionadas.
-[!] Criar o primeiro commit/tag requer revisar e consolidar o grande conjunto de arquivos já existente.
+[x] Alterações estruturais consolidadas em commits locais e repositório remoto configurado.
+[ ] Criar a primeira tag de release depois de validar o endereço público.
 [!] Proteção da branch main requer configuração no GitHub após o primeiro push da CI.
 Evidências: npm run check:hygiene; npm run check:versions; npm run preview:check; npm run typecheck; npm run lint.
 
@@ -88,7 +89,18 @@ P1.2 — PROTOCOLO DE BENCHMARK: 65% [~]
 [x] Assinatura é documentada como integridade, sem alegar prova do hardware.
 [ ] Coleta v2 completa no agente local com chave privada protegida pelo sistema.
 [ ] Moderação por grupos comparáveis, exclusão vinculada e avaliação com runtime real.
-P1.3 — ESTIMADOR COM EVIDÊNCIAS: 0% [ ]
+P1.3 — ESTIMADOR COM EVIDÊNCIAS: 80% [~]
+[x] Algoritmo identificado como estimator 2.0.0.
+[x] Evidências medidas são ordenadas por distância de GPU, CPU, SO, VRAM, RAM, contexto, runtime e backend.
+[x] Faixas medidas usam mediana, quartis e dispersão real com margem mínima explícita.
+[x] Saída informa evidenceCount, sampleAgeDays, matchingFields, differingFields e confidenceReason.
+[x] Confiança alta exige 5+ medições exatas, recentes e com IQR relativo <= 15%.
+[x] Seeds e heurísticas continuam com zero evidências medidas e confiança baixa.
+[x] Avaliação offline calcula MAE, MAPE, cobertura do intervalo e métricas por categoria.
+[x] Dashboard mostra versão, quantidade, idade e razão da confiança.
+[x] Perfil registra arquitetura de CPU e organização dedicada, compartilhada ou unificada da memória.
+[x] Memória unificada usa um único orçamento e preserva compatibilidade com perfis antigos.
+[ ] Executar avaliação contra um conjunto real oculto e definir limites de promoção.
 P1.4 — AGENTE LOCAL: 5% [~]
 [x] Versão alinhada com o produto.
 [ ] Demais itens de endurecimento, testes nativos e assinatura.
@@ -98,7 +110,14 @@ P2.2 — HISTÓRICO COMUNITÁRIO: 0% [ ]
 P2.3 — CUSTO LOCAL X API: 0% [ ]
 P2.4 — FAVORITOS, CENÁRIOS E COMPARAÇÕES: 0% [ ]
 P2.5 — INSTALAÇÃO GUIADA: 0% [ ]
-P3.1 — RENDERIZAÇÃO NEXT/PREVIEW: 0% [ ]
+P3.1 — RENDERIZAÇÃO NEXT/PREVIEW E PUBLICAÇÃO: 70% [~]
+[x] Build Next de produção e preview gerado validados.
+[x] Primeira publicação funciona em modo seed, sem banco ou autenticação.
+[x] Guia de Vercel documenta configuração, variáveis e domínio próprio.
+[x] Verificador deploy:check bloqueia segredos, Pix antigo, preview obsoleto e falhas de build/teste.
+[x] Smoke test público verifica HTTPS, páginas, health, headers e ausência do e-mail pessoal.
+[ ] Publicar a URL .vercel.app e executar deploy:smoke contra ela.
+[ ] Validar dispositivo físico e criar a primeira tag de release.
 P3.2 — PWA E CACHE OFFLINE: 0% [ ]
 
 ÚLTIMA VALIDAÇÃO
@@ -120,4 +139,10 @@ PASS node scripts/stage25-check.mjs — schema, migration, repositório, fallbac
 PASS bash scripts/stage26-check.sh — validação, hash, referências, HTTPS e falhas do verificador
 PASS Playwright regressions.next — contrato do catálogo e recomendação, 2 testes
 PASS bash scripts/stage27-check.sh — assinatura válida/alterada/expirada, coerência, quartis e fingerprint
+PASS bash scripts/stage28-check.sh — confiança, distância, dispersão, idade, versão e avaliação offline
+PASS stage28 — memória unificada, compatibilidade acelerada sem VRAM dedicada e perfil legado
+PASS npm run test:stages — todas as etapas, incluindo stage27 e stage28
+PASS npm run build — build de produção com 22 rotas/páginas
+PASS Playwright frontend.spec.ts — 10 testes em 5 resoluções e fluxos de análise/comparação
+PASS npm run deploy:check — prontidão, higiene, preview, tipagem, lint, etapas e build de 22 rotas
 LIMITAÇÃO npm install --package-lock-only não foi executado porque este ambiente bloqueou download remoto; nenhuma dependência nova foi adicionada nesta rodada.

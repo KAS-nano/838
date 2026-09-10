@@ -13,7 +13,7 @@ test("Pix stays optional, QR decodes and both copy actions work", async ({ page,
   await expect(support.locator("img")).not.toBeVisible();
   await support.locator(":scope > summary").click();
   await expect(support).toContainText("Kawan Alves da Silva");
-  await expect(support.getByLabel("Chave Pix", { exact: true })).toHaveValue("alastorlluar@gmail.com");
+  await expect(support.getByLabel("Chave Pix", { exact: true })).toHaveValue("8a8fbfbe-0cb5-4c9d-9648-058c58f95617");
   const qr = support.locator("img");
   await expect(qr).toBeVisible();
   await expect.poll(() => qr.evaluate((img: HTMLImageElement) => img.complete && img.naturalWidth > 0)).toBe(true);
@@ -27,7 +27,7 @@ test("Pix stays optional, QR decodes and both copy actions work", async ({ page,
   const decoded = jsQR(new Uint8ClampedArray(pixels), 512, 512);
   expect(decoded?.data).toBe(supportPayment.payload);
   await support.getByRole("button", { name: "Copiar chave Pix", exact: true }).click();
-  await expect.poll(() => page.evaluate(() => navigator.clipboard.readText())).toBe("alastorlluar@gmail.com");
+  await expect.poll(() => page.evaluate(() => navigator.clipboard.readText())).toBe("8a8fbfbe-0cb5-4c9d-9648-058c58f95617");
   await support.getByRole("button", { name: "Copiar Pix Copia e Cola", exact: true }).click();
   await expect.poll(() => page.evaluate(() => navigator.clipboard.readText())).toBe(supportPayment.payload);
 });

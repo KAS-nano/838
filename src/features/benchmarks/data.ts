@@ -1,5 +1,5 @@
 export type BenchmarkRecord={
- id:string;gpuFamily:string;vramGb:number;gpu?:string;cpu?:string;ramGb?:number;os?:"windows"|"linux"|"macos";modelId:string;quantization:string;contextK:number;generationTps:number;promptTps?:number;runtime:string;backend:string;measured:boolean;source:string;
+ id:string;gpuFamily:string;vramGb:number;gpu?:string;cpu?:string;ramGb?:number;os?:"windows"|"linux"|"macos";modelId:string;quantization:string;contextK:number;generationTps:number;promptTps?:number;runtime:string;runtimeVersion?:string;backend:string;driverVersion?:string;measured:boolean;verified?:boolean;measuredAt?:string;source:string;
 };
 export const seedBenchmarks:BenchmarkRecord[]=[
  {id:"demo-rx16-qwen8",gpuFamily:"radeon-16",vramGb:16,modelId:"qwen3-8b",quantization:"Q4_K_M",contextK:8,generationTps:42,promptTps:116,runtime:"llama.cpp",backend:"Vulkan",measured:false,source:"demo-seed"},

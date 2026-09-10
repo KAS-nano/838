@@ -25,7 +25,9 @@
     "check:versions": "node scripts/check-version-sync.mjs",
     "preview:check": "node scripts/generate-support-qr.mjs --check && node scripts/export-preview-catalog.mjs --check",
     "test:unit": "npm run test:stages",
-    "test:integration": "npx prisma validate"
+    "test:integration": "npx prisma validate",
+    "deploy:check": "node scripts/deploy-readiness.mjs && npm run check:hygiene && npm run preview:check && npm run typecheck && npm run lint && npm run test:stages && npm run build",
+    "deploy:smoke": "node scripts/deployment-smoke.mjs"
   },
   "engines": {
     "node": "^20.19.0 || ^22.12.0 || >=24.0.0"
