@@ -8,6 +8,7 @@
 - Publicação inicial na Vercel documentada, com verificação local completa e smoke test para a URL pública.
 - Logo oficial aplicada exclusivamente ao favicon do site e do preview.
 - URL do favicon versionada para renovar caches antigos dos navegadores após o deploy.
+- Runtime da hospedagem fixado em Node 22.x e scripts de instalação aprovados apenas para as versões atuais de Prisma e unrs-resolver.
 
 ## Em desenvolvimento
 - CI separada para qualidade, motores, build, PostgreSQL e navegador; atualização agrupada de dependências e SBOM em tags.
