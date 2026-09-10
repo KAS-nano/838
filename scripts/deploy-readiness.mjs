@@ -12,6 +12,6 @@ assert.match(pkg.engines.node, /22/, "Node 22 must remain supported by the deplo
 assert.match(support, /8a8fbfbe-0cb5-4c9d-9648-058c58f95617/, "public support key must be the approved random Pix key");
 assert.doesNotMatch(support, /alastorlluar@gmail\.com/i, "personal email must not be published as the Pix key");
 for (const entry of ["/.next/", "/.vercel/", ".env*"]) assert.ok(gitignore.includes(entry), `${entry} must be ignored`);
-await Promise.all(["public/brand/logo-838.png", "public/brand/icon-192.png", "public/brand/icon-512.png", "public/brand/apple-touch-icon.png", "public/brand/og-838.png", "public/favicon.ico", "preview/logo-838.png"].map((path) => access(path)));
+await Promise.all(["public/favicon.ico", "preview/favicon.ico"].map((path) => access(path)));
 
-console.log("PASS deployment readiness: private package, Node runtime, random Pix key, brand assets and local deployment secrets.");
+console.log("PASS deployment readiness: private package, Node runtime, random Pix key, favicon and local deployment secrets.");

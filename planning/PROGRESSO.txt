@@ -116,7 +116,7 @@ P3.1 — RENDERIZAÇÃO NEXT/PREVIEW E PUBLICAÇÃO: 75% [~]
 [x] Guia de Vercel documenta configuração, variáveis e domínio próprio.
 [x] Verificador deploy:check bloqueia segredos, Pix antigo, preview obsoleto e falhas de build/teste.
 [x] Smoke test público verifica HTTPS, páginas, health, headers e ausência do e-mail pessoal.
-[x] Identidade oficial aplicada ao cabeçalho, favicon, manifest, instalação e compartilhamento social.
+[x] Logo fornecida aplicada exclusivamente ao favicon; cabeçalhos mantêm a marca textual 838.
 [ ] Publicar a URL .vercel.app e executar deploy:smoke contra ela.
 [ ] Validar dispositivo físico e criar a primeira tag de release.
 P3.2 — PWA E CACHE OFFLINE: 0% [ ]
@@ -146,5 +146,5 @@ PASS npm run test:stages — todas as etapas, incluindo stage27 e stage28
 PASS npm run build — build de produção com 22 rotas/páginas
 PASS Playwright frontend.spec.ts — 10 testes em 5 resoluções e fluxos de análise/comparação
 PASS npm run deploy:check — prontidão, higiene, preview, tipagem, lint, etapas e build de produção
-PASS logo mobile 390x844 — imagem carregada, 36x36 CSS / 48px otimizada, sem deslocamento do cabeçalho
+PASS favicon — arte oficial disponível no Next e no preview; cabeçalhos sem imagem
 LIMITAÇÃO npm install --package-lock-only não foi executado porque este ambiente bloqueou download remoto; nenhuma dependência nova foi adicionada nesta rodada.

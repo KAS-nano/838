@@ -108,17 +108,14 @@ p {
 }
 .brand-center {
   justify-self:center;
-  display:inline-flex;
-  align-items:center;
-  gap:8px;
-  font-size:25px;
+  font-size:29px;
   font-weight:900;
   color:var(--accent);
-  letter-spacing:.24em;
+  letter-spacing:.42em;
+  text-indent:.42em;
   line-height:1;
   text-shadow:0 0 18px rgba(89,255,123,.16)
 }
-.brand-center img { width:42px; height:42px; object-fit:contain }
 .topbar-side {
   min-width:0;
   display:flex;

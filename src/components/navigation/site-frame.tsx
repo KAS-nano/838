@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { ProjectSupport } from "./project-support";
 import { useHardwareProfile } from "@/features/profile/use-hardware-profile";
 import { usePathname } from "next/navigation";
@@ -59,7 +58,7 @@ export function SiteFrame({ children }: { children: React.ReactNode }) {
     <ModelRain />
     <header className="site-header">
       <div>{!bare && <button ref={menuButton} className="menu-toggle" type="button" aria-label={open ? "Fechar menu" : "Abrir menu"} aria-expanded={open} aria-controls="site-navigation" onClick={() => setOpen(!open)}>{open ? <X size={19} /> : <Menu size={19} />}<span>Menu</span></button>}<span className="header-caption">IA certa. Hardware certo.</span></div>
-      <Link href="/" className="site-logo" aria-label="838 — Início" onClick={() => setOpen(false)}><Image src="/brand/logo-838.png" width={44} height={44} priority alt="" /><span>838</span></Link>
+      <Link href="/" className="site-logo" aria-label="838 — Início" onClick={() => setOpen(false)}>838</Link>
       <Link href={bare ? (pathname === "/" ? "/explorar" : "/dashboard") : "/onboarding"} className="header-action" onClick={() => setOpen(false)}>{bare ? (pathname === "/" ? "Explorar →" : "Dashboard →") : "Meu hardware →"}</Link>
     </header>
     {!bare && <>

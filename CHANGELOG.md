@@ -6,7 +6,7 @@
 - O estimador trata memória unificada como um único orçamento e evita somar RAM e VRAM compartilhadas.
 - Dashboard e onboarding explicam os valores adequadamente para máquinas com memória unificada.
 - Publicação inicial na Vercel documentada, com verificação local completa e smoke test para a URL pública.
-- Nova identidade visual oficial aplicada ao site, preview, favicon, manifest e cartões de compartilhamento.
+- Logo oficial aplicada exclusivamente ao favicon do site e do preview.
 
 ## Em desenvolvimento
 - CI separada para qualidade, motores, build, PostgreSQL e navegador; atualização agrupada de dependências e SBOM em tags.
