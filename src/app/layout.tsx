@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   title: { default: "838", template: "%s · 838" },
   description: "Descubra IAs, APIs, runtimes e ferramentas adequadas ao seu computador e ao seu objetivo.",
   applicationName: "838",
-  icons: { icon: "/favicon.ico" },
+  icons: { icon: "/favicon.ico?v=2" },
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

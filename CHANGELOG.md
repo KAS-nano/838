@@ -7,6 +7,7 @@
 - Dashboard e onboarding explicam os valores adequadamente para máquinas com memória unificada.
 - Publicação inicial na Vercel documentada, com verificação local completa e smoke test para a URL pública.
 - Logo oficial aplicada exclusivamente ao favicon do site e do preview.
+- URL do favicon versionada para renovar caches antigos dos navegadores após o deploy.
 
 ## Em desenvolvimento
 - CI separada para qualidade, motores, build, PostgreSQL e navegador; atualização agrupada de dependências e SBOM em tags.
