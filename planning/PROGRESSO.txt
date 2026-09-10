@@ -1,6 +1,6 @@
 CONTROLE DE PROGRESSO DAS MELHORIAS DO 838
 Atualizado em: 2026-09-10
-Progresso global: 44%
+Progresso global: 46%
 
 LEGENDA
 [x] concluído e validado
@@ -28,7 +28,7 @@ P0.1 — FUNDAÇÃO, CI E RELEASES: 80% [~]
 [!] Proteção da branch main requer configuração no GitHub após o primeiro push da CI.
 Evidências: npm run check:hygiene; npm run check:versions; npm run preview:check; npm run typecheck; npm run lint.
 
-P0.2 — SEGURANÇA WEB E APIs: 85% [~]
+P0.2 — SEGURANÇA WEB E APIs: 95% [~]
 [x] Parser JSON limita bytes e exige application/json.
 [x] Rate limit aplicado a recomendação, Hugging Face, OpenRouter e benchmark comunitário.
 [x] Erros públicos sanitizados com requestId e Cache-Control no-store.
@@ -37,9 +37,9 @@ P0.2 — SEGURANÇA WEB E APIs: 85% [~]
 [x] Busca Hugging Face limitada a 2–80 caracteres.
 [x] Mutação comunitária valida Origin.
 [x] Ollama aceita somente loopback, porta 11434 e URL sem credenciais/caminho.
-[x] CSP inicial adicionada em Report-Only.
+[x] CSP inicialmente observada e promovida para bloqueio real após regressão completa.
 [!] Rate limit distribuído precisa de um armazenamento externo antes de múltiplas instâncias.
-[ ] Medir violações da CSP em staging e promover uma política com nonce para bloqueio.
+[ ] Remover unsafe-inline com nonce ou SRI quando o custo de renderização e suporte do Next estiver validado.
 Evidências: typecheck, lint, stage20-check.sh e stage23-check.sh aprovados.
 
 P0.3 — AUTENTICAÇÃO E POSTGRESQL REAL: 55% [~]
@@ -60,10 +60,11 @@ P0.4 — SUBMISSÕES COMUNITÁRIAS: 75% [~]
 [x] Protocolo legado entra em quarentena; v2 verificado entra como pending.
 [ ] Interface de moderação e política de retenção/exclusão.
 
-P0.5 — CSP E DEPENDÊNCIAS: 55% [~]
-[x] Headers básicos e CSP Report-Only.
+P0.5 — CSP E DEPENDÊNCIAS: 75% [~]
+[x] Headers básicos e CSP bloqueante validada em 38 fluxos de navegador.
 [x] Dependabot segmentado e SBOM de release.
-[ ] CSP bloqueante validada em staging.
+[x] Node 22.x fixado e allowScripts limitado às versões revisadas do Prisma e unrs-resolver.
+[ ] Evoluir CSP para nonce ou SRI sem perder páginas estáticas/CDN.
 [ ] Resolver alertas de dependências sem atualização forçada.
 
 P1.1 — CATÁLOGO PERSISTENTE: 75% [~]
@@ -155,4 +156,5 @@ PASS npm run deploy:check — prontidão, higiene, preview, tipagem, lint, etapa
 PASS favicon — arte oficial disponível no Next e no preview; cabeçalhos sem imagem
 PASS npm run deploy:smoke -- https://838.vercel.app — HTTPS, páginas, health e headers públicos
 PASS stage29 — logs estruturados sem segredos e flags de dependência da readiness
+PASS npm run test:e2e — 38 testes com Content-Security-Policy bloqueante
 LIMITAÇÃO npm install --package-lock-only não foi executado porque este ambiente bloqueou download remoto; nenhuma dependência nova foi adicionada nesta rodada.

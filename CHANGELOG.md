@@ -10,6 +10,7 @@
 - URL do favicon versionada para renovar caches antigos dos navegadores após o deploy.
 - Runtime da hospedagem fixado em Node 22.x e scripts de instalação aprovados apenas para as versões atuais de Prisma e unrs-resolver.
 - Readiness separado do health e logs JSON de falhas sem mensagens ou payloads sensíveis.
+- CSP promovida de relatório para bloqueio real, com exceção de desenvolvimento isolada para o Turbopack.
 
 ## Em desenvolvimento
 - CI separada para qualidade, motores, build, PostgreSQL e navegador; atualização agrupada de dependências e SBOM em tags.

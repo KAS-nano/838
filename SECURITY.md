@@ -13,7 +13,7 @@
 ## Headers web
 O projeto configura `nosniff`, `DENY` para framing, política de referrer, Permissions-Policy e isolamento de origem básico.
 
-Uma CSP inicial funciona em modo `Content-Security-Policy-Report-Only`. Ela deve permanecer em observação no staging antes da adoção de nonce e promoção para bloqueio.
+A CSP usa `Content-Security-Policy` bloqueante e foi validada nos fluxos completos do Next. Scripts e estilos inline ainda são permitidos para preservar renderização estática; a evolução para nonce ou SRI deve ser validada contra custo, cache e suporte do Next antes de remover essas diretivas.
 
 ## Limites das APIs
 - recomendações: 30 requisições/minuto e corpo JSON de até 16 KiB;

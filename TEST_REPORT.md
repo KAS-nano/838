@@ -186,3 +186,14 @@ A arte fornecida pelo proprietário é usada somente como miniatura da aba do na
 | `npm run lint` | PASS |
 
 O smoke público foi executado antes da inclusão de `/api/ready`. O script atualizado passará a exigir esse endpoint no próximo deploy. Banco, métricas agregadas, alertas e restauração continuam pendentes e não foram simulados.
+
+## Rodada de CSP bloqueante — 2026-09-10
+
+| Verificação | Resultado |
+| --- | --- |
+| `npm run typecheck` | PASS |
+| `npm run lint` | PASS |
+| `npm run build` | PASS — 22 rotas/páginas |
+| `npm run test:e2e` | PASS — 38 testes em Next e preview |
+
+A produção agora envia `Content-Security-Policy` em modo bloqueante. O build mantém páginas estáticas e cacheáveis. `unsafe-eval` é acrescentado somente durante desenvolvimento para o Turbopack; não aparece no header de produção.
