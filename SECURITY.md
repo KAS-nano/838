@@ -28,3 +28,6 @@ Nunca commitar `.env`, chaves do OpenRouter, `DATABASE_URL` ou `BETTER_AUTH_SECR
 
 ## Agente
 O agente não possui crate de rede nem permissões de shell/http. O frontend usa apenas a API global local do Tauri.
+
+## Integridade de benchmarks
+O protocolo comunitário v2 valida a fixture pública, intervalos, coerência entre tokens, duração e taxa, idade da medição e assinatura Ed25519. O identificador da instalação é o SHA-256 da chave pública. Isso detecta alteração do payload e permite limitar uma instalação, mas não prova que o hardware declarado é verdadeiro. Por isso, toda medição assinada começa como `pending`; protocolos legados entram como `quarantined` e nenhuma amostra isolada recebe confiança alta.

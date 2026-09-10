@@ -1,6 +1,6 @@
 CONTROLE DE PROGRESSO DAS MELHORIAS DO 838
 Atualizado em: 2026-09-09
-Progresso global: 25%
+Progresso global: 30%
 
 LEGENDA
 [x] concluído e validado
@@ -50,11 +50,14 @@ P0.3 — AUTENTICAÇÃO E POSTGRESQL REAL: 55% [~]
 [!] Entrega real de e-mail, HTTPS e PostgreSQL dependem de infraestrutura e credenciais.
 [ ] Criar telas de sessão e executar todos os fluxos contra PostgreSQL real.
 
-P0.4 — SUBMISSÕES COMUNITÁRIAS: 60% [~]
+P0.4 — SUBMISSÕES COMUNITÁRIAS: 75% [~]
 [x] Consentimento, validação, corpo limitado, Origin e rate limit inicial.
 [x] Submissões entram com status pending.
 [x] Fingerprint único impede duplicação, inclusive em requisições concorrentes.
-[ ] Interface de moderação, limite diário por instalação e política de retenção.
+[x] Reenvio idêntico é idempotente e devolve o registro existente.
+[x] Limite de 20 submissões por instalação em 24 horas.
+[x] Protocolo legado entra em quarentena; v2 verificado entra como pending.
+[ ] Interface de moderação e política de retenção/exclusão.
 
 P0.5 — CSP E DEPENDÊNCIAS: 55% [~]
 [x] Headers básicos e CSP Report-Only.
@@ -74,7 +77,17 @@ P1.1 — CATÁLOGO PERSISTENTE: 75% [~]
 [x] Verificador de disponibilidade usa HEAD, timeout e não segue redirecionamentos automaticamente.
 [ ] Criar coleta externa com ETag/backoff e popular artefatos/proveniência no banco.
 [!] Executar migrate deploy e o bootstrap duas vezes em PostgreSQL real.
-P1.2 — PROTOCOLO DE BENCHMARK: 0% [ ]
+P1.2 — PROTOCOLO DE BENCHMARK: 65% [~]
+[x] Protocolo v2 registra agente, modelo/arquivo, runtime, driver, hardware, contexto e parâmetros.
+[x] Fixture pública possui identificador e SHA-256 versionados.
+[x] Exige três a vinte amostras e warmup separado.
+[x] Calcula mediana, p25, p75, MAD, mínimo e máximo.
+[x] Valida coerência entre tokens, duração e tokens/s.
+[x] Assinatura Ed25519, idade máxima e vínculo entre chave e instalação verificados.
+[x] Migration registra protocolo, verificação, instalação e motivo de moderação.
+[x] Assinatura é documentada como integridade, sem alegar prova do hardware.
+[ ] Coleta v2 completa no agente local com chave privada protegida pelo sistema.
+[ ] Moderação por grupos comparáveis, exclusão vinculada e avaliação com runtime real.
 P1.3 — ESTIMADOR COM EVIDÊNCIAS: 0% [ ]
 P1.4 — AGENTE LOCAL: 5% [~]
 [x] Versão alinhada com o produto.
@@ -106,4 +119,5 @@ PASS git ls-files -ci --exclude-standard — nenhum arquivo versionado foi ocult
 PASS node scripts/stage25-check.mjs — schema, migration, repositório, fallback, contrato e bootstrap
 PASS bash scripts/stage26-check.sh — validação, hash, referências, HTTPS e falhas do verificador
 PASS Playwright regressions.next — contrato do catálogo e recomendação, 2 testes
+PASS bash scripts/stage27-check.sh — assinatura válida/alterada/expirada, coerência, quartis e fingerprint
 LIMITAÇÃO npm install --package-lock-only não foi executado porque este ambiente bloqueou download remoto; nenhuma dependência nova foi adicionada nesta rodada.

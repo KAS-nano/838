@@ -330,7 +330,12 @@ model CommunitySubmission {
   fingerprint String?  @unique
   payload     Json
   status      String   @default("pending")
+  reasonCode  String?
+  protocolVersion Int  @default(1)
+  verified    Boolean  @default(false)
+  installationKeyId String?
   createdAt   DateTime @default(now())
 
   @@index([status, createdAt])
+  @@index([installationKeyId, createdAt])
 }

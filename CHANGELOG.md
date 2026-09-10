@@ -8,6 +8,7 @@
 - Autenticação exige configuração completa, e-mail verificado, HTTPS em produção, senha reforçada e recuperação por webhook.
 - Submissões comunitárias validam origem e agora possuem deduplicação garantida pelo banco.
 - Catálogo persistente modela fontes, artefatos, capacidades, licenças, proveniência e snapshots, com migration inicial, bootstrap idempotente e fallback seed explícito.
+- Benchmark comunitário v2 adiciona fixture pública, amostras reproduzíveis, estatísticas, assinatura Ed25519, limite diário, idempotência e quarentena para payload legado.
 
 ## 2026-09-06 — consolidação neon-noir
 - Tema compartilhado noir/carvão/neon, header global centralizado e navegação agrupada completa no mobile.

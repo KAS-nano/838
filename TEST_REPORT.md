@@ -111,3 +111,14 @@ A primeira execução E2E encontrou um servidor Next antigo ainda ocupando a por
 | `playwright regressions.next.spec.ts` | PASS — 2 testes, incluindo contrato dos 17 modelos |
 
 PostgreSQL real não estava disponível no ambiente. A execução de `migrate deploy`, bootstrap repetido e promoção transacional permanece marcada como dependência externa no controle de progresso.
+
+## Rodada do protocolo de benchmark v2 — 2026-09-09
+
+| Verificação | Resultado |
+| --- | --- |
+| `bash scripts/stage27-check.sh` | PASS — assinatura Ed25519 válida, payload alterado, expiração, coerência, quartis e fingerprint |
+| `npm run typecheck` | PASS |
+| `npm run lint` | PASS |
+| `npx prisma validate` | PASS |
+
+Os testes usam um par Ed25519 efêmero e não simulam atestado de hardware. A integração da chave privada com o armazenamento protegido do agente e o benchmark real continuam pendentes.
