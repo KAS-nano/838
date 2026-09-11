@@ -1,6 +1,6 @@
 CONTROLE DE PROGRESSO DAS MELHORIAS DO 838
 Atualizado em: 2026-09-11
-Progresso global: 52%
+Progresso global: 54%
 
 LEGENDA
 [x] concluído e validado
@@ -130,6 +130,11 @@ P1.5 — OBSERVABILIDADE, BACKUP E RECUPERAÇÃO: 60% [~]
 [x] Política define RPO/RTO, retenção, responsável, criptografia e separação da chave.
 [x] Scripts validam checksum e restauram somente em banco isolado com confirmação explícita.
 [!] Executar e registrar o primeiro ensaio de restauração em PostgreSQL real.
+P1.6 — ACESSIBILIDADE CONTÍNUA: 80% [~]
+[x] axe-core fixado verifica cinco rotas em Next e preview e bloqueia violações sérias/críticas.
+[x] Estados de menu, apoio e filtros, link de salto, Escape, retorno de foco, 320 px e zoom são cobertos.
+[x] Medidores do dashboard usam semântica ARIA válida.
+[ ] Executar percurso manual com leitor de tela antes da primeira release.
 P2.1 — MODELOS E RUNTIMES LOCAIS: 0% [ ]
 P2.2 — HISTÓRICO COMUNITÁRIO: 0% [ ]
 P2.3 — CUSTO LOCAL X API: 0% [ ]
@@ -184,5 +189,7 @@ PASS agente Rust 1.95 — cargo fmt, 2 testes unitários e clippy -D warnings no
 PASS agente CI — lockfile, ícone RGBA e job Linux reproduzível
 PASS stage32 — roadmap expandido com 12 objetivos verificáveis e fontes externas avaliadas
 PASS preview home — paridade de conteúdo e 10 testes Playwright em cinco resoluções
+PASS stage33 — dependência axe fixada, link de salto e medidores semânticos
+PASS npm run test:a11y — 16 testes em Next e preview, incluindo 320 px e zoom
 PASS npm run test:e2e — 38 testes com Content-Security-Policy bloqueante
 LIMITAÇÃO npm install --package-lock-only não foi executado porque este ambiente bloqueou download remoto; nenhuma dependência nova foi adicionada nesta rodada.

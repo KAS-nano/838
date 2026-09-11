@@ -1,6 +1,6 @@
 ETAPA 08 — NOVOS OBJETIVOS, OTIMIZAÇÕES E ADOÇÃO EXTERNA
 Prioridade: P0 a P3
-Progresso da etapa: 3% [~]
+Progresso da etapa: 10% [~]
 
 OBJETIVO 08.1 — CADEIA NATIVA DO HARDWARE AGENT [P0] [~ 40%]
 Aplicar:
@@ -23,13 +23,21 @@ Testar:
 - chave ausente, assinatura inválida e artefato alterado devem impedir publicação.
 Aceite: cada pacote público liga versão, commit, hash, plataforma e assinatura verificável.
 
-OBJETIVO 08.2 — ACESSIBILIDADE CONTÍNUA [P1] [ ]
+OBJETIVO 08.2 — ACESSIBILIDADE CONTÍNUA [P1] [~ 80%]
 Aplicar:
 1. Adicionar @axe-core/playwright fixado.
 2. Testar rotas principais após conteúdo carregar e após abrir menu, filtros, comparador e apoio.
 3. Bloquear violações serious/critical; registrar triagem das demais.
 4. Testar teclado, Escape, retorno de foco, zoom 200/400%, 320 px e mensagens dinâmicas.
 5. Manter tabela/texto equivalente para qualquer gráfico novo.
+Concluído nesta rodada:
+[x] @axe-core/playwright 4.13.0 fixado e integrado ao Playwright/CI existente.
+[x] Home, onboarding, dashboard, modelos e comparador testados no Next e no preview.
+[x] Menu móvel, apoio aberto, filtros, Escape, retorno de foco e link de salto testados.
+[x] Violações serious/critical bloqueiam a suíte; chuva decorativa aria-hidden é excluída explicitamente.
+[x] Viewports equivalentes a zoom de 200% e 400% validados sem overflow horizontal.
+[x] Medidores do dashboard receberam papel semântico válido.
+[ ] Concluir percurso manual com leitor de tela antes da release.
 Testar:
 - axe em Next e preview;
 - sequência completa sem mouse;

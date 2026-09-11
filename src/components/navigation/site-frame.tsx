@@ -55,6 +55,7 @@ export function SiteFrame({ children }: { children: React.ReactNode }) {
     return () => { document.body.style.overflow = previous; window.removeEventListener("keydown", onKey); window.removeEventListener("resize", onResize); };
   }, [open]);
   return <div className="site-frame">
+    <a className="skip-link" href="#main-content">Pular para o conteúdo</a>
     <ModelRain />
     <header className="site-header">
       <div>{!bare && <button ref={menuButton} className="menu-toggle" type="button" aria-label={open ? "Fechar menu" : "Abrir menu"} aria-expanded={open} aria-controls="site-navigation" onClick={() => setOpen(!open)}>{open ? <X size={19} /> : <Menu size={19} />}<span>Menu</span></button>}<span className="header-caption">IA certa. Hardware certo.</span></div>
@@ -69,6 +70,6 @@ export function SiteFrame({ children }: { children: React.ReactNode }) {
         <ProjectSupport />
       </aside>
     </>}
-    <div className={`site-content${bare ? "" : " with-sidebar"}`} inert={open || undefined}>{!bare && loaded && isDemo && pathname !== "/dashboard" && pathname !== "/perfil" && <div className="demo-notice">Máquina de demonstração · <Link href="/onboarding">Informe seu hardware para personalizar as análises →</Link></div>}{children}</div>
+    <div id="main-content" tabIndex={-1} className={`site-content${bare ? "" : " with-sidebar"}`} inert={open || undefined}>{!bare && loaded && isDemo && pathname !== "/dashboard" && pathname !== "/perfil" && <div className="demo-notice">Máquina de demonstração · <Link href="/onboarding">Informe seu hardware para personalizar as análises →</Link></div>}{children}</div>
   </div>;
 }

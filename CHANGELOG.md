@@ -18,6 +18,7 @@
 - Segunda auditoria adiciona 12 objetivos executáveis para segurança, acessibilidade, catálogo, operação, agente e evolução do produto.
 - Hardware Agent ganha Cargo.lock, ícone de bundle e validação Rust 1.95 reproduzível na CI Linux.
 - Home do preview estático alinhada à composição, conteúdo e métricas da versão Next publicada.
+- Auditoria axe bloqueante cobre rotas e estados interativos em Next/preview; navegação por salto e medidores receberam semântica acessível.
 
 ## Em desenvolvimento
 - CI separada para qualidade, motores, build, PostgreSQL e navegador; atualização agrupada de dependências e SBOM em tags.

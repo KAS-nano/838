@@ -18,6 +18,7 @@
     "auth:generate": "npx auth@latest generate --adapter prisma --dialect postgresql",
     "test:stages": "bash scripts/run-stage-tests.sh",
     "test:e2e": "playwright test",
+    "test:a11y": "playwright test tests/browser/accessibility.spec.ts",
     "postinstall": "prisma generate",
     "preview:generate": "node scripts/generate-support-qr.mjs && node scripts/export-preview-catalog.mjs",
     "prebuild": "npm run preview:generate",
@@ -53,6 +54,7 @@
     "zod": "^4.0.0"
   },
   "devDependencies": {
+    "@axe-core/playwright": "4.13.0",
     "@playwright/test": "^1.63.0",
     "@tailwindcss/postcss": "^4.3.0",
     "@types/node": "^22.15.0",

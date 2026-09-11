@@ -21,7 +21,7 @@ export function SpeedGauge({ label, value, max, unit, displayValue, description,
         <h2 className="text-sm font-medium text-ink">{label}</h2>
         <span className="text-xs text-muted">{kind === "performance" ? "Faixa estimada" : max === 0 ? "Sem capacidade" : statusLabel(status)}</span>
       </div>
-      <div className="relative mx-auto mt-3 aspect-[2/1.18] max-w-[220px] overflow-hidden" aria-label={`${label}: ${displayValue ?? `${value} ${unit}`}`}>
+      <div className="relative mx-auto mt-3 aspect-[2/1.18] max-w-[220px] overflow-hidden" role="img" aria-label={`${label}: ${displayValue ?? `${value} ${unit}`}`}>
         <svg viewBox="0 0 240 145" className="h-full w-full" aria-hidden="true">
           <path d="M 30 120 A 90 90 0 0 1 210 120" fill="none" stroke="rgba(255,255,255,.09)" strokeWidth="14" strokeLinecap="round" pathLength="100" />
           <path d="M 30 120 A 90 90 0 0 1 210 120" fill="none" stroke="currentColor" className={kind === "performance" ? "text-accent" : status === "insufficient" ? "text-rose-300" : status === "limit" ? "text-amber-300" : status === "moderate" ? "text-yellow-200" : "text-accent"} strokeWidth="14" strokeLinecap="round" pathLength="100" strokeDasharray={`${Math.min(percent, 100)} 100`} />

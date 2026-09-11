@@ -265,6 +265,19 @@ O `Cargo.lock` com 440 pacotes foi gerado e a CI Linux recebeu os mesmos comando
 
 O preview continua sendo uma implementação estática, mas a página inicial agora reproduz a mesma hierarquia visual e o mesmo exemplo da home Next disponível em `838.vercel.app`.
 
+## Rodada de acessibilidade contínua — 2026-09-11
+
+| Verificação | Resultado |
+| --- | --- |
+| `npm run test:a11y` | PASS — 16 testes em Next e preview |
+| axe WCAG 2 A/AA e 2.1 A/AA | PASS — nenhuma violação serious/critical |
+| menu, apoio e comparador filtrado | PASS — estados interativos auditados |
+| teclado, Escape e retorno de foco | PASS |
+| 320 px e zoom equivalente a 200/400% | PASS — sem overflow horizontal |
+| `node scripts/stage33-check.mjs` | PASS — integração e correções semânticas preservadas |
+
+O teste exclui somente `.llm-rain`, que é decorativa e já usa `aria-hidden=true`. O percurso manual com leitor de tela continua pendente para a primeira release.
+
 ## Rodada de auditoria e expansão do roadmap — 2026-09-11
 
 | Verificação | Resultado |
