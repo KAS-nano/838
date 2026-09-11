@@ -635,6 +635,36 @@ pre {
   font-size:22px;
   margin-top:6px
 }
+
+/* Home estática alinhada à composição principal do Next. */
+.header-caption,.header-action{font-size:12px;color:var(--muted)}
+.header-action{color:var(--foreground)}
+.home-content{max-width:1500px;padding:38px var(--page-padding) 56px}
+.home-parity-hero{grid-template-columns:1.1fr 1fr;align-items:center;gap:clamp(28px,5vw,80px);min-height:68vh;padding:48px 0 64px}
+.home-parity-hero h1{font-size:clamp(38px,5vw,72px);line-height:1.06;letter-spacing:-.055em;font-weight:600;max-width:none}
+.accent-text{color:var(--accent)}
+.home-parity-hero .hero-copy>p{max-width:590px;font-size:16px;line-height:1.75}
+.home-parity-hero .pill{border-color:rgba(89,255,123,.28);background:rgba(89,255,123,.08);color:var(--accent)}
+.quiet-link{display:inline-block;margin-top:18px;color:var(--muted);font-size:14px;text-decoration:underline;text-underline-offset:4px}
+.privacy-line{margin-top:24px;font-size:12px!important}
+.home-analysis{padding:28px}
+.analysis-head,.analysis-model,.analysis-result{display:flex;align-items:center;justify-content:space-between;gap:16px}
+.analysis-head{padding-bottom:20px;border-bottom:1px solid var(--border)}
+.analysis-head h2{margin:0;font-size:16px;font-weight:500}
+.analysis-head .eyebrow{margin-bottom:6px}
+.analysis-model{margin-top:20px}
+.analysis-model div{display:grid;gap:3px}.analysis-model b{font-size:18px}.analysis-model small,.analysis-model>span{color:var(--muted);font-size:12px}
+.metric-bars{display:grid;gap:18px;margin-top:24px}
+.metric-bars p{display:flex;justify-content:space-between;gap:12px;margin:0 0 8px;color:var(--muted);font-size:12px}
+.metric-bars p span:last-child{color:var(--foreground)}
+.metric-bars progress{display:block;width:100%;height:6px;border:0;border-radius:99px;overflow:hidden;background:rgba(255,255,255,.08);accent-color:var(--accent)}
+.metric-bars progress::-webkit-progress-bar{background:rgba(255,255,255,.08)}.metric-bars progress::-webkit-progress-value{background:var(--accent)}.metric-bars progress::-moz-progress-bar{background:var(--accent)}
+.analysis-result{align-items:flex-end;margin-top:28px;padding-top:20px;border-top:1px solid var(--border)}
+.analysis-result small{display:block;color:var(--muted)}.analysis-result strong{display:block;margin-top:6px;color:var(--accent);font-size:30px}.analysis-result strong span{font-size:14px;font-weight:400}
+.analysis-note{margin:18px 0 0;color:var(--muted);font-size:12px;line-height:1.7}
+.home-capabilities{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;padding-top:32px;border-top:1px solid var(--border)}
+.home-capabilities .feature{padding:24px}.home-capabilities .feature>div{display:flex;justify-content:space-between;color:var(--accent)}.home-capabilities .feature>div small{color:var(--muted)}.home-capabilities .feature>b{display:block;margin-top:18px}.home-capabilities .feature>p{margin:10px 0 0;color:var(--muted);font-size:14px;line-height:1.7}
+@media(max-width:900px){.home-parity-hero{grid-template-columns:1fr;padding-top:28px}.home-capabilities{grid-template-columns:1fr}.header-caption{display:none}}
 .onboarding-content {
   max-width:1000px;
   margin:auto;

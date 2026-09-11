@@ -254,6 +254,17 @@ O agente limita oito GPUs, 160 caracteres por rótulo, 4 KiB por arquivo sysfs e
 
 O `Cargo.lock` com 440 pacotes foi gerado e a CI Linux recebeu os mesmos comandos. Windows, macOS, empacotamento, assinatura e notarização continuam pendentes.
 
+## Rodada de paridade da home do preview — 2026-09-11
+
+| Verificação | Resultado |
+| --- | --- |
+| `node scripts/stage2-check.mjs` | PASS — título, CTAs, modelo, métricas e capacidades alinhados |
+| `npm run preview:check` | PASS |
+| Playwright `frontend.spec.ts` no preview | PASS — 10 testes e cinco resoluções |
+| inspeção visual em 1366×768 e 390×844 | PASS — composição responsiva e sem overflow |
+
+O preview continua sendo uma implementação estática, mas a página inicial agora reproduz a mesma hierarquia visual e o mesmo exemplo da home Next disponível em `838.vercel.app`.
+
 ## Rodada de auditoria e expansão do roadmap — 2026-09-11
 
 | Verificação | Resultado |

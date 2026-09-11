@@ -17,6 +17,7 @@
 - Snapshot v2 do agente remove hostname, limita detecção e converte resultados nativos de GPU para campos tipados com avisos parciais.
 - Segunda auditoria adiciona 12 objetivos executáveis para segurança, acessibilidade, catálogo, operação, agente e evolução do produto.
 - Hardware Agent ganha Cargo.lock, ícone de bundle e validação Rust 1.95 reproduzível na CI Linux.
+- Home do preview estático alinhada à composição, conteúdo e métricas da versão Next publicada.
 
 ## Em desenvolvimento
 - CI separada para qualidade, motores, build, PostgreSQL e navegador; atualização agrupada de dependências e SBOM em tags.

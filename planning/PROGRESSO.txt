@@ -135,7 +135,7 @@ P2.2 — HISTÓRICO COMUNITÁRIO: 0% [ ]
 P2.3 — CUSTO LOCAL X API: 0% [ ]
 P2.4 — FAVORITOS, CENÁRIOS E COMPARAÇÕES: 0% [ ]
 P2.5 — INSTALAÇÃO GUIADA: 0% [ ]
-P3.1 — RENDERIZAÇÃO NEXT/PREVIEW E PUBLICAÇÃO: 90% [~]
+P3.1 — RENDERIZAÇÃO NEXT/PREVIEW E PUBLICAÇÃO: 95% [~]
 [x] Build Next de produção e preview gerado validados.
 [x] Primeira publicação funciona em modo seed, sem banco ou autenticação.
 [x] Guia de Vercel documenta configuração, variáveis e domínio próprio.
@@ -143,6 +143,8 @@ P3.1 — RENDERIZAÇÃO NEXT/PREVIEW E PUBLICAÇÃO: 90% [~]
 [x] Smoke test público verifica HTTPS, páginas, health, headers e ausência do e-mail pessoal.
 [x] Logo fornecida aplicada exclusivamente ao favicon; cabeçalhos mantêm a marca textual 838.
 [x] URL https://838.vercel.app publicada e validada com deploy:smoke.
+[x] Home do preview alinhada ao conteúdo e à composição visual da home Next publicada.
+[x] Teste de paridade impede divergência de título, modelo, métricas e capacidades da home.
 [ ] Validar dispositivo físico e criar a primeira tag de release.
 P3.2 — PWA E CACHE OFFLINE: 0% [ ]
 
@@ -181,5 +183,6 @@ PASS stage31 — privacidade, limites, timeout e estrutura do snapshot v2 do age
 PASS agente Rust 1.95 — cargo fmt, 2 testes unitários e clippy -D warnings no Linux
 PASS agente CI — lockfile, ícone RGBA e job Linux reproduzível
 PASS stage32 — roadmap expandido com 12 objetivos verificáveis e fontes externas avaliadas
+PASS preview home — paridade de conteúdo e 10 testes Playwright em cinco resoluções
 PASS npm run test:e2e — 38 testes com Content-Security-Policy bloqueante
 LIMITAÇÃO npm install --package-lock-only não foi executado porque este ambiente bloqueou download remoto; nenhuma dependência nova foi adicionada nesta rodada.
