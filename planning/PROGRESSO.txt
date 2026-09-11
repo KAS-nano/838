@@ -1,6 +1,6 @@
 CONTROLE DE PROGRESSO DAS MELHORIAS DO 838
 Atualizado em: 2026-09-11
-Progresso global: 51%
+Progresso global: 52%
 
 LEGENDA
 [x] concluído e validado
@@ -107,13 +107,15 @@ P1.3 — ESTIMADOR COM EVIDÊNCIAS: 80% [~]
 [x] Perfil registra arquitetura de CPU e organização dedicada, compartilhada ou unificada da memória.
 [x] Memória unificada usa um único orçamento e preserva compatibilidade com perfis antigos.
 [ ] Executar avaliação contra um conjunto real oculto e definir limites de promoção.
-P1.4 — AGENTE LOCAL: 30% [~]
+P1.4 — AGENTE LOCAL: 45% [~]
 [x] Versão alinhada com o produto.
 [x] Snapshot v2 remove hostname e diferencia memória dedicada, unificada ou desconhecida.
 [x] Quantidade de GPUs, strings, sysfs, tempo e saída de processos nativos são limitados.
 [x] Falhas parciais são informadas sem retornar JSON bruto dos comandos nativos.
 [x] Testes unitários Rust cobrem normalização e limites de rótulos.
-[ ] Executar fmt, clippy e testes com Rust 1.95+ e fixtures em todos os sistemas.
+[x] Cargo.lock versionado; fmt, clippy bloqueante e testes aprovados com Rust 1.95 no Linux.
+[x] CI Linux reproduz os testes nativos com dependências oficiais do Tauri.
+[ ] Adicionar fixtures e executar testes em Windows e macOS.
 [ ] Matriz de pacotes nativos, assinatura, notarização, checksums e SBOM.
 P1.5 — OBSERVABILIDADE, BACKUP E RECUPERAÇÃO: 60% [~]
 [x] Logs operacionais JSON usam campos fechados, requestId, rota, status, duração e fornecedor.
@@ -176,7 +178,8 @@ PASS stage29 — campos extras/toJSON descartados, tipos de erro fechados e requ
 PASS stage29 — dimensões fechadas de cache e versão do estimador
 PASS stage30 — política RPO/RTO, backup criptografado e proteção do ensaio de restauração
 PASS stage31 — privacidade, limites, timeout e estrutura do snapshot v2 do agente
-LIMITAÇÃO agente — cargo/rustc ausentes neste ambiente; testes nativos permanecem pendentes
+PASS agente Rust 1.95 — cargo fmt, 2 testes unitários e clippy -D warnings no Linux
+PASS agente CI — lockfile, ícone RGBA e job Linux reproduzível
 PASS stage32 — roadmap expandido com 12 objetivos verificáveis e fontes externas avaliadas
 PASS npm run test:e2e — 38 testes com Content-Security-Policy bloqueante
 LIMITAÇÃO npm install --package-lock-only não foi executado porque este ambiente bloqueou download remoto; nenhuma dependência nova foi adicionada nesta rodada.

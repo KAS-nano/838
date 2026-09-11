@@ -16,7 +16,7 @@ for (const section of ["Aplicar:", "Testar:", "Aceite:"]) {
 for (const repository of ["axe-core-npm", "tauri-action", "osv-scanner", "cargo-deny", "lighthouse-ci", "opentelemetry-js"]) {
   if (!audit.includes(repository)) failures.push(`repositório não avaliado: ${repository}`);
 }
-if (!roadmap.includes("Progresso da etapa: 0% [ ]")) failures.push("progresso inicial ausente");
+if (!/Progresso da etapa: \d+% \[(?: |~|x)\]/.test(roadmap)) failures.push("progresso da etapa ausente");
 if (!index.includes("08-NOVOS-OBJETIVOS-E-OTIMIZACOES.txt")) failures.push("índice não referencia etapa 08");
 
 if (failures.length) {

@@ -240,7 +240,19 @@ A política registra RPO de 24 horas, RTO de 4 horas, retenção e responsabilid
 | `npm run typecheck` | PASS |
 | `npm run lint` | PASS |
 
-O agente limita oito GPUs, 160 caracteres por rótulo, 4 KiB por arquivo sysfs e 64 KiB/5 segundos por consulta nativa. O ambiente atual não possui `cargo` ou `rustc`; portanto, `cargo fmt`, Clippy, testes unitários e compilação multiplataforma continuam pendentes e não são declarados como aprovados.
+O agente limita oito GPUs, 160 caracteres por rótulo, 4 KiB por arquivo sysfs e 64 KiB/5 segundos por consulta nativa. Na primeira verificação, `cargo` e `rustc` não estavam disponíveis; a rodada nativa posterior instalou o toolchain de modo isolado e substituiu essa limitação para Linux.
+
+## Rodada nativa do Hardware Agent — 2026-09-11
+
+| Verificação | Resultado |
+| --- | --- |
+| Rust 1.95.0 isolado | PASS — toolchain oficial em diretório temporário |
+| `cargo fmt -- --check` | PASS |
+| `cargo test --locked` | PASS — 2 testes |
+| `cargo clippy --locked --all-targets -- -D warnings` | PASS |
+| geração do contexto Tauri | PASS — ícone RGBA e configuração carregados |
+
+O `Cargo.lock` com 440 pacotes foi gerado e a CI Linux recebeu os mesmos comandos. Windows, macOS, empacotamento, assinatura e notarização continuam pendentes.
 
 ## Rodada de auditoria e expansão do roadmap — 2026-09-11
 

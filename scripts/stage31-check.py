@@ -1,6 +1,7 @@
 from pathlib import Path
 
 source = Path("apps/hardware-agent/src-tauri/src/lib.rs").read_text()
+workflow = Path(".github/workflows/ci.yml").read_text()
 tests = {
     "schema v2": "schema_version: 2" in source,
     "hostname removido": "hostname:" not in source and "host_name" not in source,
@@ -13,6 +14,10 @@ tests = {
     "JSON nativo parseado": "parse_native_gpus" in source,
     "memória classificada": "memory_kind" in source,
     "testes Rust": "#[cfg(test)]" in source,
+    "lockfile Rust": Path("apps/hardware-agent/src-tauri/Cargo.lock").is_file(),
+    "ícone RGBA": Path("apps/hardware-agent/src-tauri/icons/icon.png").is_file(),
+    "CI nativa Linux": "hardware-agent:" in workflow and "cargo +1.95.0 test --locked" in workflow,
+    "Clippy bloqueante": "clippy --locked --all-targets -- -D warnings" in workflow,
 }
 
 failed = False

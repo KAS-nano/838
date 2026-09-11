@@ -1,8 +1,8 @@
 ETAPA 08 — NOVOS OBJETIVOS, OTIMIZAÇÕES E ADOÇÃO EXTERNA
 Prioridade: P0 a P3
-Progresso da etapa: 0% [ ]
+Progresso da etapa: 3% [~]
 
-OBJETIVO 08.1 — CADEIA NATIVA DO HARDWARE AGENT [P0] [ ]
+OBJETIVO 08.1 — CADEIA NATIVA DO HARDWARE AGENT [P0] [~ 40%]
 Aplicar:
 1. Instalar/fixar Rust compatível e gerar Cargo.lock versionado.
 2. Executar fmt, clippy com warnings como erro e testes Rust.
@@ -10,6 +10,13 @@ Aplicar:
 4. Criar workflow em matriz que primeiro apenas compila e guarda artefatos internos.
 5. Integrar tauri-apps/tauri-action fixada por SHA; publicação permanece desligada.
 6. Adicionar assinatura/notarização por sistema e checksums antes da primeira release pública.
+Concluído nesta rodada:
+[x] Rust 1.95 isolado validado, Cargo.lock gerado e versionado.
+[x] cargo fmt, cargo test e cargo clippy -D warnings aprovados no Linux.
+[x] Job Linux equivalente adicionado à CI com dependências oficiais do Tauri.
+[x] Ícone RGBA obrigatório do bundle adicionado a partir da arte oficial do 838.
+[ ] Fixtures nativas e matriz Windows/macOS.
+[ ] Tauri Action, pacotes, assinaturas, notarização, hashes e SBOM Rust.
 Testar:
 - cargo test; cargo fmt --check; cargo clippy -- -D warnings;
 - build em runners nativos; instalação/remoção em VM limpa;

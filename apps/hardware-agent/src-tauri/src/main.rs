@@ -1,1 +1,3 @@
-fn main() { agent838_lib::run(); }
+fn main() {
+    agent838_lib::run();
+}

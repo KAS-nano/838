@@ -85,6 +85,25 @@ jobs:
       - run: npx prisma validate
       - run: npx prisma db push --skip-generate
 
+  hardware-agent:
+    name: Hardware Agent (Linux)
+    runs-on: ubuntu-22.04
+    defaults:
+      run:
+        working-directory: apps/hardware-agent/src-tauri
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Tauri system dependencies
+        working-directory: .
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends libwebkit2gtk-4.1-dev libxdo-dev libssl-dev libayatana-appindicator3-dev librsvg2-dev
+      - name: Install pinned Rust toolchain
+        run: rustup toolchain install 1.95.0 --profile minimal --component rustfmt,clippy
+      - run: cargo +1.95.0 fmt -- --check
+      - run: cargo +1.95.0 test --locked
+      - run: cargo +1.95.0 clippy --locked --all-targets -- -D warnings
+
   browser:
     name: Browser
     runs-on: ubuntu-latest
