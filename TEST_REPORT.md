@@ -197,3 +197,16 @@ O smoke público foi executado antes da inclusão de `/api/ready`. O script atua
 | `npm run test:e2e` | PASS — 38 testes em Next e preview |
 
 A produção agora envia `Content-Security-Policy` em modo bloqueante. O build mantém páginas estáticas e cacheáveis. `unsafe-eval` é acrescentado somente durante desenvolvimento para o Turbopack; não aparece no header de produção.
+
+## Rodada de fechamento dos logs — 2026-09-11
+
+| Verificação | Resultado |
+| --- | --- |
+| `bash scripts/stage29-check.sh` | PASS — campos permitidos, tipos de erro e readiness |
+| injeção de campos extras e `toJSON` | PASS — dados descartados antes da serialização |
+| nome de erro manipulado | PASS — convertido para `Error` sem registrar mensagem |
+| request ID no limite de 128 caracteres | PASS — correlação preservada |
+| `npm run typecheck` | PASS |
+| `npm run lint` | PASS |
+
+O logger monta um objeto novo somente com os campos operacionais permitidos. Valores recebidos fora do contrato em tempo de execução não são copiados para a linha JSON.

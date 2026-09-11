@@ -1,6 +1,6 @@
 CONTROLE DE PROGRESSO DAS MELHORIAS DO 838
-Atualizado em: 2026-09-10
-Progresso global: 46%
+Atualizado em: 2026-09-11
+Progresso global: 47%
 
 LEGENDA
 [x] concluído e validado
@@ -105,9 +105,10 @@ P1.3 — ESTIMADOR COM EVIDÊNCIAS: 80% [~]
 P1.4 — AGENTE LOCAL: 5% [~]
 [x] Versão alinhada com o produto.
 [ ] Demais itens de endurecimento, testes nativos e assinatura.
-P1.5 — OBSERVABILIDADE, BACKUP E RECUPERAÇÃO: 30% [~]
+P1.5 — OBSERVABILIDADE, BACKUP E RECUPERAÇÃO: 40% [~]
 [x] Logs operacionais JSON usam campos fechados, requestId, rota, status, duração e fornecedor.
 [x] Erros desconhecidos registram somente o tipo e não serializam mensagem, payload ou segredo.
+[x] Serialização explícita descarta campos extras, funções toJSON e nomes de erro manipulados.
 [x] Liveness em /api/health e readiness em /api/ready separados.
 [x] Readiness exige PostgreSQL somente quando catálogo, autenticação ou comunidade dependem dele.
 [ ] Métricas agregadas, alertas por orçamento de erro e painel operacional.
@@ -156,5 +157,6 @@ PASS npm run deploy:check — prontidão, higiene, preview, tipagem, lint, etapa
 PASS favicon — arte oficial disponível no Next e no preview; cabeçalhos sem imagem
 PASS npm run deploy:smoke -- https://838.vercel.app — HTTPS, páginas, health e headers públicos
 PASS stage29 — logs estruturados sem segredos e flags de dependência da readiness
+PASS stage29 — campos extras/toJSON descartados, tipos de erro fechados e requestId de 128 caracteres preservado
 PASS npm run test:e2e — 38 testes com Content-Security-Policy bloqueante
 LIMITAÇÃO npm install --package-lock-only não foi executado porque este ambiente bloqueou download remoto; nenhuma dependência nova foi adicionada nesta rodada.
