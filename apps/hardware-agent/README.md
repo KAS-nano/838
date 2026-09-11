@@ -9,4 +9,6 @@ Aplicativo Tauri/Rust opcional. A primeira versão só lê hardware local; não 
 
 `cargo tauri dev` / `cargo tauri build` após instalar o toolchain.
 
-A detecção de GPU é best-effort. No Linux lê sysfs; no Windows/macOS usa consultas somente de leitura. A normalização do nome da GPU será refinada antes de produção.
+A detecção de GPU é best-effort. O snapshot v2 não coleta hostname, limita a oito GPUs e informa falhas parciais em `fieldWarnings`. No Linux, a leitura do sysfs é limitada; no Windows e macOS, consultas fixas somente de leitura têm timeout de cinco segundos, saída limitada a 64 KiB e JSON convertido para campos tipados.
+
+Antes de distribuir, execute `cargo fmt --check`, `cargo clippy -- -D warnings` e `cargo test` com Rust 1.95 ou superior. Esses comandos não rodam no build web da Vercel.

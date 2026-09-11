@@ -231,3 +231,13 @@ Recomendação, catálogo, integrações e submissão comunitária agora registr
 | `npm run lint` | PASS |
 
 A política registra RPO de 24 horas, RTO de 4 horas, retenção e responsabilidade. A restauração real não foi simulada: continua pendente até existir um PostgreSQL isolado, PostgreSQL Client e uma identidade `age` destinada ao projeto.
+
+## Rodada de privacidade do Hardware Agent — 2026-09-11
+
+| Verificação | Resultado |
+| --- | --- |
+| `python3 scripts/stage31-check.py` | PASS — schema v2, hostname ausente, limites e avisos |
+| `npm run typecheck` | PASS |
+| `npm run lint` | PASS |
+
+O agente limita oito GPUs, 160 caracteres por rótulo, 4 KiB por arquivo sysfs e 64 KiB/5 segundos por consulta nativa. O ambiente atual não possui `cargo` ou `rustc`; portanto, `cargo fmt`, Clippy, testes unitários e compilação multiplataforma continuam pendentes e não são declarados como aprovados.
