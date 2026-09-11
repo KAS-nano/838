@@ -12,6 +12,8 @@
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",
     "db:studio": "prisma studio",
+    "db:backup": "bash scripts/db-backup.sh",
+    "db:restore:drill": "bash scripts/db-restore-drill.sh",
     "auth:generate": "npx auth@latest generate --adapter prisma --dialect postgresql",
     "test:stages": "bash scripts/run-stage-tests.sh",
     "test:e2e": "playwright test",

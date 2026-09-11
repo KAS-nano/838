@@ -6,7 +6,7 @@ for s in \
  scripts/stage8-check.sh scripts/stage9-check.sh scripts/stage10-check.sh scripts/stage11-check.mjs \
  scripts/stage12-check.sh scripts/stage13-check.sh scripts/stage14-check.sh scripts/stage15-check.sh \
  scripts/stage16-check.sh scripts/stage17-check.sh scripts/stage18-check.mjs scripts/stage19-check.py \
- scripts/stage20-check.sh scripts/stage21-check.sh scripts/stage22-check.mjs scripts/stage23-check.sh scripts/stage24-check.sh scripts/stage25-check.mjs scripts/stage26-check.sh scripts/stage27-check.sh scripts/stage28-check.sh scripts/stage29-check.sh scripts/comparison-engine-check.sh scripts/support-test.mjs scripts/frontend-engine-check.sh; do
+ scripts/stage20-check.sh scripts/stage21-check.sh scripts/stage22-check.mjs scripts/stage23-check.sh scripts/stage24-check.sh scripts/stage25-check.mjs scripts/stage26-check.sh scripts/stage27-check.sh scripts/stage28-check.sh scripts/stage29-check.sh scripts/stage30-check.sh scripts/comparison-engine-check.sh scripts/support-test.mjs scripts/frontend-engine-check.sh; do
   echo "===== $s ====="
   case "$s" in *.sh) bash "$s";; *.py) python3 "$s";; *) node "$s";; esac
 done

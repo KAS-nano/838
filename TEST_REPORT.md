@@ -221,3 +221,13 @@ O logger monta um objeto novo somente com os campos operacionais permitidos. Val
 | `npm run build` | PASS — 22 rotas/páginas |
 
 Recomendação, catálogo, integrações e submissão comunitária agora registram resultados agregáveis. A criação do painel e dos alertas na conta da hospedagem permanece uma etapa externa documentada em `OPERATIONS.md`.
+
+## Rodada de backup e recuperação — 2026-09-11
+
+| Verificação | Resultado |
+| --- | --- |
+| `bash scripts/stage30-check.sh` | PASS — scripts, criptografia, checksum e barreiras de restauração |
+| `npm run typecheck` | PASS |
+| `npm run lint` | PASS |
+
+A política registra RPO de 24 horas, RTO de 4 horas, retenção e responsabilidade. A restauração real não foi simulada: continua pendente até existir um PostgreSQL isolado, PostgreSQL Client e uma identidade `age` destinada ao projeto.

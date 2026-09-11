@@ -13,6 +13,7 @@
 - CSP promovida de relatório para bloqueio real, com exceção de desenvolvimento isolada para o Turbopack.
 - Logs operacionais usam serialização explícita e descartam campos extras, `toJSON` e tipos de erro manipulados.
 - APIs principais emitem eventos agregáveis de latência, status, fornecedor, fallback e versão do estimador; objetivos e alertas iniciais foram documentados.
+- Política de recuperação e scripts de backup PostgreSQL criptografado e restauração isolada adicionados.
 
 ## Em desenvolvimento
 - CI separada para qualidade, motores, build, PostgreSQL e navegador; atualização agrupada de dependências e SBOM em tags.

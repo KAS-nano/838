@@ -1,6 +1,6 @@
 CONTROLE DE PROGRESSO DAS MELHORIAS DO 838
 Atualizado em: 2026-09-11
-Progresso global: 48%
+Progresso global: 49%
 
 LEGENDA
 [x] concluído e validado
@@ -105,7 +105,7 @@ P1.3 — ESTIMADOR COM EVIDÊNCIAS: 80% [~]
 P1.4 — AGENTE LOCAL: 5% [~]
 [x] Versão alinhada com o produto.
 [ ] Demais itens de endurecimento, testes nativos e assinatura.
-P1.5 — OBSERVABILIDADE, BACKUP E RECUPERAÇÃO: 50% [~]
+P1.5 — OBSERVABILIDADE, BACKUP E RECUPERAÇÃO: 60% [~]
 [x] Logs operacionais JSON usam campos fechados, requestId, rota, status, duração e fornecedor.
 [x] Erros desconhecidos registram somente o tipo e não serializam mensagem, payload ou segredo.
 [x] Serialização explícita descarta campos extras, funções toJSON e nomes de erro manipulados.
@@ -115,7 +115,9 @@ P1.5 — OBSERVABILIDADE, BACKUP E RECUPERAÇÃO: 50% [~]
 [x] Objetivo de disponibilidade e limites iniciais de alerta documentados em OPERATIONS.md.
 [ ] Métricas agregadas, alertas por orçamento de erro e painel operacional.
 [!] Criar as consultas, o painel e os alertas na conta da hospedagem após o deploy.
-[ ] Política de backup com RPO/RTO e ensaio de restauração em PostgreSQL real.
+[x] Política define RPO/RTO, retenção, responsável, criptografia e separação da chave.
+[x] Scripts validam checksum e restauram somente em banco isolado com confirmação explícita.
+[!] Executar e registrar o primeiro ensaio de restauração em PostgreSQL real.
 P2.1 — MODELOS E RUNTIMES LOCAIS: 0% [ ]
 P2.2 — HISTÓRICO COMUNITÁRIO: 0% [ ]
 P2.3 — CUSTO LOCAL X API: 0% [ ]
@@ -162,5 +164,6 @@ PASS npm run deploy:smoke -- https://838.vercel.app — HTTPS, páginas, health 
 PASS stage29 — logs estruturados sem segredos e flags de dependência da readiness
 PASS stage29 — campos extras/toJSON descartados, tipos de erro fechados e requestId de 128 caracteres preservado
 PASS stage29 — dimensões fechadas de cache e versão do estimador
+PASS stage30 — política RPO/RTO, backup criptografado e proteção do ensaio de restauração
 PASS npm run test:e2e — 38 testes com Content-Security-Policy bloqueante
 LIMITAÇÃO npm install --package-lock-only não foi executado porque este ambiente bloqueou download remoto; nenhuma dependência nova foi adicionada nesta rodada.
