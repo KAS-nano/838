@@ -210,3 +210,14 @@ A produção agora envia `Content-Security-Policy` em modo bloqueante. O build m
 | `npm run lint` | PASS |
 
 O logger monta um objeto novo somente com os campos operacionais permitidos. Valores recebidos fora do contrato em tempo de execução não são copiados para a linha JSON.
+
+## Rodada de métricas operacionais — 2026-09-11
+
+| Verificação | Resultado |
+| --- | --- |
+| `bash scripts/stage29-check.sh` | PASS — dimensões de cache e estimador preservadas |
+| `npm run typecheck` | PASS |
+| `npm run lint` | PASS |
+| `npm run build` | PASS — 22 rotas/páginas |
+
+Recomendação, catálogo, integrações e submissão comunitária agora registram resultados agregáveis. A criação do painel e dos alertas na conta da hospedagem permanece uma etapa externa documentada em `OPERATIONS.md`.

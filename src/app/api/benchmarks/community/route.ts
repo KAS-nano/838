@@ -1,9 +1,8 @@
 import { createHash } from "node:crypto";
-import { NextResponse } from "next/server";
 import { validateCommunityBenchmark, type SanitizedCommunityBenchmark } from "@/features/benchmarks/community";
 import { benchmarkFingerprint, type BenchmarkProtocolV2, type ValidatedBenchmarkV2 } from "@/features/benchmarks/protocol-v2";
 import { verifySignedBenchmark } from "@/features/benchmarks/verifier";
-import { assertAllowedOrigin, errorResponse, HttpError, parseJsonWithLimit, rateLimit, requestId } from "@/server/http";
+import { assertAllowedOrigin, errorResponse, HttpError, observedJsonResponse, parseJsonWithLimit, rateLimit, requestId } from "@/server/http";
 
 const noStoreHeaders = (id: string) => ({ "Cache-Control": "no-store", "X-Request-Id": id });
 
@@ -21,9 +20,10 @@ export async function POST(request: Request) {
     const signed = verifySignedBenchmark(body);
     const legacy = signed.ok ? null : validateCommunityBenchmark(body);
     if (!signed.ok && !legacy?.ok) {
-      return NextResponse.json(
+      return observedJsonResponse(
         { error: "Benchmark inválido.", code: "invalid_benchmark", requestId: id, details: signed.errors },
-        { status: 400, headers: noStoreHeaders(id) },
+        { status: 400, headers: noStoreHeaders(id) }, id,
+        { route: "/api/benchmarks/community", startedAt, cacheStatus: "bypass" },
       );
     }
     if (!process.env.DATABASE_URL) throw new HttpError(503, "database_unavailable", "Banco comunitário não configurado.");
@@ -40,9 +40,10 @@ export async function POST(request: Request) {
     const prisma = getPrisma();
     const duplicate = await prisma.communitySubmission.findUnique({ where: { fingerprint } });
     if (duplicate) {
-      return NextResponse.json(
+      return observedJsonResponse(
         { id: duplicate.id, status: duplicate.status, verified: duplicate.verified, duplicate: true },
-        { status: 200, headers: noStoreHeaders(id) },
+        { status: 200, headers: noStoreHeaders(id) }, id,
+        { route: "/api/benchmarks/community", startedAt, provider: "postgresql", cacheStatus: "bypass" },
       );
     }
 
@@ -72,17 +73,19 @@ export async function POST(request: Request) {
       if (typeof error === "object" && error !== null && "code" in error && error.code === "P2002") {
         const existing = await prisma.communitySubmission.findUnique({ where: { fingerprint } });
         if (existing) {
-          return NextResponse.json(
+          return observedJsonResponse(
             { id: existing.id, status: existing.status, verified: existing.verified, duplicate: true },
-            { status: 200, headers: noStoreHeaders(id) },
+            { status: 200, headers: noStoreHeaders(id) }, id,
+            { route: "/api/benchmarks/community", startedAt, provider: "postgresql", cacheStatus: "bypass" },
           );
         }
       }
       throw error;
     }
-    return NextResponse.json(
+    return observedJsonResponse(
       { id: record.id, status: record.status, verified: record.verified },
-      { status: 202, headers: noStoreHeaders(id) },
+      { status: 202, headers: noStoreHeaders(id) }, id,
+      { route: "/api/benchmarks/community", startedAt, provider: "postgresql", cacheStatus: "bypass" },
     );
   } catch (error) {
     return errorResponse(error, id, { route: "/api/benchmarks/community", startedAt });

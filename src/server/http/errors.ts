@@ -27,6 +27,27 @@ export function jsonResponse(
   return new Response(JSON.stringify(body), { ...init, headers });
 }
 
+export function observedJsonResponse(
+  body: unknown,
+  init: ResponseInit,
+  id: string,
+  context: { route: string; startedAt: number; provider?: string; cacheStatus?: "bypass" | "fallback" | "miss"; estimatorVersion?: string },
+) {
+  const status = init.status ?? 200;
+  operationalLog({
+    level: status >= 500 ? "error" : "info",
+    event: "http_request",
+    requestId: id,
+    route: context.route,
+    status,
+    durationMs: Date.now() - context.startedAt,
+    provider: context.provider,
+    cacheStatus: context.cacheStatus,
+    estimatorVersion: context.estimatorVersion,
+  });
+  return jsonResponse(body, init, id);
+}
+
 export function errorResponse(error: unknown, id: string, context: { route?: string; startedAt?: number; provider?: string } = {}) {
   const known = error instanceof HttpError;
   const status = known ? error.status : 500;

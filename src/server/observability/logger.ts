@@ -7,6 +7,8 @@ export type OperationalLog = {
   durationMs: number;
   provider?: string;
   errorType?: string;
+  cacheStatus?: "bypass" | "fallback" | "miss";
+  estimatorVersion?: string;
 };
 
 const knownErrorTypes = new Set([
@@ -48,6 +50,8 @@ export function operationalLog(entry: OperationalLog) {
     durationMs: Number.isFinite(entry.durationMs) ? Math.max(0, Math.round(entry.durationMs)) : 0,
     provider: entry.provider ? safeLabel(entry.provider, "unknown") : undefined,
     errorType: entry.errorType && knownErrorTypes.has(entry.errorType) ? entry.errorType : entry.errorType ? "Error" : undefined,
+    cacheStatus: entry.cacheStatus === "fallback" || entry.cacheStatus === "miss" ? entry.cacheStatus : entry.cacheStatus ? "bypass" : undefined,
+    estimatorVersion: entry.estimatorVersion ? safeLabel(entry.estimatorVersion, "unknown") : undefined,
   };
   const line = JSON.stringify(output);
   if (entry.level === "error") console.error(line);

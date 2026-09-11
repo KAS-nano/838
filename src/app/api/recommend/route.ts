@@ -1,9 +1,8 @@
-import { NextResponse } from "next/server";
 import { seedModels } from "@/data/seed-models";
 import { rankModels } from "@/features/recommendation/engine";
 import { objectives, type Objective } from "@/features/onboarding/types";
 import { isHardwareProfile } from "@/features/onboarding/validation";
-import { errorResponse, HttpError, parseJsonWithLimit, rateLimit, requestId } from "@/server/http";
+import { errorResponse, HttpError, observedJsonResponse, parseJsonWithLimit, rateLimit, requestId } from "@/server/http";
 
 export async function POST(request: Request) {
   const startedAt = Date.now();
@@ -38,7 +37,12 @@ export async function POST(request: Request) {
     confidence: result.confidence,
     source: model.source,
   }));
-    return NextResponse.json({ objective, source: "838-engine-v1", dataState: "seed", warning: "Requisitos e compatibilidade heurísticos baseados no catálogo seed.", result }, { headers: { "Cache-Control": "no-store", "X-Request-Id": id } });
+    return observedJsonResponse(
+      { objective, source: "838-engine-v1", dataState: "seed", warning: "Requisitos e compatibilidade heurísticos baseados no catálogo seed.", result },
+      { headers: { "Cache-Control": "no-store" } },
+      id,
+      { route: "/api/recommend", startedAt, cacheStatus: "bypass", estimatorVersion: "2.0.0" },
+    );
   } catch (error) {
     return errorResponse(error, id, { route: "/api/recommend", startedAt });
   }

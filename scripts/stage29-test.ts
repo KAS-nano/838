@@ -18,6 +18,8 @@ try {
     durationMs: 12.7,
     provider: "postgresql",
     errorType: safeErrorType(sensitive),
+    cacheStatus: "fallback",
+    estimatorVersion: "2.0.0",
     secret: "DATABASE_URL=postgresql://user:secret@example.test/db",
     token: "private",
     toJSON: () => ({ secret: "toJSON-secret" }),
@@ -33,6 +35,8 @@ assert.equal(parsed.durationMs, 13);
 assert.equal(parsed.requestId, "a".repeat(128));
 assert.equal(parsed.secret, undefined);
 assert.equal(parsed.token, undefined);
+assert.equal(parsed.cacheStatus, "fallback");
+assert.equal(parsed.estimatorVersion, "2.0.0");
 assert.ok(!lines[0].includes("secret"));
 assert.ok(!lines[0].includes("DATABASE_URL"));
 assert.equal(safeErrorType(new TypeError("private")), "TypeError");
