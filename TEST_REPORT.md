@@ -241,3 +241,12 @@ A política registra RPO de 24 horas, RTO de 4 horas, retenção e responsabilid
 | `npm run lint` | PASS |
 
 O agente limita oito GPUs, 160 caracteres por rótulo, 4 KiB por arquivo sysfs e 64 KiB/5 segundos por consulta nativa. O ambiente atual não possui `cargo` ou `rustc`; portanto, `cargo fmt`, Clippy, testes unitários e compilação multiplataforma continuam pendentes e não são declarados como aprovados.
+
+## Rodada de auditoria e expansão do roadmap — 2026-09-11
+
+| Verificação | Resultado |
+| --- | --- |
+| `node scripts/stage32-check.mjs` | PASS — 12 objetivos com aplicação, testes, aceite e status |
+| repositórios externos | PASS — seis projetos oficiais avaliados com condição de adoção |
+
+A criação do roadmap não altera o percentual das funcionalidades: todos os novos objetivos começam em 0% e só avançarão após implementação e evidência de teste.

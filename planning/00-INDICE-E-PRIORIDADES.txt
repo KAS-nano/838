@@ -1,5 +1,5 @@
 PLANO DE MELHORIAS DO 838
-Versão do plano: 2026-09-09
+Versão do plano: 2026-09-11
 
 OBJETIVO
 Transformar a auditoria técnica em trabalho implementável, revisável e testável. Este diretório é um plano; marcar um item como concluído somente após aplicar as mudanças e registrar evidências dos testes.
@@ -38,6 +38,9 @@ P2.5  Criar instalação guiada com verificação.
 P3.1  Unificar a renderização do Next e do preview.
 P3.2  Adicionar PWA e cache offline controlado.
 
+EXPANSÃO APÓS A SEGUNDA AUDITORIA
+Os objetivos 08.1 a 08.12 detalham cadeia nativa, acessibilidade contínua, rate limit distribuído, direitos de dados, catálogo candidato, supply chain, desempenho, telemetria, cenários, instalação, PWA e manutenção. A ordem executável está em 08-NOVOS-OBJETIVOS-E-OTIMIZACOES.txt.
+
 DOCUMENTOS
 01-FUNDACAO-CI-E-RELEASES.txt
 02-SEGURANCA-WEB-APIS-E-AUTH.txt
@@ -46,6 +49,7 @@ DOCUMENTOS
 05-AGENTE-LOCAL.txt
 06-FUNCOES-DE-PRODUTO.txt
 07-OPERACAO-PRIVACIDADE-E-QUALIDADE.txt
+08-NOVOS-OBJETIVOS-E-OTIMIZACOES.txt
 
 REGRESSÃO COMUM OBRIGATÓRIA
 npm ci

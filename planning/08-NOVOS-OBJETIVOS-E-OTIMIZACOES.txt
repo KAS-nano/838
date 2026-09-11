@@ -1,0 +1,167 @@
+ETAPA 08 — NOVOS OBJETIVOS, OTIMIZAÇÕES E ADOÇÃO EXTERNA
+Prioridade: P0 a P3
+Progresso da etapa: 0% [ ]
+
+OBJETIVO 08.1 — CADEIA NATIVA DO HARDWARE AGENT [P0] [ ]
+Aplicar:
+1. Instalar/fixar Rust compatível e gerar Cargo.lock versionado.
+2. Executar fmt, clippy com warnings como erro e testes Rust.
+3. Adicionar fixtures Linux, Windows e macOS para saída vazia, inválida, enorme, múltiplas GPUs e timeout.
+4. Criar workflow em matriz que primeiro apenas compila e guarda artefatos internos.
+5. Integrar tauri-apps/tauri-action fixada por SHA; publicação permanece desligada.
+6. Adicionar assinatura/notarização por sistema e checksums antes da primeira release pública.
+Testar:
+- cargo test; cargo fmt --check; cargo clippy -- -D warnings;
+- build em runners nativos; instalação/remoção em VM limpa;
+- chave ausente, assinatura inválida e artefato alterado devem impedir publicação.
+Aceite: cada pacote público liga versão, commit, hash, plataforma e assinatura verificável.
+
+OBJETIVO 08.2 — ACESSIBILIDADE CONTÍNUA [P1] [ ]
+Aplicar:
+1. Adicionar @axe-core/playwright fixado.
+2. Testar rotas principais após conteúdo carregar e após abrir menu, filtros, comparador e apoio.
+3. Bloquear violações serious/critical; registrar triagem das demais.
+4. Testar teclado, Escape, retorno de foco, zoom 200/400%, 320 px e mensagens dinâmicas.
+5. Manter tabela/texto equivalente para qualquer gráfico novo.
+Testar:
+- axe em Next e preview;
+- sequência completa sem mouse;
+- leitor de tela manual em pelo menos um sistema antes de release.
+Aceite: nenhuma violação séria/crítica e tarefas principais concluídas por teclado.
+
+OBJETIVO 08.3 — RATE LIMIT DISTRIBUÍDO [P0] [ ]
+Aplicar:
+1. Definir interface RateLimitStore com adapter em memória apenas para desenvolvimento/seed.
+2. Criar adapter atômico para armazenamento compartilhado escolhido na hospedagem.
+3. Chavear por ação e identificador pseudonimizado; definir TTL e não persistir IP bruto.
+4. Falhar fechado nas rotas de escrita e de autenticação quando o recurso estiver habilitado.
+5. Emitir headers de limite e métrica de bloqueio sem identificador do usuário.
+Testar:
+- concorrência entre duas instâncias; janela/TTL; indisponibilidade; proxy confiável;
+- nenhuma chave contém IP, e-mail, token ou hardware.
+Aceite: o mesmo limite vale entre instâncias e reinícios, com comportamento de falha documentado.
+
+OBJETIVO 08.4 — DIREITOS E RETENÇÃO DE DADOS [P0] [ ]
+Aplicar:
+1. Inventariar entidade, finalidade, base, retenção e destinatário.
+2. Implementar exportação autenticada e exclusão transacional de conta.
+3. Definir retenção e limpeza para sessão, verification, recomendações e submissões rejeitadas.
+4. Versionar consentimento e exigir renovação quando finalidade mudar.
+5. Criar procedimento de correção e incidente com contato público do projeto.
+Testar:
+- titular A nunca acessa dados de B;
+- exportação completa e sem hash/sigilo interno;
+- exclusão remove/cancela relações e é idempotente;
+- job de retenção respeita relógio e lote.
+Aceite: direitos são exercíveis pelo produto e correspondem à PRIVACY.md.
+
+OBJETIVO 08.5 — CATÁLOGO CANDIDATO AUTOMÁTICO [P1] [ ]
+Aplicar:
+1. Buscar fontes oficiais com timeout, ETag e limite de resposta.
+2. Normalizar para snapshot candidato, mantendo URL, data, hash e confiança por campo.
+3. Validar schema, quantização, licença, domínio final, duplicação e arquivos partidos.
+4. Produzir diff humano; nunca publicar diretamente da coleta.
+5. Publicar snapshot aprovado de forma atômica e permitir rollback.
+Testar:
+- 304, 429, redirect, payload gigante, licença ausente, URL trocada e fonte fora do ar;
+- bootstrap repetido e rollback preservam a versão anterior.
+Aceite: toda informação pública possui origem/data e nenhuma falha apaga catálogo válido.
+
+OBJETIVO 08.6 — SUPPLY CHAIN REPRODUZÍVEL [P0] [ ]
+Aplicar:
+1. Rodar OSV-Scanner sobre lockfiles e SBOM no CI.
+2. Criar Cargo.lock e política cargo-deny para advisories, fontes e licenças.
+3. Fixar actions externas por SHA e usar permissions mínimas.
+4. Registrar exceções com risco, compensação, responsável e vencimento.
+5. Produzir SBOM web e Rust, hashes e proveniência por release.
+Testar:
+- fixture vulnerável controlada deve falhar;
+- exceção vencida deve falhar;
+- release sem lockfile/SBOM/hash deve falhar.
+Aceite: uma release pode ser reconstruída e suas dependências auditadas.
+
+OBJETIVO 08.7 — ORÇAMENTOS DE PERFORMANCE [P1] [ ]
+Aplicar:
+1. Medir três execuções Lighthouse em home, onboarding, dashboard, modelos e comparador.
+2. Definir baseline para LCP, CLS, TBT, tamanho/count de JS e imagens.
+3. Adicionar Lighthouse CI com regressão inicialmente em aviso.
+4. Tornar limite bloqueante após estabilizar variância no runner.
+5. Medir também aparelho móvel e conexão reduzida.
+Testar:
+- mudança artificial acima do orçamento falha;
+- relatório não envia URL privada, cookie ou perfil.
+Aceite: regressões relevantes são detectadas antes do deploy.
+
+OBJETIVO 08.8 — TELEMETRIA E ALERTAS REAIS [P1] [ ]
+Aplicar:
+1. Criar consultas de volume, erro, p95, fallback e fornecedor com os campos existentes.
+2. Configurar painel e alertas definidos em OPERATIONS.md.
+3. Executar falha controlada e confirmar alerta/recuperação.
+4. Avaliar OpenTelemetry somente se correlação entre serviços se tornar necessária.
+Testar:
+- requestId localiza evento; payload e segredos continuam ausentes;
+- alertas respeitam janela e volume mínimo.
+Aceite: falha controlada é detectada e diagnosticada sem dados pessoais.
+
+OBJETIVO 08.9 — PRODUTO LOCAL ORIENTADO A CENÁRIOS [P2] [ ]
+Aplicar:
+1. Permitir múltiplos perfis e cenários locais com versão de schema.
+2. Salvar favoritos, comparações e contexto sem conta.
+3. Exportar link somente com escolha explícita e campos técnicos minimizados.
+4. Inventariar runtimes/modelos pelo agente com consentimento e comandos enumerados.
+5. Comparar custo local/API com premissas e datas visíveis.
+Testar:
+- migração de schema, armazenamento indisponível, import malformado e exclusão local;
+- link padrão não contém hardware identificável.
+Aceite: usuário compara cenários sem criar conta e entende origem de cada estimativa.
+
+OBJETIVO 08.10 — INSTALAÇÃO SEGURA E REVERSÍVEL [P2] [ ]
+Aplicar:
+1. Converter receitas em manifestos versionados com origem, hash, pré-condições e rollback.
+2. Exibir comandos antes de qualquer ação e explicar impacto em disco/rede.
+3. Manter execução automática desligada até o agente possuir confirmação e auditoria local.
+4. Detectar resultado e oferecer reparo/remoção.
+Testar:
+- SO/arquitetura incompatível, pouco disco, checksum errado, perda de rede e rollback;
+- nenhuma receita oferece pipe remoto direto para shell sem etapa explícita de verificação.
+Aceite: instalação pode ser verificada e revertida sem comando oculto.
+
+OBJETIVO 08.11 — PWA COM CACHE MÍNIMO [P2] [ ]
+Aplicar:
+1. Cachear somente shell estático, catálogo publicado e documentação essencial.
+2. Excluir APIs autenticadas, benchmarks, perfil e respostas no-store.
+3. Versionar cache e remover versões antigas na ativação.
+4. Mostrar estado offline e idade do catálogo.
+Testar:
+- primeira visita offline falha com explicação; visita posterior abre conteúdo permitido;
+- logout/remoção apaga dados sensíveis e nenhum response privado aparece no Cache Storage.
+Aceite: offline melhora consulta sem criar nova superfície de vazamento.
+
+OBJETIVO 08.12 — MANUTENÇÃO E TAMANHO LOCAL [P3] [ ]
+Aplicar:
+1. Remover zod se a busca final e a regressão confirmarem ausência de uso.
+2. Criar comando clean:local limitado a artefatos ignorados conhecidos.
+3. Reduzir duplicação Next/preview e arquivos de código excessivamente compactados.
+4. Adicionar ADRs para escolhas que criam serviço ou formato persistente.
+Testar:
+- npm ci, build e testes após remoção de dependência;
+- clean:local nunca remove arquivo versionado nem .env.local.
+Aceite: checkout permanece reproduzível e a limpeza não ameaça dados locais.
+
+ORDEM DE EXECUÇÃO
+1. 08.1 Agente compilável.
+2. 08.2 Acessibilidade.
+3. 08.6 Supply chain.
+4. 08.3 Rate limit distribuído.
+5. 08.4 Direitos e retenção.
+6. 08.5 Catálogo candidato.
+7. 08.7 e 08.8 Performance/operação.
+8. 08.9 a 08.12 Evolução de produto e manutenção.
+
+REGRA PARA REPOSITÓRIOS EXTERNOS
+- Preferir projeto oficial e ativo, revisar licença e segurança.
+- Fixar dependência por versão exata e GitHub Action por SHA.
+- Não copiar código sem registrar origem/licença.
+- Não adicionar serviço obrigatório ao modo seed.
+- Implementar primeiro atrás de flag quando houver custo, rede ou persistência.
+- Validar benefício com teste ou métrica antes de manter a dependência.

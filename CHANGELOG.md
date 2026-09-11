@@ -15,6 +15,7 @@
 - APIs principais emitem eventos agregáveis de latência, status, fornecedor, fallback e versão do estimador; objetivos e alertas iniciais foram documentados.
 - Política de recuperação e scripts de backup PostgreSQL criptografado e restauração isolada adicionados.
 - Snapshot v2 do agente remove hostname, limita detecção e converte resultados nativos de GPU para campos tipados com avisos parciais.
+- Segunda auditoria adiciona 12 objetivos executáveis para segurança, acessibilidade, catálogo, operação, agente e evolução do produto.
 
 ## Em desenvolvimento
 - CI separada para qualidade, motores, build, PostgreSQL e navegador; atualização agrupada de dependências e SBOM em tags.
