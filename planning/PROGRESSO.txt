@@ -1,6 +1,6 @@
 CONTROLE DE PROGRESSO DAS MELHORIAS DO 838
 Atualizado em: 2026-09-11
-Progresso global: 55%
+Progresso global: 57%
 
 LEGENDA
 [x] concluído e validado
@@ -65,12 +65,21 @@ P0.4 — SUBMISSÕES COMUNITÁRIAS: 75% [~]
 [x] Protocolo legado entra em quarentena; v2 verificado entra como pending.
 [ ] Interface de moderação e política de retenção/exclusão.
 
-P0.5 — CSP E DEPENDÊNCIAS: 75% [~]
+P0.5 — CSP E DEPENDÊNCIAS: 85% [~]
 [x] Headers básicos e CSP bloqueante validada em 38 fluxos de navegador.
 [x] Dependabot segmentado e SBOM de release.
 [x] Node 22.x fixado e allowScripts limitado às versões revisadas do Prisma e unrs-resolver.
+[x] Actions externas fixadas por SHA e OSV Scanner executado na CI sobre npm e Cargo.
+[x] Exceções temporárias possuem risco, compensação, responsável e vencimento verificável.
+[x] Metadados de release incluem SHA-256 do SBOM, notices e lockfiles.
 [ ] Evoluir CSP para nonce ou SRI sem perder páginas estáticas/CDN.
 [ ] Resolver alertas de dependências sem atualização forçada.
+P0.6 — SUPPLY CHAIN REPRODUZÍVEL: 55% [~]
+[x] Actions externas fixadas por SHA e permissões globais somente de leitura.
+[x] OSV Scanner cobre os lockfiles npm e Cargo na CI.
+[x] Exceções transitórias têm risco, compensação, responsável e vencimento verificável.
+[x] Release gera SBOM web e checksums SHA-256 dos metadados e lockfiles.
+[ ] Validar cargo-deny, gerar SBOM Rust e assinar/provar artefatos nativos.
 
 P1.1 — CATÁLOGO PERSISTENTE: 75% [~]
 [x] Schema normalizado para fontes, artefatos, capacidades, licença, proveniência e snapshots.
@@ -197,6 +206,7 @@ PASS preview home — paridade de conteúdo e 10 testes Playwright em cinco reso
 PASS stage33 — dependência axe fixada, link de salto e medidores semânticos
 PASS npm run test:a11y — 16 testes em Next e preview, incluindo 320 px e zoom
 PASS stage34 — limpeza allowlist preserva .env.local e node_modules
+PASS stage35 — Actions por SHA, OSV, exceções vigentes, SBOM e hashes
 PASS npm run clean:local:dry — 26 alvos descartáveis identificados
 PASS npm run clean:local — aproximadamente 3,9 GB recuperados; .env.local preservado
 PASS npm run test:e2e — 54 testes após integração da acessibilidade

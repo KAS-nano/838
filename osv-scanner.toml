@@ -1,0 +1,14 @@
+[[IgnoredVulns]]
+id = "GHSA-ggr8-5vv4-36mx"
+ignoreUntil = 2026-12-11
+reason = "deepmerge-ts chega pelo CLI Prisma; entradas do 838 são validadas antes da configuração. Acompanhar correção upstream sem rebaixar Prisma 7."
+
+[[IgnoredVulns]]
+id = "GHSA-3f6p-5ww8-9rcr"
+ignoreUntil = 2026-12-11
+reason = "mysql2 chega pelo CLI Prisma, mas o 838 usa exclusivamente PostgreSQL e não negocia autenticação MySQL."
+
+[[IgnoredVulns]]
+id = "GHSA-rgwj-5xj2-c3m3"
+ignoreUntil = 2026-12-11
+reason = "mysql2 chega pelo CLI Prisma, mas o 838 usa exclusivamente PostgreSQL e não abre conexões MySQL comprimidas."

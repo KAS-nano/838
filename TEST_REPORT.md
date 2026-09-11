@@ -290,6 +290,17 @@ O teste exclui somente `.llm-rain`, que é decorativa e já usa `aria-hidden=tru
 
 O comando limita a remoção a builds Next/Tauri, caches, relatórios Playwright, temporários das etapas e arquivos incrementais. A simulação permite revisar cada alvo antes da remoção.
 
+## Rodada de supply chain — 2026-09-11
+
+| Verificação | Resultado |
+| --- | --- |
+| `node scripts/stage35-check.mjs` | PASS — Actions por SHA e exceções vigentes |
+| OSV Scanner 2.3.8 | configurado na CI para os lockfiles npm e Cargo |
+| `npm audit --omit=dev` | 4 altos — cadeia Prisma CLI, três GHSAs documentados até 2026-12-11 |
+| metadados de release | SBOM CycloneDX + SHA256SUMS configurados |
+
+O `npm audit fix --force` foi recusado porque propõe rebaixar Prisma 7 para 6. O 838 usa PostgreSQL e não abre conexões MySQL; as exceções não são permanentes e expiram automaticamente. A execução do OSV ocorrerá no GitHub após o push.
+
 ## Rodada de auditoria e expansão do roadmap — 2026-09-11
 
 | Verificação | Resultado |

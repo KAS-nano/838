@@ -20,6 +20,8 @@
 - Home do preview estático alinhada à composição, conteúdo e métricas da versão Next publicada.
 - Auditoria axe bloqueante cobre rotas e estados interativos em Next/preview; navegação por salto e medidores receberam semântica acessível.
 - Limpeza local segura ganha simulação e remove builds, caches e resultados sem tocar em dependências ou configurações locais.
+- CI fixa todas as Actions por SHA, verifica lockfiles com OSV e gera checksums dos metadados de release.
+- CI fixa Actions por SHA, executa OSV nos lockfiles e gera checksums junto ao SBOM de release; exceções temporárias possuem vencimento verificável.
 
 ## Em desenvolvimento
 - CI separada para qualidade, motores, build, PostgreSQL e navegador; atualização agrupada de dependências e SBOM em tags.
