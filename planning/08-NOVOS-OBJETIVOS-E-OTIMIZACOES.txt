@@ -1,6 +1,6 @@
 ETAPA 08 — NOVOS OBJETIVOS, OTIMIZAÇÕES E ADOÇÃO EXTERNA
 Prioridade: P0 a P3
-Progresso da etapa: 10% [~]
+Progresso da etapa: 13% [~]
 
 OBJETIVO 08.1 — CADEIA NATIVA DO HARDWARE AGENT [P0] [~ 40%]
 Aplicar:
@@ -152,12 +152,18 @@ Testar:
 - logout/remoção apaga dados sensíveis e nenhum response privado aparece no Cache Storage.
 Aceite: offline melhora consulta sem criar nova superfície de vazamento.
 
-OBJETIVO 08.12 — MANUTENÇÃO E TAMANHO LOCAL [P3] [ ]
+OBJETIVO 08.12 — MANUTENÇÃO E TAMANHO LOCAL [P3] [~ 35%]
 Aplicar:
 1. Remover zod se a busca final e a regressão confirmarem ausência de uso.
 2. Criar comando clean:local limitado a artefatos ignorados conhecidos.
 3. Reduzir duplicação Next/preview e arquivos de código excessivamente compactados.
 4. Adicionar ADRs para escolhas que criam serviço ou formato persistente.
+Concluído nesta rodada:
+[x] clean:local usa allowlist de builds, caches e resultados descartáveis conhecidos.
+[x] clean:local:dry mostra os alvos antes da remoção.
+[x] Teste isolado confirma remoção de artefatos e preservação de .env.local e node_modules.
+[x] ESLint ignora saídas geradas pelo Tauri e pelo Playwright.
+[ ] Avaliar remoção de zod, reduzir duplicação Next/preview e registrar ADRs necessários.
 Testar:
 - npm ci, build e testes após remoção de dependência;
 - clean:local nunca remove arquivo versionado nem .env.local.

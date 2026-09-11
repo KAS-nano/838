@@ -1,25 +1,13 @@
-import fs from "node:fs";
+import { execFileSync } from "node:child_process";
 import path from "node:path";
 
-const ignoredDirectories = new Set([".git", ".next", "node_modules", "out", "playwright-report", "target", "test-results"]);
 const forbiddenNames = [/^\.env(?:\..+)?$/, /\.(?:key|pem|p12|pfx)$/i, /^id_(?:rsa|ed25519)$/];
 const allowed = new Set([".env.example"]);
-const findings = [];
-
-function walk(directory) {
-  for (const entry of fs.readdirSync(directory, { withFileTypes: true })) {
-    if (entry.isDirectory() && (ignoredDirectories.has(entry.name) || entry.name.startsWith(".test-"))) continue;
-    const fullPath = path.join(directory, entry.name);
-    const relative = path.relative(process.cwd(), fullPath);
-    if (entry.isDirectory()) walk(fullPath);
-    else if (!allowed.has(relative) && forbiddenNames.some((pattern) => pattern.test(entry.name))) findings.push(relative);
-  }
-}
-
-walk(process.cwd());
+const trackedFiles = execFileSync("git", ["ls-files", "-z"], { encoding: "utf8" }).split("\0").filter(Boolean);
+const findings = trackedFiles.filter(file => !allowed.has(file) && forbiddenNames.some(pattern => pattern.test(path.basename(file))));
 if (findings.length) {
-  console.error("FAIL arquivos sensíveis ou locais encontrados:");
+  console.error("FAIL arquivos sensíveis versionados:");
   findings.forEach((file) => console.error(`- ${file}`));
   process.exit(1);
 }
-console.log("PASS nenhum .env, certificado ou chave privada encontrado nas fontes");
+console.log("PASS nenhum .env, certificado ou chave privada está versionado");

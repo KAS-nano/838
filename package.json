@@ -19,6 +19,8 @@
     "test:stages": "bash scripts/run-stage-tests.sh",
     "test:e2e": "playwright test",
     "test:a11y": "playwright test tests/browser/accessibility.spec.ts",
+    "clean:local": "node scripts/clean-local.mjs",
+    "clean:local:dry": "node scripts/clean-local.mjs --dry-run",
     "postinstall": "prisma generate",
     "preview:generate": "node scripts/generate-support-qr.mjs && node scripts/export-preview-catalog.mjs",
     "prebuild": "npm run preview:generate",

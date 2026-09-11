@@ -64,6 +64,15 @@ npm run lint
 npm run build
 ```
 
+Para liberar espaço usado por builds e testes locais, confira primeiro os alvos e depois execute a limpeza:
+
+```bash
+npm run clean:local:dry
+npm run clean:local
+```
+
+O comando remove somente caches e artefatos conhecidos. Dependências em `node_modules` e configurações em `.env.local` são preservadas.
+
 ## Colocar no ar
 
 O site está preparado para uma primeira publicação na Vercel sem banco de dados, usando o catálogo empacotado e mantendo autenticação e comunidade desligadas. Execute `npm run deploy:check` e siga o passo a passo em [DEPLOYMENT.md](DEPLOYMENT.md). Depois do deploy, valide o endereço com `npm run deploy:smoke -- https://seu-site.vercel.app`.
@@ -145,6 +154,7 @@ Testes de regressão e navegador:
 
 ```bash
 npm run test:engine
+npm run test:a11y
 npm run build
 npx playwright install chromium
 npm run test:e2e

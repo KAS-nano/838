@@ -1,6 +1,6 @@
 CONTROLE DE PROGRESSO DAS MELHORIAS DO 838
 Atualizado em: 2026-09-11
-Progresso global: 54%
+Progresso global: 55%
 
 LEGENDA
 [x] concluído e validado
@@ -152,6 +152,11 @@ P3.1 — RENDERIZAÇÃO NEXT/PREVIEW E PUBLICAÇÃO: 95% [~]
 [x] Teste de paridade impede divergência de título, modelo, métricas e capacidades da home.
 [ ] Validar dispositivo físico e criar a primeira tag de release.
 P3.2 — PWA E CACHE OFFLINE: 0% [ ]
+P3.3 — MANUTENÇÃO E LIMPEZA LOCAL: 35% [~]
+[x] Comandos clean:local e clean:local:dry removem somente artefatos conhecidos.
+[x] Teste isolado preserva .env.local, node_modules e fontes versionadas.
+[x] Saídas geradas de Tauri e Playwright não entram na análise do ESLint.
+[ ] Avaliar dependências sem uso, duplicação Next/preview e ADRs.
 
 ÚLTIMA VALIDAÇÃO
 Data: 2026-09-09
@@ -191,5 +196,9 @@ PASS stage32 — roadmap expandido com 12 objetivos verificáveis e fontes exter
 PASS preview home — paridade de conteúdo e 10 testes Playwright em cinco resoluções
 PASS stage33 — dependência axe fixada, link de salto e medidores semânticos
 PASS npm run test:a11y — 16 testes em Next e preview, incluindo 320 px e zoom
+PASS stage34 — limpeza allowlist preserva .env.local e node_modules
+PASS npm run clean:local:dry — 26 alvos descartáveis identificados
+PASS npm run clean:local — aproximadamente 3,9 GB recuperados; .env.local preservado
+PASS npm run test:e2e — 54 testes após integração da acessibilidade
 PASS npm run test:e2e — 38 testes com Content-Security-Policy bloqueante
 LIMITAÇÃO npm install --package-lock-only não foi executado porque este ambiente bloqueou download remoto; nenhuma dependência nova foi adicionada nesta rodada.

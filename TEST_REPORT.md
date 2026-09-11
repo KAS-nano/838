@@ -278,6 +278,18 @@ O preview continua sendo uma implementação estática, mas a página inicial ag
 
 O teste exclui somente `.llm-rain`, que é decorativa e já usa `aria-hidden=true`. O percurso manual com leitor de tela continua pendente para a primeira release.
 
+## Rodada de organização e limpeza local — 2026-09-11
+
+| Verificação | Resultado |
+| --- | --- |
+| `node scripts/stage34-check.mjs` | PASS — allowlist e proteções validadas em diretório isolado |
+| `npm run clean:local:dry` | PASS — 26 alvos identificados |
+| proteção de `.env.local` e `node_modules` | PASS — conteúdo preservado |
+| `npm ci` | PASS — checkout reproduzível antes da limpeza |
+| espaço local | PASS — reduzido de 4,9 GB para 985 MB; cerca de 3,9 GB recuperados |
+
+O comando limita a remoção a builds Next/Tauri, caches, relatórios Playwright, temporários das etapas e arquivos incrementais. A simulação permite revisar cada alvo antes da remoção.
+
 ## Rodada de auditoria e expansão do roadmap — 2026-09-11
 
 | Verificação | Resultado |
