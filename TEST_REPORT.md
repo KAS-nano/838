@@ -333,6 +333,19 @@ Os artefatos são gerados em tags e não são versionados. A assinatura e a ates
 
 A execução dos três runners e o teste em sistemas físicos continuam pendentes até o workflow ser enviado ao GitHub. Certificados de assinatura não devem ser adicionados ao repositório.
 
+## Rodada de fixtures GPU nativas — 2026-09-12
+
+| Verificação | Resultado |
+| --- | --- |
+| `cargo +1.95.0 test --locked` | PASS — 6 testes Rust |
+| CIM Windows | PASS — NVIDIA/Intel, VRAM dedicada, vazio e limite de oito GPUs |
+| system_profiler macOS | PASS — Apple e memória unificada |
+| entradas hostis | PASS — JSON quebrado e saída acima de 64 KiB rejeitados |
+| `cargo +1.95.0 clippy --locked --all-targets -- -D warnings` | PASS |
+| `node scripts/stage39-check.mjs` | PASS — fixtures ligadas ao código e à matriz |
+
+Os parsers são testados de forma independente do sistema operacional. A matriz executará os mesmos testes nos runners nativos após o push.
+
 ## Rodada de auditoria e expansão do roadmap — 2026-09-11
 
 | Verificação | Resultado |

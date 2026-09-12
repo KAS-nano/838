@@ -24,6 +24,7 @@
 - Hardware Agent recebe política cargo-deny validada para advisories, licenças, crates proibidos e fontes.
 - Releases passam a incluir SBOM CycloneDX 1.5 do agente Rust e manifesto de proveniência ligado ao commit e aos lockfiles.
 - Hardware Agent ganha matriz de bundles de validação para Linux, Windows e macOS, com artefatos marcados como não assinados e checksums por plataforma.
+- Parser nativo de GPU ganha fixtures Windows/macOS e deixa de criar GPU fictícia para saída vazia; truncamentos acima de oito dispositivos agora geram aviso.
 - CI fixa Actions por SHA, executa OSV nos lockfiles e gera checksums junto ao SBOM de release; exceções temporárias possuem vencimento verificável.
 
 ## Em desenvolvimento

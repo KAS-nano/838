@@ -6,6 +6,8 @@ use std::fs;
 
 const MAX_GPUS: usize = 8;
 const MAX_LABEL_CHARS: usize = 160;
+#[cfg(any(target_os = "windows", target_os = "macos", test))]
+const MAX_NATIVE_OUTPUT_BYTES: usize = 64 * 1024;
 
 #[derive(Debug, Serialize)]
 #[serde(rename_all = "camelCase")]
@@ -138,7 +140,6 @@ fn run_native(program: &str, args: &[&str]) -> Result<String, String> {
     use std::process::{Command, Stdio};
     use std::thread;
     use std::time::{Duration, Instant};
-    const MAX_OUTPUT: u64 = 64 * 1024;
     let mut child = Command::new(program)
         .args(args)
         .stdin(Stdio::null())
@@ -152,7 +153,9 @@ fn run_native(program: &str, args: &[&str]) -> Result<String, String> {
         .ok_or_else(|| "native-output-unavailable".to_string())?;
     let reader = thread::spawn(move || {
         let mut bytes = Vec::new();
-        let _ = stdout.take(MAX_OUTPUT + 1).read_to_end(&mut bytes);
+        let _ = stdout
+            .take(MAX_NATIVE_OUTPUT_BYTES as u64 + 1)
+            .read_to_end(&mut bytes);
         bytes
     });
     let deadline = Instant::now() + Duration::from_secs(5);
@@ -176,7 +179,7 @@ fn run_native(program: &str, args: &[&str]) -> Result<String, String> {
     if !status.success() {
         return Err("native-command-failed".into());
     }
-    if bytes.len() as u64 > MAX_OUTPUT {
+    if bytes.len() > MAX_NATIVE_OUTPUT_BYTES {
         return Err("native-output-too-large".into());
     }
     String::from_utf8(bytes).map_err(|_| "native-output-invalid-utf8".into())
@@ -200,8 +203,11 @@ fn detect_gpus() -> (Vec<GpuInfo>, Vec<String>) {
         .unwrap_or_else(|warning| (Vec::new(), vec![warning]))
 }
 
-#[cfg(any(target_os = "windows", target_os = "macos"))]
+#[cfg(any(target_os = "windows", target_os = "macos", test))]
 fn parse_native_gpus(text: &str, source: &str, unified: bool) -> (Vec<GpuInfo>, Vec<String>) {
+    if text.len() > MAX_NATIVE_OUTPUT_BYTES {
+        return (Vec::new(), vec!["native-output-too-large".into()]);
+    }
     let Ok(value) = serde_json::from_str::<serde_json::Value>(text) else {
         return (Vec::new(), vec!["gpu-output-invalid-json".into()]);
     };
@@ -215,14 +221,20 @@ fn parse_native_gpus(text: &str, source: &str, unified: bool) -> (Vec<GpuInfo>, 
                 .map(|items| items.iter().collect())
         })
         .unwrap_or_else(|| vec![&value]);
+    let mut warnings = Vec::new();
+    if candidates.len() > MAX_GPUS {
+        warnings.push("gpu-limit-reached".into());
+    }
     let mut gpus = Vec::new();
     for candidate in candidates.into_iter().take(MAX_GPUS) {
-        let name = candidate
+        let Some(name) = candidate
             .get("Name")
             .or_else(|| candidate.get("sppci_model"))
             .or_else(|| candidate.get("_name"))
             .and_then(|item| item.as_str())
-            .unwrap_or("GPU desconhecida");
+        else {
+            continue;
+        };
         let clean_name = safe_label(name, "GPU desconhecida");
         let lower = clean_name.to_ascii_lowercase();
         let vendor = if unified {
@@ -252,11 +264,9 @@ fn parse_native_gpus(text: &str, source: &str, unified: bool) -> (Vec<GpuInfo>, 
             source: source.into(),
         });
     }
-    let warnings = if gpus.is_empty() {
-        vec!["gpu-not-detected".into()]
-    } else {
-        Vec::new()
-    };
+    if gpus.is_empty() {
+        warnings.push("gpu-not-detected".into());
+    }
     (gpus, warnings)
 }
 
@@ -286,5 +296,67 @@ mod tests {
         assert_eq!(vendor_from_id("0X10DE"), "NVIDIA");
         assert_eq!(vendor_from_id("0x1002"), "AMD");
         assert_eq!(vendor_from_id("private"), "Desconhecido");
+    }
+
+    #[test]
+    fn windows_cim_fixture_is_typed() {
+        let (gpus, warnings) = parse_native_gpus(
+            include_str!("../tests/fixtures/gpu/windows-single.json"),
+            "windows-cim",
+            false,
+        );
+        assert!(warnings.is_empty());
+        assert_eq!(gpus.len(), 2);
+        assert_eq!(gpus[0].vendor, "NVIDIA");
+        assert_eq!(gpus[0].vram_bytes, Some(8_589_934_592));
+        assert_eq!(gpus[0].memory_kind, "dedicated");
+        assert_eq!(gpus[1].vendor, "Intel");
+    }
+
+    #[test]
+    fn macos_fixture_uses_unified_memory() {
+        let (gpus, warnings) = parse_native_gpus(
+            include_str!("../tests/fixtures/gpu/macos-single.json"),
+            "macos-system-profiler",
+            true,
+        );
+        assert!(warnings.is_empty());
+        assert_eq!(gpus.len(), 1);
+        assert_eq!(gpus[0].name, "Apple M3 Pro");
+        assert_eq!(gpus[0].vendor, "Apple");
+        assert_eq!(gpus[0].memory_kind, "unified");
+        assert_eq!(gpus[0].vram_bytes, None);
+    }
+
+    #[test]
+    fn empty_and_invalid_outputs_are_reported() {
+        let (empty, empty_warnings) = parse_native_gpus(
+            include_str!("../tests/fixtures/gpu/windows-empty.json"),
+            "windows-cim",
+            false,
+        );
+        assert!(empty.is_empty());
+        assert_eq!(empty_warnings, vec!["gpu-not-detected"]);
+        let (invalid, invalid_warnings) = parse_native_gpus(
+            include_str!("../tests/fixtures/gpu/invalid.json"),
+            "windows-cim",
+            false,
+        );
+        assert!(invalid.is_empty());
+        assert_eq!(invalid_warnings, vec!["gpu-output-invalid-json"]);
+    }
+
+    #[test]
+    fn native_output_size_and_gpu_count_are_limited() {
+        let huge = "x".repeat(MAX_NATIVE_OUTPUT_BYTES + 1);
+        let (_, huge_warnings) = parse_native_gpus(&huge, "windows-cim", false);
+        assert_eq!(huge_warnings, vec!["native-output-too-large"]);
+        let (gpus, warnings) = parse_native_gpus(
+            include_str!("../tests/fixtures/gpu/windows-many.json"),
+            "windows-cim",
+            false,
+        );
+        assert_eq!(gpus.len(), MAX_GPUS);
+        assert_eq!(warnings, vec!["gpu-limit-reached"]);
     }
 }

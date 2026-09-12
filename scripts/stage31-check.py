@@ -10,7 +10,7 @@ tests = {
     "limite de rótulo": "MAX_LABEL_CHARS" in source,
     "leitura sysfs limitada": ".take(4096)" in source,
     "processo nativo limitado": "Duration::from_secs(5)" in source,
-    "saída nativa limitada": "MAX_OUTPUT: u64 = 64 * 1024" in source,
+    "saída nativa limitada": "MAX_NATIVE_OUTPUT_BYTES: usize = 64 * 1024" in source,
     "JSON nativo parseado": "parse_native_gpus" in source,
     "memória classificada": "memory_kind" in source,
     "testes Rust": "#[cfg(test)]" in source,

@@ -40,6 +40,8 @@ jobs:
           sudo apt-get install -y --no-install-recommends libwebkit2gtk-4.1-dev libxdo-dev libssl-dev libayatana-appindicator3-dev librsvg2-dev patchelf
       - name: Install pinned Rust toolchain
         run: rustup toolchain install 1.95.0 --profile minimal
+      - name: Test native parsers on runner
+        run: cargo +1.95.0 test --locked --manifest-path apps/hardware-agent/src-tauri/Cargo.toml
       - name: Build unsigned validation bundles
         id: tauri
         uses: tauri-apps/tauri-action@1deb371b0cd8bd54025b384f1cd735e725c4060f # action-v1.0.0

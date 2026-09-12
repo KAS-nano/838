@@ -1,0 +1,11 @@
+[
+  { "Name": "GPU 1", "AdapterRAM": 1 },
+  { "Name": "GPU 2", "AdapterRAM": 2 },
+  { "Name": "GPU 3", "AdapterRAM": 3 },
+  { "Name": "GPU 4", "AdapterRAM": 4 },
+  { "Name": "GPU 5", "AdapterRAM": 5 },
+  { "Name": "GPU 6", "AdapterRAM": 6 },
+  { "Name": "GPU 7", "AdapterRAM": 7 },
+  { "Name": "GPU 8", "AdapterRAM": 8 },
+  { "Name": "GPU 9", "AdapterRAM": 9 }
+]
