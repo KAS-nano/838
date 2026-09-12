@@ -322,6 +322,17 @@ O crate local foi marcado como privado. Seis advisories de manutenção chegam p
 
 Os artefatos são gerados em tags e não são versionados. A assinatura e a atestação dos instaladores dependem da futura matriz de builds nativos.
 
+## Rodada de matriz nativa — 2026-09-12
+
+| Verificação | Resultado |
+| --- | --- |
+| `node scripts/stage38-check.mjs` | PASS — três runners, bundles por sistema e Action fixada por SHA |
+| gerador de checksums | PASS — dois arquivos fixture verificados e nomes normalizados |
+| `cargo +1.95.0 build --release --locked` | PASS — binário Linux de produção compilado |
+| estado dos pacotes | validação não assinada, identificada no nome dos artefatos |
+
+A execução dos três runners e o teste em sistemas físicos continuam pendentes até o workflow ser enviado ao GitHub. Certificados de assinatura não devem ser adicionados ao repositório.
+
 ## Rodada de auditoria e expansão do roadmap — 2026-09-11
 
 | Verificação | Resultado |

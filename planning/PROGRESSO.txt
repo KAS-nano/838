@@ -119,7 +119,7 @@ P1.3 — ESTIMADOR COM EVIDÊNCIAS: 80% [~]
 [x] Perfil registra arquitetura de CPU e organização dedicada, compartilhada ou unificada da memória.
 [x] Memória unificada usa um único orçamento e preserva compatibilidade com perfis antigos.
 [ ] Executar avaliação contra um conjunto real oculto e definir limites de promoção.
-P1.4 — AGENTE LOCAL: 45% [~]
+P1.4 — AGENTE LOCAL: 55% [~]
 [x] Versão alinhada com o produto.
 [x] Snapshot v2 remove hostname e diferencia memória dedicada, unificada ou desconhecida.
 [x] Quantidade de GPUs, strings, sysfs, tempo e saída de processos nativos são limitados.
@@ -127,8 +127,9 @@ P1.4 — AGENTE LOCAL: 45% [~]
 [x] Testes unitários Rust cobrem normalização e limites de rótulos.
 [x] Cargo.lock versionado; fmt, clippy bloqueante e testes aprovados com Rust 1.95 no Linux.
 [x] CI Linux reproduz os testes nativos com dependências oficiais do Tauri.
+[x] Matriz de bundles de validação cobre Linux, Windows e macOS com checksums por plataforma.
 [ ] Adicionar fixtures e executar testes em Windows e macOS.
-[ ] Matriz de pacotes nativos, assinatura, notarização, checksums e SBOM.
+[ ] Executar a matriz remota, testar os instaladores, assinar, notarizar e publicar os pacotes.
 P1.5 — OBSERVABILIDADE, BACKUP E RECUPERAÇÃO: 60% [~]
 [x] Logs operacionais JSON usam campos fechados, requestId, rota, status, duração e fornecedor.
 [x] Erros desconhecidos registram somente o tipo e não serializam mensagem, payload ou segredo.
@@ -212,6 +213,8 @@ PASS stage34 — limpeza allowlist preserva .env.local e node_modules
 PASS stage35 — Actions por SHA, OSV, exceções vigentes, SBOM e hashes
 PASS stage36 — cargo-deny 0.20.2, SHA-256, política Rust e CI
 PASS stage37 — SBOMs web/Rust, checksums e proveniência vinculada ao commit
+PASS stage38 — matriz nativa de três sistemas e checksums exercitados com fixtures
+PASS cargo +1.95.0 build --release --locked — binário Linux de produção compilado
 PASS npm run clean:local:dry — 26 alvos descartáveis identificados
 PASS npm run clean:local — aproximadamente 3,9 GB recuperados; .env.local preservado
 PASS npm run test:e2e — 54 testes após integração da acessibilidade

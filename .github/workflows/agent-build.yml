@@ -1,0 +1,61 @@
+name: Hardware Agent native builds
+
+on:
+  workflow_dispatch:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: ${{ matrix.name }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Linux x86_64
+            platform: ubuntu-22.04
+            artifact: linux-x86_64
+            args: --bundles deb,appimage
+          - name: Windows x86_64
+            platform: windows-2025
+            artifact: windows-x86_64
+            args: --bundles nsis,msi
+          - name: macOS x86_64
+            platform: macos-14
+            artifact: macos-x86_64
+            args: --bundles app,dmg
+    runs-on: ${{ matrix.platform }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version-file: .node-version
+      - name: Install Linux bundle dependencies
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends libwebkit2gtk-4.1-dev libxdo-dev libssl-dev libayatana-appindicator3-dev librsvg2-dev patchelf
+      - name: Install pinned Rust toolchain
+        run: rustup toolchain install 1.95.0 --profile minimal
+      - name: Build unsigned validation bundles
+        id: tauri
+        uses: tauri-apps/tauri-action@1deb371b0cd8bd54025b384f1cd735e725c4060f # action-v1.0.0
+        with:
+          projectPath: apps/hardware-agent
+          args: ${{ matrix.args }} -- --locked
+          uploadWorkflowArtifacts: true
+          workflowArtifactNamePattern: agent838-[version]-${{ matrix.artifact }}-unsigned-[bundle]
+      - name: Generate package checksums
+        env:
+          ARTIFACT_PATHS: ${{ steps.tauri.outputs.artifactPaths }}
+          CHECKSUM_OUTPUT: agent838-${{ matrix.artifact }}-SHA256SUMS
+        run: node scripts/write-artifact-checksums.mjs
+      - name: Upload package checksums
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: agent838-${{ matrix.artifact }}-checksums
+          path: agent838-${{ matrix.artifact }}-SHA256SUMS
+          retention-days: 30

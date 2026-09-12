@@ -36,6 +36,13 @@ COMO APLICAR — DISTRIBUIÇÃO
 5. Criar canal stable e, se necessário, beta separado.
 6. Gerar SBOM e anexar hashes à release.
 
+PROGRESSO DA DISTRIBUIÇÃO — 2026-09-12
+[x] Workflow separado cobre Linux x86_64, Windows x86_64 e macOS x86_64.
+[x] Bundles usam Cargo.lock, Rust 1.95.0 e tauri-action 1.0.0 fixada por SHA.
+[x] Cada plataforma gera checksums SHA-256 exercitados por fixture independente.
+[!] Os artefatos atuais são builds de validação não assinados; executar o workflow remoto e testar cada instalador em sistema físico.
+[ ] Configurar certificado Windows e Apple Developer ID/notarização em secrets protegidos antes de publicar uma release estável.
+
 ARQUIVOS PREVISTOS
 apps/hardware-agent/src-tauri/src/lib.rs
 apps/hardware-agent/src-tauri/Cargo.toml
@@ -65,4 +72,3 @@ CRITÉRIOS DE ACEITE
 
 REVERSÃO
 Distribuir novos comandos atrás de versão de protocolo. O web mantém entrada manual quando o agente estiver ausente, antigo ou incompatível.
-
