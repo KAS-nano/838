@@ -22,6 +22,7 @@
 - Limpeza local segura ganha simulação e remove builds, caches e resultados sem tocar em dependências ou configurações locais.
 - CI fixa todas as Actions por SHA, verifica lockfiles com OSV e gera checksums dos metadados de release.
 - Hardware Agent recebe política cargo-deny validada para advisories, licenças, crates proibidos e fontes.
+- Releases passam a incluir SBOM CycloneDX 1.5 do agente Rust e manifesto de proveniência ligado ao commit e aos lockfiles.
 - CI fixa Actions por SHA, executa OSV nos lockfiles e gera checksums junto ao SBOM de release; exceções temporárias possuem vencimento verificável.
 
 ## Em desenvolvimento

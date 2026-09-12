@@ -19,6 +19,6 @@ const today = new Date().toISOString().slice(0, 10);
 for (const [, date] of config.matchAll(/ignoreUntil\s*=\s*(\d{4}-\d{2}-\d{2})/g)) {
   if (date <= today) failures.push(`exceção vencida: ${date}`);
 }
-if (!roadmap.includes("OBJETIVO 08.6 — SUPPLY CHAIN REPRODUZÍVEL [P0] [~ 75%]")) failures.push("progresso supply chain ausente");
+if (!roadmap.includes("OBJETIVO 08.6 — SUPPLY CHAIN REPRODUZÍVEL [P0] [~ 90%]")) failures.push("progresso supply chain ausente");
 if (failures.length) { failures.forEach(failure => console.error(`FAIL ${failure}`)); process.exit(1); }
 console.log("PASS supply chain: Actions fixadas, OSV, exceções vigentes, SBOM e hashes de release.");

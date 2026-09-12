@@ -311,6 +311,17 @@ O `npm audit fix --force` foi recusado porque propõe rebaixar Prisma 7 para 6. 
 
 O crate local foi marcado como privado. Seis advisories de manutenção chegam pelas cadeias GTK 3 e `urlpattern` do Tauri e estão documentados; novos advisories continuam bloqueando a CI.
 
+## Rodada de SBOM Rust e proveniência — 2026-09-12
+
+| Verificação | Resultado |
+| --- | --- |
+| cargo-cyclonedx 0.5.9 | PASS — binário oficial conferido por SHA-256 `fb8dbe…f6d8` |
+| SBOM Rust CycloneDX 1.5 | PASS — componente `agent838` e 297 componentes inventariados |
+| manifesto de proveniência | PASS — commit completo, dois lockfiles e dois SBOMs vinculados por SHA-256 |
+| `node scripts/stage37-check.mjs` | PASS — versões, hashes, workflow e artefatos preservados |
+
+Os artefatos são gerados em tags e não são versionados. A assinatura e a atestação dos instaladores dependem da futura matriz de builds nativos.
+
 ## Rodada de auditoria e expansão do roadmap — 2026-09-11
 
 | Verificação | Resultado |

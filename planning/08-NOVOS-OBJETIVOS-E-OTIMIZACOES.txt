@@ -82,7 +82,7 @@ Testar:
 - bootstrap repetido e rollback preservam a versão anterior.
 Aceite: toda informação pública possui origem/data e nenhuma falha apaga catálogo válido.
 
-OBJETIVO 08.6 — SUPPLY CHAIN REPRODUZÍVEL [P0] [~ 75%]
+OBJETIVO 08.6 — SUPPLY CHAIN REPRODUZÍVEL [P0] [~ 90%]
 Aplicar:
 1. Rodar OSV-Scanner sobre lockfiles e SBOM no CI.
 2. Criar Cargo.lock e política cargo-deny para advisories, fontes e licenças.
@@ -94,11 +94,12 @@ Concluído nesta rodada:
 [x] OSV Scanner oficial 2.3.8 verifica recursivamente package-lock.json e Cargo.lock na CI.
 [x] Três alertas transitivos do Prisma possuem justificativa, responsável e vencimento em 2026-12-11.
 [x] Exceção vencida e Action sem SHA fazem o stage35 falhar.
-[x] Release produz SBOM CycloneDX e SHA256SUMS dos lockfiles, notices e SBOM.
+[x] Release produz SBOMs CycloneDX separados para web e Rust e SHA256SUMS dos metadados e lockfiles.
+[x] Manifesto de proveniência vincula os dois SBOMs e lockfiles ao SHA completo do commit e workflow.
 [x] cargo-deny 0.20.2 validado localmente com download autenticado por SHA-256.
 [x] Política bloqueia advisories não aceitos, licença fora da allowlist, wildcard e fontes desconhecidas.
 [x] Advisories de manutenção herdados do Tauri/GTK possuem justificativa rastreável.
-[ ] Adicionar SBOM Rust e proveniência/assinatura dos pacotes nativos.
+[ ] Assinar os pacotes nativos e publicar atestação verificável após criar a matriz de builds.
 Testar:
 - fixture vulnerável controlada deve falhar;
 - exceção vencida deve falhar;

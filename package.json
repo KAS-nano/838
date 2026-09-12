@@ -16,6 +16,8 @@
     "db:restore:drill": "bash scripts/db-restore-drill.sh",
     "agent:check": "cargo +1.95.0 fmt --manifest-path apps/hardware-agent/src-tauri/Cargo.toml -- --check && cargo +1.95.0 test --locked --manifest-path apps/hardware-agent/src-tauri/Cargo.toml && cargo +1.95.0 clippy --locked --manifest-path apps/hardware-agent/src-tauri/Cargo.toml --all-targets -- -D warnings",
     "agent:audit": "bash scripts/check-cargo-deny.sh",
+    "sbom:rust": "bash scripts/generate-rust-sbom.sh",
+    "release:provenance": "node scripts/generate-release-provenance.mjs",
     "auth:generate": "npx auth@latest generate --adapter prisma --dialect postgresql",
     "test:stages": "bash scripts/run-stage-tests.sh",
     "test:e2e": "playwright test",

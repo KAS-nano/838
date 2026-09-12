@@ -15,6 +15,8 @@ Principais componentes planejados/usados:
 Geração e verificação do QR Code de apoio:
 - `qrcode` 1.5.4 — MIT, geração local durante o build; https://github.com/soldair/node-qrcode.
 - `jsqr` 1.4.0 — Apache-2.0, decodificação independente nos testes; https://github.com/cozmo/jsQR.
+- `cargo-cyclonedx` 0.5.9 — Apache-2.0, geração do SBOM Rust em releases; https://github.com/CycloneDX/cyclonedx-rust-cargo.
+- `cargo-deny` 0.20.2 — Apache-2.0/MIT, auditoria de advisories, licenças e fontes Rust; https://github.com/EmbarkStudios/cargo-deny.
 
 Projetos considerados como integração/referência, sem white-label do código neste pacote:
 - Ollama;

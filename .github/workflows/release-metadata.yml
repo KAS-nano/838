@@ -18,15 +18,23 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run check:versions
-      - name: Generate CycloneDX SBOM
-        run: npm sbom --sbom-format cyclonedx > sbom.cdx.json
+      - name: Install pinned Rust toolchain
+        run: rustup toolchain install 1.95.0 --profile minimal
+      - name: Generate web CycloneDX SBOM
+        run: npm sbom --sbom-format cyclonedx > sbom-web.cdx.json
+      - name: Generate Rust CycloneDX SBOM
+        run: npm run sbom:rust
+      - name: Generate release provenance manifest
+        run: npm run release:provenance
       - name: Generate release checksums
-        run: sha256sum sbom.cdx.json THIRD_PARTY_NOTICES.md package-lock.json apps/hardware-agent/src-tauri/Cargo.lock > SHA256SUMS
+        run: sha256sum sbom-web.cdx.json sbom-rust.cdx.json release-provenance.json THIRD_PARTY_NOTICES.md package-lock.json apps/hardware-agent/src-tauri/Cargo.lock > SHA256SUMS
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: release-metadata-${{ github.ref_name }}
           path: |
-            sbom.cdx.json
+            sbom-web.cdx.json
+            sbom-rust.cdx.json
+            release-provenance.json
             THIRD_PARTY_NOTICES.md
             SHA256SUMS
           retention-days: 90
