@@ -102,20 +102,25 @@ p {
   align-items:center;
   height:var(--header-height);
   padding:0 var(--page-padding);
-  border-bottom:1px solid var(--border);
-  background:rgba(3,5,4,.94);
-  backdrop-filter:blur(14px)
+  border-bottom:1px solid rgba(89,255,123,.14);
+  background:linear-gradient(180deg,rgba(7,11,8,.98),rgba(3,5,4,.94));
+  box-shadow:0 10px 35px rgba(0,0,0,.2);
+  backdrop-filter:blur(18px)
 }
+.topbar:after{content:"";position:absolute;inset:auto 0 -1px;height:1px;background:linear-gradient(90deg,transparent,rgba(89,255,123,.28),transparent);pointer-events:none}
 .brand-center {
   justify-self:center;
   font-size:29px;
   font-weight:900;
   color:var(--accent);
-  letter-spacing:.42em;
-  text-indent:.42em;
+  letter-spacing:.34em;
+  text-indent:.34em;
+  padding:10px 0;
   line-height:1;
-  text-shadow:0 0 18px rgba(89,255,123,.16)
+  text-shadow:0 0 22px rgba(89,255,123,.18);
+  transition:color .15s,text-shadow .15s
 }
+.brand-center:hover{color:#8aff9f;text-shadow:0 0 28px rgba(89,255,123,.32)}
 .topbar-side {
   min-width:0;
   display:flex;
@@ -637,8 +642,10 @@ pre {
 }
 
 /* Home estática alinhada à composição principal do Next. */
-.header-caption,.header-action{font-size:12px;color:var(--muted)}
-.header-action{color:var(--foreground)}
+.header-caption{display:inline-flex;align-items:center;gap:9px;overflow:hidden;color:var(--muted);font-size:10px;font-weight:600;letter-spacing:.14em;text-overflow:ellipsis;text-transform:uppercase;white-space:nowrap}
+.header-caption:before{content:"";flex:0 0 auto;width:6px;height:6px;border-radius:50%;background:var(--accent);box-shadow:0 0 12px rgba(89,255,123,.65)}
+.header-action{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:38px;padding:8px 13px;border:1px solid var(--border);border-radius:9px;background:rgba(255,255,255,.02);color:var(--foreground);font-size:11px;font-weight:600;white-space:nowrap;transition:border-color .15s,background .15s,color .15s}
+.header-action:hover{border-color:rgba(89,255,123,.35);background:var(--accent-soft);color:var(--accent)}
 .home-content{max-width:1500px;padding:38px var(--page-padding) 56px}
 .home-parity-hero{grid-template-columns:1.1fr 1fr;align-items:center;gap:clamp(28px,5vw,80px);min-height:68vh;padding:48px 0 64px}
 .home-parity-hero h1{font-size:clamp(38px,5vw,72px);line-height:1.06;letter-spacing:-.055em;font-weight:600;max-width:none}
@@ -867,6 +874,12 @@ legend {
     padding:8px;
     font-size:11px;
     min-height:36px
+  }
+  .header-action {
+    min-height:38px;
+    padding:8px 9px;
+    gap:5px;
+    font-size:10px
   }
   .menu-toggle {
     min-height:38px;

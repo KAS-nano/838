@@ -58,9 +58,9 @@ export function SiteFrame({ children }: { children: React.ReactNode }) {
     <a className="skip-link" href="#main-content">Pular para o conteúdo</a>
     <ModelRain />
     <header className="site-header">
-      <div>{!bare && <button ref={menuButton} className="menu-toggle" type="button" aria-label={open ? "Fechar menu" : "Abrir menu"} aria-expanded={open} aria-controls="site-navigation" onClick={() => setOpen(!open)}>{open ? <X size={19} /> : <Menu size={19} />}<span>Menu</span></button>}<span className="header-caption">IA certa. Hardware certo.</span></div>
+      <div className="header-side header-side-start">{!bare && <button ref={menuButton} className="menu-toggle" type="button" aria-label={open ? "Fechar menu" : "Abrir menu"} aria-expanded={open} aria-controls="site-navigation" onClick={() => setOpen(!open)}>{open ? <X size={19} /> : <Menu size={19} />}<span>Menu</span></button>}<span className="header-caption">IA certa. Hardware certo.</span></div>
       <Link href="/" className="site-logo" aria-label="838 — Início" onClick={() => setOpen(false)}>838</Link>
-      <Link href={bare ? (pathname === "/" ? "/explorar" : "/dashboard") : "/onboarding"} className="header-action" onClick={() => setOpen(false)}>{bare ? (pathname === "/" ? "Explorar →" : "Dashboard →") : "Meu hardware →"}</Link>
+      <div className="header-side header-side-end"><Link href={bare ? (pathname === "/" ? "/explorar" : "/dashboard") : "/onboarding"} className="header-action" onClick={() => setOpen(false)}>{bare ? (pathname === "/" ? "Explorar" : "Dashboard") : "Meu hardware"}<span aria-hidden="true">→</span></Link></div>
     </header>
     {!bare && <>
       {open && <button className="menu-backdrop" aria-label="Fechar navegação" onClick={() => { setOpen(false); menuButton.current?.focus(); }} />}

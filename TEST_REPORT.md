@@ -357,6 +357,16 @@ Os parsers são testados de forma independente do sistema operacional. A matriz 
 | `cargo +1.95.0 clippy --locked --all-targets -- -D warnings` | PASS |
 | `node scripts/stage40-check.mjs` | PASS — fixture e controles preservados |
 
+## Rodada de ajuste do header — 2026-09-12
+
+| Verificação | Resultado |
+| --- | --- |
+| alinhamento em 1440 px | PASS — centro da marca em 719,99 px para viewport de 720 px |
+| alinhamento em 390 px | PASS — centro da marca em 194,99 px para viewport de 195 px |
+| overflow horizontal | PASS — ausente nas duas larguras |
+| link de salto | PASS — oculto normalmente e disponível ao receber foco |
+| `node scripts/stage41-check.mjs` | PASS — contrato Next/preview preservado |
+
 ## Rodada de auditoria e expansão do roadmap — 2026-09-11
 
 | Verificação | Resultado |

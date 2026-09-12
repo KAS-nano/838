@@ -155,7 +155,7 @@ P2.2 — HISTÓRICO COMUNITÁRIO: 0% [ ]
 P2.3 — CUSTO LOCAL X API: 0% [ ]
 P2.4 — FAVORITOS, CENÁRIOS E COMPARAÇÕES: 0% [ ]
 P2.5 — INSTALAÇÃO GUIADA: 0% [ ]
-P3.1 — RENDERIZAÇÃO NEXT/PREVIEW E PUBLICAÇÃO: 95% [~]
+P3.1 — RENDERIZAÇÃO NEXT/PREVIEW E PUBLICAÇÃO: 97% [~]
 [x] Build Next de produção e preview gerado validados.
 [x] Primeira publicação funciona em modo seed, sem banco ou autenticação.
 [x] Guia de Vercel documenta configuração, variáveis e domínio próprio.
@@ -165,6 +165,7 @@ P3.1 — RENDERIZAÇÃO NEXT/PREVIEW E PUBLICAÇÃO: 95% [~]
 [x] URL https://838.vercel.app publicada e validada com deploy:smoke.
 [x] Home do preview alinhada ao conteúdo e à composição visual da home Next publicada.
 [x] Teste de paridade impede divergência de título, modelo, métricas e capacidades da home.
+[x] Header Next/preview possui marca central, ações simétricas, menu compacto e skip link visível apenas sob foco.
 [ ] Validar dispositivo físico e criar a primeira tag de release.
 P3.2 — PWA E CACHE OFFLINE: 0% [ ]
 P3.3 — MANUTENÇÃO E LIMPEZA LOCAL: 35% [~]
@@ -221,6 +222,7 @@ PASS cargo +1.95.0 test --locked — seis testes Rust, incluindo quatro cenário
 PASS stage39 — fixtures Windows/macOS ligadas ao parser e à matriz nativa
 PASS cargo +1.95.0 test --locked — nove testes Rust, incluindo sysfs e timeout real
 PASS stage40 — fixture sysfs Linux e controles de processo preservados
+PASS stage41 — header Next/preview e comportamento do skip link preservados
 PASS npm run clean:local:dry — 26 alvos descartáveis identificados
 PASS npm run clean:local — aproximadamente 3,9 GB recuperados; .env.local preservado
 PASS npm run test:e2e — 54 testes após integração da acessibilidade
