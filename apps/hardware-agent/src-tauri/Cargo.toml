@@ -4,6 +4,7 @@ version = "1.0.0"
 description = "838 Hardware Agent - leitura local de hardware com consentimento"
 edition = "2021"
 rust-version = "1.95"
+publish = false
 
 [lib]
 name = "agent838_lib"

@@ -301,6 +301,16 @@ O comando limita a remoção a builds Next/Tauri, caches, relatórios Playwright
 
 O `npm audit fix --force` foi recusado porque propõe rebaixar Prisma 7 para 6. O 838 usa PostgreSQL e não abre conexões MySQL; as exceções não são permanentes e expiram automaticamente. A execução do OSV ocorrerá no GitHub após o push.
 
+## Rodada cargo-deny — 2026-09-12
+
+| Verificação | Resultado |
+| --- | --- |
+| cargo-deny 0.20.2 | PASS — advisories, bans, licenses e sources |
+| SHA-256 oficial do binário | PASS — `9f12ed…c8d5f` |
+| `node scripts/stage36-check.mjs` | PASS — política, versão, checksum e CI preservados |
+
+O crate local foi marcado como privado. Seis advisories de manutenção chegam pelas cadeias GTK 3 e `urlpattern` do Tauri e estão documentados; novos advisories continuam bloqueando a CI.
+
 ## Rodada de auditoria e expansão do roadmap — 2026-09-11
 
 | Verificação | Resultado |

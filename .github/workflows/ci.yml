@@ -112,6 +112,9 @@ jobs:
           sudo apt-get install -y --no-install-recommends libwebkit2gtk-4.1-dev libxdo-dev libssl-dev libayatana-appindicator3-dev librsvg2-dev
       - name: Install pinned Rust toolchain
         run: rustup toolchain install 1.95.0 --profile minimal --component rustfmt,clippy
+      - name: Audit Rust advisories, licenses and sources
+        working-directory: .
+        run: npm run agent:audit
       - run: cargo +1.95.0 fmt -- --check
       - run: cargo +1.95.0 test --locked
       - run: cargo +1.95.0 clippy --locked --all-targets -- -D warnings
