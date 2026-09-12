@@ -25,6 +25,7 @@
 - Releases passam a incluir SBOM CycloneDX 1.5 do agente Rust e manifesto de proveniência ligado ao commit e aos lockfiles.
 - Hardware Agent ganha matriz de bundles de validação para Linux, Windows e macOS, com artefatos marcados como não assinados e checksums por plataforma.
 - Parser nativo de GPU ganha fixtures Windows/macOS e deixa de criar GPU fictícia para saída vazia; truncamentos acima de oito dispositivos agora geram aviso.
+- Detecção Linux passa a aceitar uma raiz sysfs isolada para testes e o encerramento por timeout de comandos nativos é exercitado com processo real.
 - CI fixa Actions por SHA, executa OSV nos lockfiles e gera checksums junto ao SBOM de release; exceções temporárias possuem vencimento verificável.
 
 ## Em desenvolvimento

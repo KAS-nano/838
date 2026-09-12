@@ -346,6 +346,17 @@ A execução dos três runners e o teste em sistemas físicos continuam pendente
 
 Os parsers são testados de forma independente do sistema operacional. A matriz executará os mesmos testes nos runners nativos após o push.
 
+## Rodada de fixtures Linux e timeout — 2026-09-12
+
+| Verificação | Resultado |
+| --- | --- |
+| fixture sysfs | PASS — NVIDIA com 8 GiB dedicada e Intel sem memória reportada |
+| sysfs indisponível | PASS — detecção parcial informa os dois avisos esperados |
+| processo nativo lento | PASS — processo encerrado pelo limite reduzido do teste |
+| `cargo +1.95.0 test --locked` | PASS — 9 testes Rust |
+| `cargo +1.95.0 clippy --locked --all-targets -- -D warnings` | PASS |
+| `node scripts/stage40-check.mjs` | PASS — fixture e controles preservados |
+
 ## Rodada de auditoria e expansão do roadmap — 2026-09-11
 
 | Verificação | Resultado |

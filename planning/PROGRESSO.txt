@@ -1,6 +1,6 @@
 CONTROLE DE PROGRESSO DAS MELHORIAS DO 838
 Atualizado em: 2026-09-12
-Progresso global: 60%
+Progresso global: 61%
 
 LEGENDA
 [x] concluído e validado
@@ -119,7 +119,7 @@ P1.3 — ESTIMADOR COM EVIDÊNCIAS: 80% [~]
 [x] Perfil registra arquitetura de CPU e organização dedicada, compartilhada ou unificada da memória.
 [x] Memória unificada usa um único orçamento e preserva compatibilidade com perfis antigos.
 [ ] Executar avaliação contra um conjunto real oculto e definir limites de promoção.
-P1.4 — AGENTE LOCAL: 70% [~]
+P1.4 — AGENTE LOCAL: 75% [~]
 [x] Versão alinhada com o produto.
 [x] Snapshot v2 remove hostname e diferencia memória dedicada, unificada ou desconhecida.
 [x] Quantidade de GPUs, strings, sysfs, tempo e saída de processos nativos são limitados.
@@ -129,6 +129,7 @@ P1.4 — AGENTE LOCAL: 70% [~]
 [x] CI Linux reproduz os testes nativos com dependências oficiais do Tauri.
 [x] Matriz de bundles de validação cobre Linux, Windows e macOS com checksums por plataforma.
 [x] Fixtures Windows/macOS validam JSON tipado, vazio, inválido, tamanho e limite de GPUs sem depender do hardware.
+[x] Leitura sysfs Linux aceita fixture isolada e processo lento é encerrado por timeout exercitado.
 [!] Executar essas fixtures nos runners Windows/macOS após sincronizar o workflow.
 [ ] Executar a matriz remota, testar os instaladores, assinar, notarizar e publicar os pacotes.
 P1.5 — OBSERVABILIDADE, BACKUP E RECUPERAÇÃO: 60% [~]
@@ -218,6 +219,8 @@ PASS stage38 — matriz nativa de três sistemas e checksums exercitados com fix
 PASS cargo +1.95.0 build --release --locked — binário Linux de produção compilado
 PASS cargo +1.95.0 test --locked — seis testes Rust, incluindo quatro cenários de GPU nativa
 PASS stage39 — fixtures Windows/macOS ligadas ao parser e à matriz nativa
+PASS cargo +1.95.0 test --locked — nove testes Rust, incluindo sysfs e timeout real
+PASS stage40 — fixture sysfs Linux e controles de processo preservados
 PASS npm run clean:local:dry — 26 alvos descartáveis identificados
 PASS npm run clean:local — aproximadamente 3,9 GB recuperados; .env.local preservado
 PASS npm run test:e2e — 54 testes após integração da acessibilidade

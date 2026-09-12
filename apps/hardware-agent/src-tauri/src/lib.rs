@@ -1,7 +1,7 @@
 use serde::Serialize;
 use sysinfo::System;
 
-#[cfg(target_os = "linux")]
+#[cfg(any(target_os = "linux", test))]
 use std::fs;
 
 const MAX_GPUS: usize = 8;
@@ -71,9 +71,14 @@ fn get_hardware_snapshot() -> HardwareSnapshot {
 
 #[cfg(target_os = "linux")]
 fn detect_gpus() -> (Vec<GpuInfo>, Vec<String>) {
+    detect_linux_gpus(std::path::Path::new("/sys/class/drm"))
+}
+
+#[cfg(any(target_os = "linux", test))]
+fn detect_linux_gpus(root: &std::path::Path) -> (Vec<GpuInfo>, Vec<String>) {
     let mut gpus = Vec::new();
     let mut warnings = Vec::new();
-    match fs::read_dir("/sys/class/drm") {
+    match fs::read_dir(root) {
         Ok(entries) => {
             for entry in entries.flatten() {
                 if gpus.len() == MAX_GPUS {
@@ -113,7 +118,7 @@ fn detect_gpus() -> (Vec<GpuInfo>, Vec<String>) {
     (gpus, warnings)
 }
 
-#[cfg(target_os = "linux")]
+#[cfg(any(target_os = "linux", test))]
 fn read_small_file(path: &std::path::Path) -> String {
     use std::io::Read;
     let Ok(file) = fs::File::open(path) else {
@@ -136,6 +141,21 @@ fn vendor_from_id(value: &str) -> &'static str {
 
 #[cfg(any(target_os = "windows", target_os = "macos"))]
 fn run_native(program: &str, args: &[&str]) -> Result<String, String> {
+    run_native_with_limits(
+        program,
+        args,
+        std::time::Duration::from_secs(5),
+        MAX_NATIVE_OUTPUT_BYTES,
+    )
+}
+
+#[cfg(any(target_os = "windows", target_os = "macos", test))]
+fn run_native_with_limits(
+    program: &str,
+    args: &[&str],
+    timeout: std::time::Duration,
+    max_output_bytes: usize,
+) -> Result<String, String> {
     use std::io::Read;
     use std::process::{Command, Stdio};
     use std::thread;
@@ -154,11 +174,11 @@ fn run_native(program: &str, args: &[&str]) -> Result<String, String> {
     let reader = thread::spawn(move || {
         let mut bytes = Vec::new();
         let _ = stdout
-            .take(MAX_NATIVE_OUTPUT_BYTES as u64 + 1)
+            .take(max_output_bytes as u64 + 1)
             .read_to_end(&mut bytes);
         bytes
     });
-    let deadline = Instant::now() + Duration::from_secs(5);
+    let deadline = Instant::now() + timeout;
     let status = loop {
         if let Some(status) = child
             .try_wait()
@@ -179,7 +199,7 @@ fn run_native(program: &str, args: &[&str]) -> Result<String, String> {
     if !status.success() {
         return Err("native-command-failed".into());
     }
-    if bytes.len() > MAX_NATIVE_OUTPUT_BYTES {
+    if bytes.len() > max_output_bytes {
         return Err("native-output-too-large".into());
     }
     String::from_utf8(bytes).map_err(|_| "native-output-invalid-utf8".into())
@@ -358,5 +378,40 @@ mod tests {
         );
         assert_eq!(gpus.len(), MAX_GPUS);
         assert_eq!(warnings, vec!["gpu-limit-reached"]);
+    }
+
+    #[test]
+    fn linux_sysfs_fixture_is_typed() {
+        let root =
+            std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures/gpu/linux");
+        let (gpus, warnings) = detect_linux_gpus(&root);
+        assert!(warnings.is_empty());
+        assert_eq!(gpus.len(), 2);
+        assert_eq!(gpus[0].vendor, "NVIDIA");
+        assert_eq!(gpus[0].vram_bytes, Some(8_589_934_592));
+        assert_eq!(gpus[0].memory_kind, "dedicated");
+        assert_eq!(gpus[1].vendor, "Intel");
+        assert_eq!(gpus[1].memory_kind, "unknown");
+    }
+
+    #[test]
+    fn linux_missing_sysfs_reports_partial_detection() {
+        let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
+            .join("tests/fixtures/gpu/linux-missing");
+        let (gpus, warnings) = detect_linux_gpus(&root);
+        assert!(gpus.is_empty());
+        assert_eq!(warnings, vec!["gpu-sysfs-unavailable", "gpu-not-detected"]);
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn slow_native_process_is_terminated() {
+        let result = run_native_with_limits(
+            "sh",
+            &["-c", "sleep 1"],
+            std::time::Duration::from_millis(20),
+            1024,
+        );
+        assert_eq!(result, Err("native-command-timeout".into()));
     }
 }
