@@ -42,11 +42,11 @@
     "node": "22.x"
   },
   "dependencies": {
-    "@better-auth/prisma-adapter": "1.7.2",
+    "@better-auth/prisma-adapter": "1.7.3",
     "@prisma/adapter-pg": "7.10.0",
     "@prisma/client": "7.10.0",
     "@radix-ui/react-slot": "^1.2.3",
-    "better-auth": "1.7.2",
+    "better-auth": "1.7.3",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "dotenv": "^17.2.0",
