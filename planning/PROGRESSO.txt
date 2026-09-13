@@ -228,3 +228,12 @@ PASS npm run clean:local — aproximadamente 3,9 GB recuperados; .env.local pres
 PASS npm run test:e2e — 54 testes após integração da acessibilidade
 PASS npm run test:e2e — 38 testes com Content-Security-Policy bloqueante
 LIMITAÇÃO npm install --package-lock-only não foi executado porque este ambiente bloqueou download remoto; nenhuma dependência nova foi adicionada nesta rodada.
+
+RODADA 2026-09-13 — CHECKSUMS DOS INSTALADORES [x]
+[x] Hash calculado por streaming, sem carregar o instalador inteiro em memória.
+[x] Nomes duplicados (incluindo diferença apenas de maiúsculas), diretórios e saída sobre o artefato são rejeitados.
+[x] Teste comportamental integrado ao runner: hashes conhecidos, ordem, espaços, ausência, duplicação e sobrescrita.
+PASS node scripts/artifact-checksums-test.mjs
+PASS ESLint dos dois scripts alterados; git diff --check.
+LIMITAÇÃO stage38: spawnSync retornou EPERM no ambiente local; execução completa da CI continua pendente.
+Percentuais globais mantidos: esta rodada endurece uma funcionalidade existente.

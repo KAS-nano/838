@@ -375,3 +375,9 @@ Os parsers são testados de forma independente do sistema operacional. A matriz 
 | repositórios externos | PASS — seis projetos oficiais avaliados com condição de adoção |
 
 A criação do roadmap não altera o percentual das funcionalidades: todos os novos objetivos começam em 0% e só avançarão após implementação e evidência de teste.
+
+## Checksums dos instaladores — 2026-09-13
+
+Teste comportamental aprovado para SHA-256 de `abc` e arquivo vazio, nomes com espaços, ordenação estável, duplicação incluindo maiúsculas, arquivo ausente, diretório e preservação da saída/artefato original. O gerador lê arquivos por streaming. ESLint dos scripts e `git diff --check` passaram.
+
+A tentativa do estágio 38 retornou `spawnSync EPERM` neste ambiente. Isso não constitui validação dos builds nativos ou da suíte completa; os testes específicos acima foram executados separadamente.

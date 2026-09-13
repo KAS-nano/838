@@ -1,5 +1,7 @@
 # Changelog
 
+- Checksums dos instaladores usam leitura por streaming, ordenação estável e rejeitam nomes duplicados para evitar verificações ambíguas.
+
 ## Em desenvolvimento — arquitetura de memória
 
 - O perfil de hardware passa a registrar arquitetura da CPU e organização da memória.

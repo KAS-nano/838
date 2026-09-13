@@ -1,5 +1,6 @@
 import { createHash } from "node:crypto";
-import { readFile, stat, writeFile } from "node:fs/promises";
+import { createReadStream } from "node:fs";
+import { stat, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 const paths = (process.env.ARTIFACT_PATHS ?? "")
@@ -10,11 +11,25 @@ const output = process.env.CHECKSUM_OUTPUT ?? "NATIVE-SHA256SUMS";
 
 if (paths.length === 0) throw new Error("ARTIFACT_PATHS não contém pacotes nativos.");
 
-const lines = [];
-for (const artifactPath of paths.sort()) {
+const names = new Set();
+const artifacts = [];
+for (const artifactPath of paths) {
+  const name = path.basename(artifactPath);
+  // A lista deve continuar verificável depois de extrair os pacotes no Windows.
+  const normalized = name.toLowerCase();
+  if (names.has(normalized)) throw new Error(`Nome de artefato duplicado: ${name}`);
+  if (/[\x00-\x1f\x7f\\]/.test(name)) throw new Error("Nome de artefato incompatível com SHA256SUMS.");
+  if (path.resolve(artifactPath) === path.resolve(output)) throw new Error("A saída não pode substituir um artefato.");
   if (!(await stat(artifactPath)).isFile()) throw new Error(`Artefato não é arquivo: ${artifactPath}`);
-  const digest = createHash("sha256").update(await readFile(artifactPath)).digest("hex");
-  lines.push(`${digest}  ${path.basename(artifactPath)}`);
+  names.add(normalized);
+  artifacts.push({ artifactPath, name });
+}
+
+const lines = [];
+for (const { artifactPath, name } of artifacts.sort((a, b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0)) {
+  const hash = createHash("sha256");
+  for await (const chunk of createReadStream(artifactPath)) hash.update(chunk);
+  lines.push(`${hash.digest("hex")}  ${name}`);
 }
 
 await writeFile(output, `${lines.join("\n")}\n`, { flag: "wx" });
