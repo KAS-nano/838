@@ -1,13 +1,13 @@
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
-import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, existsSync, rmSync } from "node:fs";
+import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, existsSync, readdirSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 
 const root = mkdtempSync(path.join(tmpdir(), "838-artifact-checksums-"));
 const script = path.resolve("scripts/write-artifact-checksums.mjs");
-const run = (paths, output, jsonPaths) => spawnSync(process.execPath, [script], {
-  env: { ...process.env, ARTIFACT_PATHS: paths.join("\n"), ARTIFACT_PATHS_JSON: jsonPaths, CHECKSUM_OUTPUT: output },
+const run = (paths, output, jsonPaths, directory) => spawnSync(process.execPath, [script], {
+  env: { ...process.env, ARTIFACT_PATHS: paths.join("\n"), ARTIFACT_PATHS_JSON: jsonPaths, CHECKSUM_OUTPUT: output, ARTIFACT_DIRECTORY: directory },
   encoding: "utf8",
 });
 try {
@@ -45,6 +45,20 @@ try {
   }
   assert.notEqual(run([a], a).status, 0);
   assert.equal(readFileSync(a, "utf8"), "abc", "artefato original preservado");
+  const app = path.join(root, "838 Hardware.app");
+  mkdirSync(app);
+  const staged = path.join(root, "packages");
+  assert.notEqual(run([], undefined, JSON.stringify([app]), staged).status, 0);
+  assert.equal(existsSync(staged), false, "arquivo compactado ausente: nenhum pacote preparado");
+  writeFileSync(`${app}.tar.gz`, "abc");
+  assert.equal(run([], undefined, JSON.stringify([app, b]), staged).status, 0);
+  assert.deepEqual(readdirSync(staged).sort(), ["838 Hardware.app.tar.gz", "SHA256SUMS", "b.bin"]);
+  assert.equal(readFileSync(path.join(staged, "838 Hardware.app.tar.gz"), "utf8"), "abc");
+  assert.equal(readFileSync(path.join(staged, "SHA256SUMS"), "utf8"), expected.replace("a package.bin", "838 Hardware.app.tar.gz"));
+  assert.notEqual(run([], undefined, JSON.stringify([app]), staged).status, 0, "diretório existente rejeitado");
+  const collision = path.join(root, "collision");
+  assert.notEqual(run([], undefined, JSON.stringify([app, `${app}.tar.gz`]), collision).status, 0);
+  assert.equal(existsSync(collision), false, "caminhos que resolvem para o mesmo arquivo rejeitados");
   console.log("PASS checksums: SHA-256 conhecido, ordem estável, espaços, duplicatas, ausência e sobrescrita.");
 } finally {
   rmSync(root, { recursive: true, force: true });

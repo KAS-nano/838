@@ -48,16 +48,16 @@ jobs:
         with:
           projectPath: apps/hardware-agent
           args: ${{ matrix.args }} -- --locked
-          uploadWorkflowArtifacts: true
-          workflowArtifactNamePattern: agent838-[version]-${{ matrix.artifact }}-unsigned-[bundle]
+          uploadWorkflowArtifacts: false
       - name: Generate package checksums
         env:
           ARTIFACT_PATHS_JSON: ${{ steps.tauri.outputs.artifactPaths }}
-          CHECKSUM_OUTPUT: agent838-${{ matrix.artifact }}-SHA256SUMS
+          ARTIFACT_DIRECTORY: native-artifacts
         run: node scripts/write-artifact-checksums.mjs
-      - name: Upload package checksums
+      - name: Upload verified packages and checksums
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
-          name: agent838-${{ matrix.artifact }}-checksums
-          path: agent838-${{ matrix.artifact }}-SHA256SUMS
+          name: agent838-${{ matrix.artifact }}-unsigned-${{ github.sha }}
+          path: native-artifacts/
+          if-no-files-found: error
           retention-days: 30

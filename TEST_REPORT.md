@@ -389,3 +389,9 @@ O código oficial da Action fixada em `1deb371b0cd8bd54025b384f1cd735e725c4060f`
 PASS: teste comportamental de JSON válido e seis entradas inválidas, além da regressão de hashes/duplicatas/sobrescrita; ESLint dos scripts e git diff --check. Builds remotos não executados. Diretórios .app na saída macOS ainda requerem tratamento próprio antes de afirmar que toda a matriz funciona.
 
 Fonte: https://github.com/tauri-apps/tauri-action/blob/1deb371b0cd8bd54025b384f1cd735e725c4060f/src/index.ts
+
+## Pacotes macOS junto aos checksums — 2026-09-13
+
+PASS: fixtures de diretório .app resolvido para .app.tar.gz, arquivo compactado ausente, colisão dos dois caminhos, diretório de destino existente, nomes com espaços e conferência dos hashes/bytes efetivamente copiados. O teste usa bytes conhecidos para a camada de transporte; não valida um instalador macOS real.
+
+PASS: ESLint dos scripts, stage35, git diff --check. Stage38 ainda retorna spawnSync EPERM no ambiente. Matriz nativa remota e instalação real pendentes.

@@ -242,5 +242,13 @@ RODADA 2026-09-13 — CONTRATO DA ACTION TAURI [x]
 [x] Workflow passa artifactPaths em ARTIFACT_PATHS_JSON; parser valida lista de strings antes de ler arquivos.
 [x] Testes reproduzem JSON da Action, rejeitando JSON inválido, null, objeto, números, strings vazias e lista vazia.
 PASS node scripts/artifact-checksums-test.mjs; ESLint dos scripts; git diff --check.
-[ ] Validar tratamento de diretórios .app na saída macOS: a Action informa esses caminhos antes do empacotamento em .tar.gz.
+[x] Tratamento de .app validado com fixtures em 2026-09-13: usa .app.tar.gz e rejeita arquivo compactado ausente.
 [!] Execução remota da matriz e instalação em cada SO continuam pendentes.
+
+RODADA 2026-09-13 — PACOTES MACOS E CHECKSUMS [x]
+[x] .app resolve para .app.tar.gz produzido pela Action fixada.
+[x] Instaladores e SHA256SUMS enviados juntos, depois de validar/copiar/calcular hashes das cópias.
+[x] Testes cobrem arquivo compactado ausente, nomes com espaços, colisão .app/arquivo e diretório existente.
+PASS teste comportamental, ESLint dos scripts, stage35 e git diff --check.
+LIMITAÇÃO stage38 continua retornando spawnSync EPERM neste ambiente; builds nativos remotos não executados.
+Percentuais mantidos até validar a matriz remota.

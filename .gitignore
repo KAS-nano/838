@@ -71,3 +71,6 @@ Desktop.ini
 /sbom-rust.cdx.json
 /release-provenance.json
 /SHA256SUMS
+
+# Pacotes nativos preparados para upload
+/native-artifacts/

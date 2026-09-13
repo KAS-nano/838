@@ -15,3 +15,9 @@ Fixtures versionadas cobrem CIM do Windows e `system_profiler` do macOS, incluin
 O leitor sysfs Linux também possui fixture própria; testes verificam VRAM dedicada, memória desconhecida, diretório indisponível e encerramento de processo lento.
 
 Antes de distribuir, execute `npm run agent:check` com Rust 1.95. O mesmo conjunto de `cargo fmt`, testes e Clippy roda na CI Linux com o `Cargo.lock`; ele permanece separado do build web da Vercel.
+
+### Verificar os pacotes da CI
+
+Cada artefato de workflow contém os instaladores de uma plataforma e `SHA256SUMS` no mesmo diretório. Extraia o download antes de verificar. No Linux use `sha256sum -c SHA256SUMS`; no macOS use `shasum -a 256 -c SHA256SUMS`. No PowerShell, `Get-FileHash -Algorithm SHA256 <arquivo>` permite comparar o hash com a linha correspondente do manifesto.
+
+O aplicativo macOS é enviado em `.app.tar.gz`, preservando sua estrutura; o hash corresponde ao arquivo compactado. Os pacotes continuam sendo builds de validação não assinados. Checksums verificam integridade e não substituem assinatura de código.

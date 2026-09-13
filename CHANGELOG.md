@@ -1,5 +1,7 @@
 # Changelog
 
+- Pacotes macOS usam .app.tar.gz; instaladores e checksums das cópias são enviados juntos após validação.
+
 - Corrigido o contrato JSON entre a saída artifactPaths do Tauri e o gerador de checksums.
 
 - Checksums dos instaladores usam leitura por streaming, ordenação estável e rejeitam nomes duplicados para evitar verificações ambíguas.
