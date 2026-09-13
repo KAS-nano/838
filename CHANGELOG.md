@@ -1,5 +1,7 @@
 # Changelog
 
+- Corrigido o contrato JSON entre a saída artifactPaths do Tauri e o gerador de checksums.
+
 - Checksums dos instaladores usam leitura por streaming, ordenação estável e rejeitam nomes duplicados para evitar verificações ambíguas.
 
 ## Em desenvolvimento — arquitetura de memória

@@ -6,8 +6,8 @@ import path from "node:path";
 
 const root = mkdtempSync(path.join(tmpdir(), "838-artifact-checksums-"));
 const script = path.resolve("scripts/write-artifact-checksums.mjs");
-const run = (paths, output) => spawnSync(process.execPath, [script], {
-  env: { ...process.env, ARTIFACT_PATHS: paths.join("\n"), CHECKSUM_OUTPUT: output },
+const run = (paths, output, jsonPaths) => spawnSync(process.execPath, [script], {
+  env: { ...process.env, ARTIFACT_PATHS: paths.join("\n"), ARTIFACT_PATHS_JSON: jsonPaths, CHECKSUM_OUTPUT: output },
   encoding: "utf8",
 });
 try {
@@ -24,6 +24,14 @@ try {
   const ordered = path.join(root, "ordered");
   assert.equal(run([a, b], ordered).status, 0);
   assert.equal(readFileSync(ordered, "utf8"), expected, "ordem de entrada não altera resultado");
+  const fromJson = path.join(root, "json.sums");
+  assert.equal(run([], fromJson, JSON.stringify([b, a])).status, 0);
+  assert.equal(readFileSync(fromJson, "utf8"), expected, "contrato JSON da Action");
+  for (const [index, invalid] of ["broken", "null", "{}", '[123]', '[""]', "[]"].entries()) {
+    const target = path.join(root, `invalid-json-${index}`);
+    assert.notEqual(run([], target, invalid).status, 0);
+    assert.equal(existsSync(target), false);
+  }
   mkdirSync(path.join(root, "other"));
   const duplicate = path.join(root, "other", "A PACKAGE.BIN");
   writeFileSync(duplicate, "different");

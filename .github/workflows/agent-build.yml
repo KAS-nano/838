@@ -52,7 +52,7 @@ jobs:
           workflowArtifactNamePattern: agent838-[version]-${{ matrix.artifact }}-unsigned-[bundle]
       - name: Generate package checksums
         env:
-          ARTIFACT_PATHS: ${{ steps.tauri.outputs.artifactPaths }}
+          ARTIFACT_PATHS_JSON: ${{ steps.tauri.outputs.artifactPaths }}
           CHECKSUM_OUTPUT: agent838-${{ matrix.artifact }}-SHA256SUMS
         run: node scripts/write-artifact-checksums.mjs
       - name: Upload package checksums

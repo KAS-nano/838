@@ -381,3 +381,11 @@ A criação do roadmap não altera o percentual das funcionalidades: todos os no
 Teste comportamental aprovado para SHA-256 de `abc` e arquivo vazio, nomes com espaços, ordenação estável, duplicação incluindo maiúsculas, arquivo ausente, diretório e preservação da saída/artefato original. O gerador lê arquivos por streaming. ESLint dos scripts e `git diff --check` passaram.
 
 A tentativa do estágio 38 retornou `spawnSync EPERM` neste ambiente. Isso não constitui validação dos builds nativos ou da suíte completa; os testes específicos acima foram executados separadamente.
+
+## Contrato Tauri → checksums — 2026-09-13
+
+O código oficial da Action fixada em `1deb371b0cd8bd54025b384f1cd735e725c4060f` usa JSON.stringify para artifactPaths. O workflow agora fornece ARTIFACT_PATHS_JSON e o gerador valida uma lista de strings. A interface anterior por linhas permanece disponível para uso local.
+
+PASS: teste comportamental de JSON válido e seis entradas inválidas, além da regressão de hashes/duplicatas/sobrescrita; ESLint dos scripts e git diff --check. Builds remotos não executados. Diretórios .app na saída macOS ainda requerem tratamento próprio antes de afirmar que toda a matriz funciona.
+
+Fonte: https://github.com/tauri-apps/tauri-action/blob/1deb371b0cd8bd54025b384f1cd735e725c4060f/src/index.ts

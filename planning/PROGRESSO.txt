@@ -237,3 +237,10 @@ PASS node scripts/artifact-checksums-test.mjs
 PASS ESLint dos dois scripts alterados; git diff --check.
 LIMITAÇÃO stage38: spawnSync retornou EPERM no ambiente local; execução completa da CI continua pendente.
 Percentuais globais mantidos: esta rodada endurece uma funcionalidade existente.
+
+RODADA 2026-09-13 — CONTRATO DA ACTION TAURI [x]
+[x] Workflow passa artifactPaths em ARTIFACT_PATHS_JSON; parser valida lista de strings antes de ler arquivos.
+[x] Testes reproduzem JSON da Action, rejeitando JSON inválido, null, objeto, números, strings vazias e lista vazia.
+PASS node scripts/artifact-checksums-test.mjs; ESLint dos scripts; git diff --check.
+[ ] Validar tratamento de diretórios .app na saída macOS: a Action informa esses caminhos antes do empacotamento em .tar.gz.
+[!] Execução remota da matriz e instalação em cada SO continuam pendentes.

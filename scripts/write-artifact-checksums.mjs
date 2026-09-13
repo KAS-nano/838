@@ -3,11 +3,16 @@ import { createReadStream } from "node:fs";
 import { stat, writeFile } from "node:fs/promises";
 import path from "node:path";
 
-const paths = (process.env.ARTIFACT_PATHS ?? "")
+const jsonPaths = process.env.ARTIFACT_PATHS_JSON;
+const paths = jsonPaths !== undefined ? JSON.parse(jsonPaths) : (process.env.ARTIFACT_PATHS ?? "")
   .split(/\r?\n/)
   .map((entry) => entry.trim())
   .filter(Boolean);
 const output = process.env.CHECKSUM_OUTPUT ?? "NATIVE-SHA256SUMS";
+
+if (!Array.isArray(paths) || paths.some((entry) => typeof entry !== "string" || !entry.trim())) {
+  throw new Error("ARTIFACT_PATHS_JSON deve conter uma lista de caminhos não vazios.");
+}
 
 if (paths.length === 0) throw new Error("ARTIFACT_PATHS não contém pacotes nativos.");
 
