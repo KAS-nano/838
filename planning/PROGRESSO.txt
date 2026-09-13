@@ -252,3 +252,12 @@ RODADA 2026-09-13 — PACOTES MACOS E CHECKSUMS [x]
 PASS teste comportamental, ESLint dos scripts, stage35 e git diff --check.
 LIMITAÇÃO stage38 continua retornando spawnSync EPERM neste ambiente; builds nativos remotos não executados.
 Percentuais mantidos até validar a matriz remota.
+
+RODADA 2026-09-13 — CI NATIVA E REGRESSÃO [x]
+[x] RUSTUP_TOOLCHAIN=1.95.0 seleciona o Rust em todo o job nativo, incluindo a Action Tauri.
+[x] Stage38 verifica a integração; fixture duplicada removida porque a suíte dedicada verifica hashes e erros reais.
+[x] Testes de checksums usam subprocessos assíncronos e rejeitam erro de inicialização ou encerramento por sinal.
+[x] Pendência local de EPERM no stage38 resolvida; registros anteriores preservados como histórico.
+PASS npm run test:stages — 41 etapas e suítes adicionais, incluindo artifact-checksums-test.mjs.
+PASS ESLint dos scripts alterados; git diff --check.
+[!] Builds nativos remotos, assinatura e instalação real continuam pendentes. Percentuais mantidos.

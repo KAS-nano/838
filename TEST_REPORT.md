@@ -395,3 +395,9 @@ Fonte: https://github.com/tauri-apps/tauri-action/blob/1deb371b0cd8bd54025b384f1
 PASS: fixtures de diretório .app resolvido para .app.tar.gz, arquivo compactado ausente, colisão dos dois caminhos, diretório de destino existente, nomes com espaços e conferência dos hashes/bytes efetivamente copiados. O teste usa bytes conhecidos para a camada de transporte; não valida um instalador macOS real.
 
 PASS: ESLint dos scripts, stage35, git diff --check. Stage38 ainda retorna spawnSync EPERM no ambiente. Matriz nativa remota e instalação real pendentes.
+
+## CI nativa e regressão completa — 2026-09-13
+
+A seleção do Rust 1.95.0 agora vale para todo o job nativo via RUSTUP_TOOLCHAIN. O stage38 mantém a verificação de integração e delega os casos de arquivos à suíte comportamental já incluída no runner. Esta usa spawn assíncrono com tratamento explícito de falha de inicialização e sinal, evitando confundir falha do ambiente com rejeição esperada.
+
+PASS: npm run test:stages (41 etapas e suítes adicionais); ESLint dos scripts alterados; git diff --check. O bloqueio local anterior de EPERM do stage38 está resolvido. Não foram executados builds remotos nem testes de instalação Windows/macOS nesta rodada.
