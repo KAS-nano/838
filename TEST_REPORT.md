@@ -401,3 +401,15 @@ PASS: ESLint dos scripts, stage35, git diff --check. Stage38 ainda retorna spawn
 A seleção do Rust 1.95.0 agora vale para todo o job nativo via RUSTUP_TOOLCHAIN. O stage38 mantém a verificação de integração e delega os casos de arquivos à suíte comportamental já incluída no runner. Esta usa spawn assíncrono com tratamento explícito de falha de inicialização e sinal, evitando confundir falha do ambiente com rejeição esperada.
 
 PASS: npm run test:stages (41 etapas e suítes adicionais); ESLint dos scripts alterados; git diff --check. O bloqueio local anterior de EPERM do stage38 está resolvido. Não foram executados builds remotos nem testes de instalação Windows/macOS nesta rodada.
+
+## 2026-09-14 — Home, documentação e favoritos
+
+- Build de produção: `node node_modules/next/dist/bin/next build --webpack` — PASS, incluindo TypeScript.
+- ESLint: página inicial e teste de navegador novo — PASS.
+- Stage2 e stage41: contratos da home, paridade e header — PASS.
+- Navegador: 16 testes de acessibilidade e 6 testes de favoritos — PASS em Next e preview.
+- Home: 4 testes — PASS após corrigir a expectativa de título do catálogo no preview (a primeira execução conjunta passou 25/26).
+- Layout da home verificado em 1440, 768, 390 e 320 px; capturas Next inspecionadas em desktop e celular.
+- Teste de armazenamento dos favoritos, links locais da documentação e `git diff --check` — PASS.
+
+O build foi validado com Webpack; o comando padrão de publicação continua usando Turbopack. Não foi feita validação remota na Vercel nesta rodada. A suíte completa de motores não foi repetida: esta entrega altera apresentação e documentação.

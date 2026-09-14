@@ -1,5 +1,8 @@
 # Changelog
 
+- Home orientada à escolha de configuração: entradas para analisar hardware, explorar catálogo e comparar modelos, com explicações de confiança e dúvidas acessíveis.
+- README reorganizado, com direção do produto e configuração avançada documentadas separadamente.
+
 - CI nativa seleciona Rust 1.95.0 em todo o job; regressão de checksums distingue falhas de subprocessos e elimina fixture duplicada do estágio 38.
 
 - Pacotes macOS usam .app.tar.gz; instaladores e checksums das cópias são enviados juntos após validação.

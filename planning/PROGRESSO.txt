@@ -153,7 +153,9 @@ P1.6 — ACESSIBILIDADE CONTÍNUA: 80% [~]
 P2.1 — MODELOS E RUNTIMES LOCAIS: 0% [ ]
 P2.2 — HISTÓRICO COMUNITÁRIO: 0% [ ]
 P2.3 — CUSTO LOCAL X API: 0% [ ]
-P2.4 — FAVORITOS, CENÁRIOS E COMPARAÇÕES: 0% [ ]
+P2.4 — FAVORITOS, CENÁRIOS E COMPARAÇÕES: EM ANDAMENTO [~]
+[x] Favoritos locais, filtro e ordenação no catálogo Next/preview; persistência e falhas cobertas.
+[ ] Cenários e comparações salvas; sincronização opcional e compartilhamento.
 P2.5 — INSTALAÇÃO GUIADA: 0% [ ]
 P3.1 — RENDERIZAÇÃO NEXT/PREVIEW E PUBLICAÇÃO: 97% [~]
 [x] Build Next de produção e preview gerado validados.
@@ -276,3 +278,16 @@ Implementação em andamento preservada sem commit: armazenamento local comparti
 filtro de favoritos, ordenação e testes comportamentais/navegador.
 [x] Teste unitário de armazenamento, typecheck e lint passaram durante a implementação.
 [ ] Concluir build e testes de navegador antes de marcar a funcionalidade como finalizada.
+
+RODADA 2026-09-14 — APRESENTAÇÃO DO PRODUTO E README [x]
+[x] Home reformulada com três entradas por intenção: descobrir, explorar e comparar.
+[x] Exemplos, estimativas e medição local diferenciados; dúvidas acessíveis por teclado.
+[x] CSS compartilhado entre Next e preview, com layout validado em 1440, 768, 390 e 320 px.
+[x] README reorganizado para visitantes e colaboradores, com início rápido e mapa da documentação.
+[x] Configuração avançada em docs/CONFIGURACAO.md; proposta, fluxo e estrutura em docs/PRODUTO.md.
+[x] Pendência anterior dos favoritos resolvida: 6 testes de navegador passaram nos dois frontends.
+PASS build de produção com Webpack (inclui TypeScript); lint dos arquivos alterados; stage2 e stage41.
+PASS 16 testes de acessibilidade e 6 de favoritos; 4 testes da nova home após ajustar o título esperado do preview.
+PASS teste de armazenamento dos favoritos; links locais do README/configuração; git diff --check.
+Escopo visual desta entrega: página inicial. Demais telas preservadas; não foi feita uma reestruturação geral das pastas de código.
+[ ] Conferir deploy público após publicação. Nenhum commit ou push executado nesta rodada.

@@ -1,24 +1,24 @@
 <!doctype html>
 <html lang="pt-BR">
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="dark"><title>838 · A IA certa para sua máquina</title><meta name="description" content="Encontre IAs locais, APIs e ferramentas a partir do seu hardware e objetivo."><link rel="icon" href="favicon.ico">
-<link rel="stylesheet" href="styles.css?v=20260912"></head>
+<link rel="stylesheet" href="styles.css?v=20260912"><link rel="stylesheet" href="home.css?v=20260914"></head>
 <body>
 <a class="skip-link" href="#main">Pular para o conteúdo</a>
 <div class="llm-rain" aria-hidden="true"></div>
 <div class="home-shell">
   <header class="topbar"><div class="topbar-side"><span class="header-caption">IA certa. Hardware certo.</span></div><a class="brand-center" href="home.html" aria-label="838 · início">838</a><div class="topbar-side topbar-side--right"><a class="header-action" href="index.html#explorar">Explorar <span aria-hidden="true">→</span></a></div></header>
-  <main id="main" class="home-content" tabindex="-1">
-    <section class="hero home-parity-hero">
+  <main id="main" class="home-content product-home" tabindex="-1">
+    <section class="hero home-parity-hero product-hero" aria-label="Escolha sua configuração de IA">
       <div class="hero-copy">
-        <span class="pill">✦ Sua central de inteligência artificial</span>
+        <span class="pill">✦ Decida antes de baixar</span>
         <h1>A IA certa.<br>Para a <span class="accent-text">sua máquina.</span></h1>
-        <p class="muted">Seu hardware, seus objetivos, uma configuração que faz sentido. Descubra o que roda no seu computador, compare alternativas e saiba como começar.</p>
+        <p class="muted">Do primeiro modelo à configuração que faz sentido. Cruze seu hardware com o que você quer fazer e entenda memória, compatibilidade e limites antes de baixar.</p>
         <div class="actions"><a class="primary" href="onboarding.html">Analisar meu sistema →</a><a class="ghost" href="index.html#dashboard">Ver demonstração</a></div>
         <a class="quiet-link" href="index.html#explorar">Explorar ferramentas sem analisar</a>
-        <p class="privacy-line">Perfil local no navegador · Nenhuma instalação automática</p>
+        <p class="privacy-line">Sem conta para começar · Perfil local · Você controla a instalação</p>
       </div>
-      <article class="home-analysis">
-        <div class="analysis-head"><div><div class="eyebrow">Prévia da análise</div><h2>Modelo × computador</h2></div><span class="badge">Exemplo seed</span></div>
+      <article class="home-analysis product-example">
+        <div class="analysis-head"><div><div class="eyebrow">Como você vai decidir</div><h2>Modelo × computador</h2></div><span class="badge">Exemplo seed</span></div>
         <div class="analysis-model"><div><b>Qwen3 14B</b><small>Q4_K_M · contexto 8K</small></div><span>16 GB VRAM · 32 GB RAM</span></div>
         <div class="metric-bars">
           <div><p><span>VRAM estimada</span><span>10,2 / 16 GB</span></p><progress max="100" value="64" aria-label="VRAM estimada"></progress></div>
@@ -29,11 +29,30 @@
         <p class="analysis-note">Valores seed para demonstrar a interface. A análise do seu hardware recalcula memória, compatibilidade e desempenho estimado.</p>
       </article>
     </section>
-    <section class="home-capabilities">
+    <section class="home-capabilities product-steps" aria-label="Como funciona">
       <article class="feature"><div><span>▣</span><small>01</small></div><b>Comece pela sua máquina</b><p>CPU, GPU, VRAM, RAM e sistema operacional entram na análise.</p></article>
       <article class="feature"><div><span>◇</span><small>02</small></div><b>Encontre sua configuração</b><p>Compare modelos locais, APIs, runtimes e ferramentas para seu objetivo.</p></article>
       <article class="feature"><div><span>✓</span><small>03</small></div><b>Entenda antes de instalar</b><p>Veja consumo, compatibilidade e desempenho com razões e confiança.</p></article>
     </section>
+    <section class="product-section" aria-labelledby="start-title">
+      <div class="product-section-heading"><div><p class="eyebrow">Seu próximo passo</p><h2 id="start-title">Em que ponto você está?</h2></div><p>Comece pelo que precisa resolver agora.</p></div>
+      <div class="product-paths">
+        <a href="onboarding.html" class="product-path product-path-primary"><span class="product-path-number">01 / DESCOBRIR</span><h3>O que roda no meu PC?</h3><p>Informe seu hardware e objetivo para obter uma análise de compatibilidade.</p><span class="product-path-action">Configurar minha máquina <span aria-hidden="true">↗</span></span></a>
+        <a href="index.html#modelos" class="product-path"><span class="product-path-number">02 / EXPLORAR</span><h3>Já tenho um modelo em mente</h3><p>Encontre variantes, quantizações e links para os arquivos na origem.</p><span class="product-path-action">Abrir catálogo <span aria-hidden="true">↗</span></span></a>
+        <a href="index.html#comparar" class="product-path"><span class="product-path-number">03 / COMPARAR</span><h3>Quero escolher entre opções</h3><p>Veja diferenças de memória, contexto e desempenho estimado lado a lado.</p><span class="product-path-action">Comparar modelos <span aria-hidden="true">↗</span></span></a>
+      </div>
+    </section>
+    <section class="product-trust product-section" aria-labelledby="trust-title">
+      <div><p class="eyebrow">Decisões com contexto</p><h2 id="trust-title">Uma estimativa útil mostra seus limites.</h2><p>O resultado depende de quantização, contexto, runtime e hardware. O 838 apresenta a origem e a confiança dos dados para você avaliar cada recomendação.</p></div>
+      <dl><div><dt>Estimativa</dt><dd>Calculada pelo motor. Ajuda a planejar; não é uma medição da sua máquina.</dd></div><div><dt>Demonstração</dt><dd>Usa um perfil de exemplo e dados seed para você conhecer a interface.</dd></div><div><dt>Medição local</dt><dd>Exige um runtime compatível e uma ação sua para iniciar o benchmark.</dd></div></dl>
+    </section>
+    <section class="product-section product-faq" aria-labelledby="faq-title">
+      <div class="product-section-heading"><div><p class="eyebrow">Antes de começar</p><h2 id="faq-title">O essencial, sem complicar.</h2></div></div>
+      <details><summary>Preciso instalar algo para usar o 838?</summary><p>Para explorar o catálogo e analisar seu perfil, basta o navegador. Executar um modelo ou medir desempenho exige um runtime instalado separadamente.</p></details>
+      <details><summary>O site detecta meu computador automaticamente?</summary><p>O fluxo inicial pede que você informe o hardware. A detecção local depende do agente separado; abrir o site não dá acesso automático à sua máquina.</p></details>
+      <details><summary>Uma boa estimativa garante o mesmo desempenho?</summary><p>Não. Drivers, temperatura, contexto e runtime podem mudar o resultado. Use a análise para escolher o que testar e confirme com uma medição local.</p></details>
+    </section>
+    <footer class="product-footer"><span>838 · Hardware, objetivo e uma escolha informada.</span><a href="index.html#explorar">Conhecer o ecossistema <span aria-hidden="true">→</span></a></footer>
   </main>
 </div>
 <script type="module" src="shared.mjs?v=20260906"></script>

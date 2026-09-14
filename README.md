@@ -1,171 +1,132 @@
+<div align="center">
+
 # 838
 
-Plataforma para recomendar IA local, APIs, runtimes e ferramentas com base no hardware, sistema operacional e objetivo do usuário.
+**A IA certa para a sua máquina.**
 
-## Estado
+Descubra quais modelos combinam com seu hardware, compare configurações e entenda os requisitos antes de instalar.
 
-Versão estrutural: **1.0.0**. Frontend neon-noir consolidado em **2026-09-06**.
+[Acessar o site](https://838.vercel.app) · [Rodar localmente](#rodar-localmente) · [Progresso](planning/PROGRESSO.txt) · [Contribuir](#contribuir)
 
-Auditoria e arquivos alterados: [consolidação visual](reports/AUDITORIA-NEON-NOIR.md) e [modelos, comparador e apoio](reports/AUDITORIA-MODELOS-COMPARADOR-APOIO.md). Resultados atuais: [TEST_REPORT.md](TEST_REPORT.md).
+</div>
 
-O [progresso das melhorias](planning/PROGRESSO.txt) registra percentuais, itens concluídos e evidências. O [roteiro completo](planning/00-INDICE-E-PRIORIDADES.txt) descreve implementação, testes, aceite e reversão por área.
+---
 
-O projeto contém todas as áreas principais planejadas. Integrações que dependem de banco, credenciais, runtime local ou compilador nativo são feature-gated e não fingem estar ativas quando a infraestrutura não existe.
+## Do hardware à escolha do modelo
 
-## Núcleo funcional
+Escolher uma IA local envolve mais do que o tamanho do download. O 838 cruza seu computador, sistema operacional e objetivo com os requisitos de modelos e ferramentas para ajudar nessa decisão.
 
-- onboarding manual de hardware e objetivos;
-- dashboard com gauges de VRAM, RAM, armazenamento e t/s;
-- catálogo seed de modelos e variantes;
-- motor de compatibilidade/ranking;
-- estimativa de memória com contexto e offload;
-- estimativa de desempenho com estados medido/estimado/seed/heurística e confiança;
-- comparador de modelos;
-- links oficiais e arquivos por quantização/precisão no Hugging Face;
-- apoio opcional por Pix, recolhido na barra lateral;
-- catálogo de runtimes, IDEs e ferramentas;
-- recomendação local × API;
-- força do PC/Notebook e gargalos;
-- simulador de upgrades;
-- sistemas recomendados;
-- Central de Instalação versionada por SO/GPU;
-- perfil local exportável/importável;
-- Better Auth + PostgreSQL/Prisma preparados e desativados por padrão;
-- benchmark local Ollama voluntário;
-- submissão comunitária com consentimento e validação;
-- agente Tauri/Rust read-only em estrutura separada;
-- API de health, catálogo e recomendação;
-- preview HTML independente.
+1. **Informe sua máquina:** CPU, GPU, VRAM, RAM, armazenamento e sistema.
+2. **Escolha seu objetivo:** programação, escrita, documentos e outras tarefas.
+3. **Compare alternativas:** memória estimada, contexto, compatibilidade e desempenho.
+4. **Prepare a instalação:** consulte runtimes, quantizações, fontes oficiais e instruções.
 
-## Stack
+O perfil pode ficar salvo no navegador. A análise inicial funciona sem conta e não instala programas automaticamente.
 
-- Next.js 16.3.3 / React 19 / TypeScript
-- Tailwind CSS 4
-- PostgreSQL + Prisma 7.10
-- Better Auth 1.7.2
-- Rust + Tauri 2.11.5 para o agente local
+## O que você encontra
 
-## Rodar o site
+| Área | Para que serve |
+| --- | --- |
+| Dashboard | Analisar modelo × computador, ajustando quantização e contexto. |
+| Modelos | Buscar modelos, consultar arquivos por precisão e guardar favoritos locais. |
+| Comparador | Comparar alternativas com filtros, ordenação e visualização das métricas. |
+| Recomendações e ferramentas | Explorar modelos locais, APIs, runtimes e ferramentas por objetivo. |
+| Hardware e upgrades | Entender limitações da máquina e simular alterações de capacidade. |
+| Instalação | Consultar receitas por sistema, GPU e runtime, com comandos visíveis. |
+| Perfil | Editar, importar e exportar sua configuração local. |
 
-Requer a versão do Node.js registrada em `.node-version` (Node 22 LTS). Gerenciadores como nvm, fnm e asdf podem selecionar essa versão automaticamente.
+### Estado do projeto
+
+O 838 está em desenvolvimento. O modo inicial utiliza um catálogo **seed**: dados empacotados com a aplicação. Valores de desempenho e memória devem ser interpretados conforme os indicadores de estimativa e confiança da interface.
+
+- **Sem infraestrutura adicional:** catálogo, perfil local, análise, comparação e guias.
+- **Dependem de configuração:** PostgreSQL, autenticação, provedores externos e submissões comunitárias.
+- **Dependem da máquina do usuário:** benchmark Ollama e agente local Tauri/Rust. O agente tem código separado e suas releases nativas ainda precisam das validações registradas no planejamento.
+
+O preview HTML demonstra a interface e as estimativas; não executa benchmarks reais ou instalações. Consulte as [limitações conhecidas](KNOWN_ISSUES.md) e o [registro de validação](TEST_REPORT.md) para distinguir implementação de teste concluído.
+
+## Rodar localmente
+
+Use a versão do Node indicada em [.node-version](.node-version) e npm. Na raiz do projeto:
 
 ```bash
 npm ci
 npm run dev
 ```
 
-Abra `http://localhost:3000`.
+Abra **http://localhost:3000**. O modo seed não precisa de PostgreSQL nem de chaves de API.
 
-Para build:
+Para personalizar variáveis, copie `.env.example` para `.env.local`, sem sobrescrever configurações locais existentes. O exemplo mantém autenticação e comunidade desativadas. Não publique `.env.local`.
+
+### Build de produção
 
 ```bash
-npm run typecheck
-npm run lint
 npm run build
+npm run start
 ```
 
-Para liberar espaço usado por builds e testes locais, confira primeiro os alvos e depois execute a limpeza:
+### Preview com Live Server ou Python
 
-```bash
-npm run clean:local:dry
-npm run clean:local
-```
-
-O comando remove somente caches e artefatos conhecidos. Dependências em `node_modules` e configurações em `.env.local` são preservadas.
-
-## Colocar no ar
-
-O site está preparado para uma primeira publicação na Vercel sem banco de dados, usando o catálogo empacotado e mantendo autenticação e comunidade desligadas. Execute `npm run deploy:check` e siga o passo a passo em [DEPLOYMENT.md](DEPLOYMENT.md). Depois do deploy, valide o endereço com `npm run deploy:smoke -- https://seu-site.vercel.app`.
-
-## Banco e autenticação
-
-Copie `.env.example` para `.env.local` e configure `DATABASE_URL`. Depois:
-
-```bash
-npm run db:generate
-npm run db:migrate
-```
-
-O catálogo usa o fallback empacotado por padrão. Depois de aplicar a migration e popular os 17 modelos com `upsertSeedCatalog`, selecione a persistência com:
-
-```env
-CATALOG_SOURCE="database"
-```
-
-Se o PostgreSQL ficar indisponível, a API identifica a resposta como `seed-fallback` em vez de impedir a abertura do catálogo.
-
-Autenticação fica desligada por padrão. Ative somente após configurar banco e segredo:
-
-```env
-AUTH_ENABLED="true"
-BETTER_AUTH_SECRET="..."
-BETTER_AUTH_URL="http://localhost:3000"
-AUTH_TRUSTED_ORIGINS="http://localhost:3000"
-AUTH_EMAIL_WEBHOOK_URL="https://seu-provedor.exemplo/auth-email"
-AUTH_EMAIL_WEBHOOK_SECRET="..."
-```
-
-Ao ativar, o 838 exige segredo forte, banco, origens explícitas e um webhook HTTPS para verificação de e-mail e recuperação de senha. O webhook recebe `{ kind, email, url }` com autenticação Bearer e deve entregar a mensagem sem registrar o link sensível.
-
-## Integrações
-
-- Hugging Face: consulta de metadados públicos.
-- OpenRouter: rota preparada; chave opcional em `OPENROUTER_API_KEY`.
-- Ollama: benchmark local via browser/localhost após ação explícita.
-- LM Studio: adaptador local preparado.
-
-Chamadas para `localhost` devem ocorrer no navegador ou pelo 838 Hardware Agent. O servidor hospedado do 838 nunca deve interpretar `localhost` como a máquina do usuário.
-
-## Preview sem npm
-
-Sirva a pasta por HTTP (módulos JavaScript não funcionam por `file://`):
+No VS Code, abra `preview/home.html` e use **Open with Live Server**. Alternativamente:
 
 ```bash
 python3 -m http.server 8080 -d preview
 ```
 
-Então abra `http://localhost:8080/home.html` e siga onboarding → salvar → dashboard. O dashboard também abre diretamente em `http://localhost:8080/index.html#dashboard`.
+Abra **http://localhost:8080/home.html**. Para ver a aplicação Next completa, use `npm run dev`; o Live Server serve somente o preview estático.
 
-Os previews utilizam os tokens de `preview/theme.css` e o motor/catálogo/validação TypeScript gerados em `preview/engine.mjs`. Depois de alterar os módulos canônicos:
+Depois de alterar os módulos canônicos do catálogo ou motor, execute `npm run preview:generate`. A geração também ocorre antes do build.
 
-```bash
-npm run preview:generate
+## Estrutura
+
+```text
+src/
+  app/                 Páginas Next e endpoints
+  components/          Componentes e navegação
+  data/                Catálogos e fontes curadas
+  features/            Motores, estimadores e regras de produto
+  server/              Integrações, persistência e controles do servidor
+preview/               Demonstração HTML e módulos compartilhados
+apps/hardware-agent/   Agente local Rust/Tauri
+prisma/                Schema e migrações
+scripts/               Validação, geração e operação
+tests/browser/        Testes de navegador e acessibilidade
+planning/              Objetivos, critérios de aceite e progresso
 ```
 
-Esse comando também roda automaticamente antes do build.
+**Stack:** Next.js · React · TypeScript · Tailwind CSS. Integrações opcionais: PostgreSQL/Prisma, Better Auth e Tauri/Rust. As versões exatas estão nos manifests e lockfiles.
 
-O preview é uma demonstração navegável e usa dados seed; ele não executa benchmarks reais nem instalações.
-
-## Agente 838
-
-Local: `apps/hardware-agent`.
-
-O agente atual é read-only: detecta dados técnicos locais e não envia nada automaticamente. Requer Rust 1.95+ para `sysinfo 0.39.6`.
-
-## Testes
-
-Os testes puros das Etapas 4–21 podem ser executados com:
+## Validar alterações
 
 ```bash
-npm run test:stages
-```
-
-Testes de regressão e navegador:
-
-```bash
-npm run test:engine
-npm run test:a11y
+npm run check
 npm run build
 npx playwright install chromium
 npm run test:e2e
 ```
 
-A configuração de Playwright também aceita `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH` e detecta o Brave instalado em `/opt/brave-bin/brave`. Os servidores Next e preview são iniciados pelos testes. Consulte `TEST_REPORT.md` para o que foi executado e `KNOWN_ISSUES.md` para as pendências.
+`check` reúne higiene do repositório, versões, paridade dos arquivos gerados, TypeScript, lint e testes das etapas. Os testes de navegador iniciam os servidores Next e preview; exigem Python 3 e um navegador compatível. Também aceitam `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH`.
 
-## Princípio do produto
+Para validar somente acessibilidade, após o build, use `npm run test:a11y`. Para conferir caches removíveis, use `npm run clean:local:dry` antes de `npm run clean:local`.
 
-O 838 deve responder de forma transparente:
+## Documentação
 
-> Para o meu computador e minha tarefa, o que devo usar, como devo configurar e o que posso esperar de desempenho?
+| Quero… | Documento |
+| --- | --- |
+| Publicar na Vercel | [Guia de publicação](DEPLOYMENT.md) |
+| Configurar banco, autenticação e integrações | [Configuração avançada](docs/CONFIGURACAO.md) |
+| Entender a proposta e o percurso do usuário | [Direção do produto](docs/PRODUTO.md) |
+| Entender a arquitetura | [Arquitetura](ARCHITECTURE.md) |
+| Consultar objetivos e tarefas concluídas | [Planejamento](planning/00-INDICE-E-PRIORIDADES.txt) e [progresso](planning/PROGRESSO.txt) |
+| Conferir testes e pendências | [Validação](TEST_REPORT.md) e [problemas conhecidos](KNOWN_ISSUES.md) |
+| Entender o uso de dados | [Privacidade](PRIVACY.md) |
+| Reportar uma vulnerabilidade | [Política de segurança](SECURITY.md) |
+| Operar e recuperar o banco | [Operação](OPERATIONS.md) e [backup e recuperação](BACKUP_RECOVERY.md) |
 
-Estimativas devem sempre ser identificadas como estimativas. Resultados medidos têm prioridade.
+## Contribuir
+
+Consulte o planejamento antes de começar para evitar trabalho duplicado. Ao propor uma alteração, explique o problema, o resultado esperado e como validar. Mudanças na experiência devem considerar o Next e o preview, incluindo teclado e telas pequenas.
+
+Registre as tarefas concluídas e suas evidências em `planning/PROGRESSO.txt`. Estimativas devem continuar identificadas como estimativas; resultados demonstrativos não podem ser apresentados como medições reais.
+
+Se o projeto foi útil, você pode apoiar sua manutenção pela seção **Apoie o projeto** no site. É opcional.
