@@ -98,6 +98,8 @@
           <label class="field-label">Quantização / precisão<select id="modelPrecision" class="control" aria-label="Quantização dos links"><option value="all">Todas as versões</option></select></label>
         </div>
         <p class="model-catalog-caption">GGUF: versões para runtimes compatíveis. BF16 e FP16: precisões dos pesos originais, em Safetensors. Os requisitos no analisador continuam sendo estimativas seed.</p>
+        <div class="model-favorites-toolbar"><button type="button" class="model-favorite-button" id="onlyFavorites" aria-pressed="false">Somente favoritos (0)</button><label>Ordenar modelos<select class="control" id="modelSort"><option value="catalog">Ordem do catálogo</option><option value="name">Nome A–Z</option><option value="size">Menos parâmetros</option><option value="context">Maior contexto</option></select></label><p>Favoritos salvos neste navegador, sem conta.</p></div>
+        <p id="favoritesError" role="alert" hidden></p>
         <p id="modelCount" class="model-catalog-caption" role="status"></p>
         <div id="modelGrid" class="model-catalog-grid"></div>
       </section>

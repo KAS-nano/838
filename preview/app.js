@@ -1,3 +1,4 @@
+import { createFavoritesStore } from './model-favorites.mjs';
 import { initializeComparison } from './comparison.mjs';
 import { seedModels as models, seedBenchmarks, estimateMemory, estimatePerformance, calculateCompatibility, recommendHybrid, seedApiModels, hardwareStrength, primaryBottleneck, suggestUpgrades, recommendSystems, recipeFor } from './engine.mjs';
 import { demoProfile, readProfile, escapeHtml as html, profileSummary } from './shared.mjs';
@@ -9,6 +10,8 @@ initProjectSupport();
 
 const $ = selector => document.querySelector(selector);
 const $$ = selector => [...document.querySelectorAll(selector)];
+const favoritesStore = createFavoritesStore(models.map(model => model.id));
+let onlyFavorites = false;
 const savedProfile = readProfile();
 const profile = savedProfile || demoProfile;
 const objective = profile.objectives[0] || 'Assistente geral';
@@ -68,17 +71,24 @@ function fillControls() {
   $('#contextRange').setAttribute('aria-valuetext', `${contextK} mil tokens`);
 }
 function renderModels() {
+  const favorites = favoritesStore.getSnapshot();
+  $('#onlyFavorites').textContent = `Somente favoritos (${favorites.ids.length})`;
+  $('#onlyFavorites').setAttribute('aria-pressed', String(onlyFavorites));
+  $('#favoritesError').hidden = !favorites.error;
+  $('#favoritesError').textContent = favorites.error;
   const filter = $('#modelSearch').value.trim().toLocaleLowerCase('pt-BR');
   const precision = $('#modelPrecision').value;
   const modality = $('#modelModality').value;
   const matched = models.filter(model => {
     const links = getModelExternalLinks(model.id);
-    return `${model.name} ${model.family} ${model.description} ${model.objectives.join(' ')} ${links?.modelName || ''}`.toLocaleLowerCase('pt-BR').includes(filter)
+    return (!onlyFavorites || favorites.ids.includes(model.id)) && `${model.name} ${model.family} ${model.description} ${model.objectives.join(' ')} ${links?.modelName || ''}`.toLocaleLowerCase('pt-BR').includes(filter)
       && (modality === 'all' || model.modalities.includes(modality))
       && (precision === 'all' || links?.variants.some(variant => variant.quantization === precision));
   });
+  const sort = $('#modelSort').value;
+  matched.sort((a,b) => sort === 'name' ? a.name.localeCompare(b.name, 'pt-BR') : sort === 'size' ? a.paramsB-b.paramsB : sort === 'context' ? b.contextK-a.contextK : 0);
   $('#modelCount').textContent = `${matched.length} modelos encontrados${precision === 'all' ? '' : ` com link ${precision}`}`;
-  $('#modelGrid').innerHTML = matched.map(model => `<article class="panel model-catalog-card"><div class="model-card-heading"><div><p class="eyebrow">${html(model.family)}</p><h2>${html(model.name)}</h2></div><span class="badge">${model.paramsB}B${model.activeParamsB ? ` · ${model.activeParamsB}B ativos` : ''}</span></div><p class="model-card-description">${html(model.description)}</p><div class="model-card-tags">${model.modalities.map(item => `<span>${item === 'vision' ? 'Visão' : item === 'text' ? 'Texto' : html(item)}</span>`).join('')}<span>${model.contextK}K contexto · seed</span></div>${renderModelLinks(model.id, precision)}<div class="model-card-footer"><span>Requisitos e desempenho estimados</span><button class="ghost" type="button" data-select-model="${model.id}">Analisar na minha máquina →</button></div></article>`).join('') || '<p class="muted">Nenhum modelo encontrado com estes filtros. Altere a busca, modalidade ou precisão.</p>';
+  $('#modelGrid').innerHTML = matched.map(model => `<article class="panel model-catalog-card"><div class="model-card-heading"><div><p class="eyebrow">${html(model.family)}</p><h2>${html(model.name)}</h2></div><span class="badge">${model.paramsB}B${model.activeParamsB ? ` · ${model.activeParamsB}B ativos` : ''}</span></div><button type="button" class="model-favorite-button" data-favorite="${html(model.id)}" aria-label="Favoritar ${html(model.name)}" aria-pressed="${favorites.ids.includes(model.id)}"><span aria-hidden="true">${favorites.ids.includes(model.id) ? '★' : '☆'}</span> ${favorites.ids.includes(model.id) ? 'Salvo nos favoritos' : 'Salvar favorito'}</button><p class="model-card-description">${html(model.description)}</p><div class="model-card-tags">${model.modalities.map(item => `<span>${item === 'vision' ? 'Visão' : item === 'text' ? 'Texto' : html(item)}</span>`).join('')}<span>${model.contextK}K contexto · seed</span></div>${renderModelLinks(model.id, precision)}<div class="model-card-footer"><span>Requisitos e desempenho estimados</span><button class="ghost" type="button" data-select-model="${model.id}">Analisar na minha máquina →</button></div></article>`).join('') || '<div><p class="muted">Nenhum modelo encontrado com estes filtros.</p><button type="button" class="model-favorite-button" data-reset-models>Limpar filtros</button></div>';
 }
 function renderRecommendations() {
   const recommendations = recommendHybrid(profile, objective, models, seedApiModels).filter(item => profile.preference === 'both' || item.mode === profile.preference);
@@ -132,11 +142,18 @@ function navigate() {
 $('#modelSelect').addEventListener('change', event => { selected = models.find(model => model.id === event.target.value) || models[0]; fillControls(); updateDashboard(); });
 $('#quantSelect').addEventListener('change', event => { quant = event.target.value; updateDashboard(); });
 $('#contextRange').addEventListener('input', event => { contextK = Number(event.target.value); $('#contextLabel').textContent = `${contextK}K`; event.target.setAttribute('aria-valuetext', `${contextK} mil tokens`); updateDashboard(); });
+favoritesStore.subscribe(renderModels);
+$('#onlyFavorites').addEventListener('click', () => { onlyFavorites = !onlyFavorites; renderModels(); });
+$('#modelSort').addEventListener('change', renderModels);
 $('#modelSearch').addEventListener('input', renderModels);
 $('#modelModality').addEventListener('change', renderModels);
 $('#modelPrecision').innerHTML += [...new Set(Object.values(modelExternalLinks).flatMap(model => model.variants.map(variant => variant.quantization)))].sort().map(precision => `<option value="${html(precision)}">${html(precision)}</option>`).join('');
 $('#modelPrecision').addEventListener('change', renderModels);
-$('#modelGrid').addEventListener('click', event => { const button = event.target.closest('[data-select-model]'); if (!button) return; selected = models.find(model => model.id === button.dataset.selectModel); fillControls(); updateDashboard(); location.hash = 'dashboard'; });
+$('#modelGrid').addEventListener('click', event => {
+  const favorite = event.target.closest('[data-favorite]');
+  if (favorite) { const id = favorite.dataset.favorite; favoritesStore.toggle(id); const remaining = [...document.querySelectorAll('[data-favorite]')].find(button => button.dataset.favorite === id); (remaining || $('#onlyFavorites')).focus(); return; }
+  if (event.target.closest('[data-reset-models]')) { $('#modelSearch').value = ''; $('#modelModality').value = 'all'; $('#modelPrecision').value = 'all'; onlyFavorites = false; renderModels(); $('#modelSearch').focus(); return; }
+  const button = event.target.closest('[data-select-model]'); if (!button) return; selected = models.find(model => model.id === button.dataset.selectModel); fillControls(); updateDashboard(); location.hash = 'dashboard'; });
 $('#installTool').addEventListener('change', renderInstall);
 $('#installOs').addEventListener('change', renderInstall);
 $('#mobileMenu').addEventListener('click', () => { const open = $('#sidebar').classList.toggle('open'); $('#menuBackdrop').classList.toggle('visible', open); $('#mobileMenu').setAttribute('aria-expanded', String(open)); $('#mobileMenu').setAttribute('aria-label', open ? 'Fechar menu' : 'Abrir menu'); $('#main').inert = open; document.body.style.overflow = open ? 'hidden' : ''; if (open) $('#nav a').focus(); });

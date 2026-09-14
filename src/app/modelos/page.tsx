@@ -1,25 +1,32 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState, useSyncExternalStore } from "react";
 import { ExternalLink, Search } from "lucide-react";
 import { seedModels } from "@/data/seed-models";
 import { getModelExternalLinks, modelExternalLinks } from "@/data/model-links";
 import "../../../preview/model-links.css";
+import { createFavoritesStore } from "../../../preview/model-favorites.mjs";
+
+const favoritesStore = createFavoritesStore(seedModels.map(model => model.id));
 
 const precisions = [...new Set(Object.values(modelExternalLinks).flatMap((model) => model.variants.map((variant) => variant.quantization)))].sort();
 
 export default function ModelsPage() {
+  const favorites = useSyncExternalStore(favoritesStore.subscribe, favoritesStore.getSnapshot, favoritesStore.getServerSnapshot);
+  const favoritesFilter = useRef<HTMLButtonElement>(null);
+  const [onlyFavorites, setOnlyFavorites] = useState(false);
+  const [sort, setSort] = useState("catalog");
   const [query, setQuery] = useState("");
   const [modality, setModality] = useState("all");
   const [precision, setPrecision] = useState("all");
   const normalizedQuery = query.trim().toLocaleLowerCase("pt-BR");
   const models = useMemo(() => seedModels.filter((model) => {
     const links = getModelExternalLinks(model.id);
-    return (modality === "all" || model.modalities.some((item) => item === modality)) &&
+    return (!onlyFavorites || favorites.ids.includes(model.id)) && (modality === "all" || model.modalities.some((item) => item === modality)) &&
       (precision === "all" || links?.variants.some((variant) => variant.quantization === precision)) &&
       `${model.name} ${model.family} ${model.description} ${links?.modelName ?? ""}`.toLocaleLowerCase("pt-BR").includes(normalizedQuery);
-  }), [normalizedQuery, modality, precision]);
+  }).sort((a, b) => sort === "name" ? a.name.localeCompare(b.name, "pt-BR") : sort === "size" ? a.paramsB - b.paramsB : sort === "context" ? b.contextK - a.contextK : 0), [normalizedQuery, modality, precision, onlyFavorites, favorites.ids, sort]);
 
   return <main><div className="page-container"><section>
     <div className="page-heading">
@@ -32,13 +39,20 @@ export default function ModelsPage() {
       <label className="field-label">Modalidade<select aria-label="Modalidade" value={modality} onChange={(event) => setModality(event.target.value)} className="control"><option value="all">Todas as modalidades</option><option value="text">Texto</option><option value="vision">Visão</option></select></label>
       <label className="field-label">Quantização / precisão<select aria-label="Quantização dos links" value={precision} onChange={(event) => setPrecision(event.target.value)} className="control"><option value="all">Todas as versões</option>{precisions.map((item) => <option key={item} value={item}>{item}</option>)}</select></label>
     </div>
+    <div className="model-favorites-toolbar">
+      <button type="button" className="model-favorite-button" ref={favoritesFilter} aria-pressed={onlyFavorites} onClick={() => setOnlyFavorites(!onlyFavorites)}>Somente favoritos ({favorites.ids.length})</button>
+      <label>Ordenar modelos<select className="control" value={sort} onChange={event => setSort(event.target.value)}><option value="catalog">Ordem do catálogo</option><option value="name">Nome A–Z</option><option value="size">Menos parâmetros</option><option value="context">Maior contexto</option></select></label>
+      <p>Favoritos salvos neste navegador, sem conta.</p>
+    </div>
+    {favorites.error && <p role="alert" className="model-catalog-caption">{favorites.error}</p>}
     <p className="model-catalog-caption">GGUF: versões para runtimes compatíveis. BF16 e FP16: precisões dos pesos originais, em Safetensors. Os requisitos no analisador continuam sendo dados seeds estimados.</p>
     <p className="mt-4 text-xs text-muted" role="status">{models.length} modelos encontrados{precision !== "all" ? ` com link ${precision}` : ""}</p>
-    {models.length === 0 && <div className="panel mt-4 p-6"><p className="text-sm text-muted">Nenhum modelo encontrado com estes filtros.</p><button className="mt-3 text-sm text-accent" onClick={() => { setQuery(""); setModality("all"); setPrecision("all"); }}>Limpar filtros</button></div>}
+    {models.length === 0 && <div className="panel mt-4 p-6"><p className="text-sm text-muted">Nenhum modelo encontrado com estes filtros.</p><button className="mt-3 text-sm text-accent" onClick={() => { setQuery(""); setModality("all"); setPrecision("all"); setOnlyFavorites(false); }}>Limpar filtros</button></div>}
     <div className="model-catalog-grid">{models.map((model) => {
       const links = getModelExternalLinks(model.id);
       return <article key={model.id} className="panel model-catalog-card">
         <div className="model-card-heading"><div><p className="text-xs text-accent">{model.family}</p><h2 className="mt-1 text-xl font-semibold">{model.name}</h2></div><span className="badge">{model.paramsB}B{model.activeParamsB ? ` · ${model.activeParamsB}B ativos` : ""}</span></div>
+        <button type="button" className="model-favorite-button" aria-label={`Favoritar ${model.name}`} aria-pressed={favorites.ids.includes(model.id)} onClick={() => { if (onlyFavorites) favoritesFilter.current?.focus(); favoritesStore.toggle(model.id); }}><span aria-hidden="true">{favorites.ids.includes(model.id) ? "★" : "☆"}</span> {favorites.ids.includes(model.id) ? "Salvo nos favoritos" : "Salvar favorito"}</button>
         <p className="model-card-description">{model.description}</p>
         <div className="model-card-tags">{model.modalities.map((item) => <span key={item}>{item === "vision" ? "Visão" : item === "text" ? "Texto" : item}</span>)}<span>{model.contextK}K contexto · seed</span></div>
         {links && <section className="model-source-section" aria-label={`Links externos de ${model.name}`}>

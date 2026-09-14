@@ -1,5 +1,5 @@
 # Dependências
-/node_modules/
+node_modules/
 
 # Next.js e ferramentas de frontend
 /.next/
@@ -27,6 +27,16 @@ next-env.d.ts.bak
 /prisma/*.db-journal
 /prisma/*.sqlite
 /prisma/*.sqlite-journal
+/prisma/*.db-wal
+/prisma/*.db-shm
+/prisma/*.sqlite-wal
+/prisma/*.sqlite-shm
+
+# Backups locais (o script oficial exige destino fora do repositório)
+/backups/
+*.dump
+*.dump.age
+*.dump.age.sha256
 
 # Rust e Tauri
 /apps/hardware-agent/src-tauri/target/
@@ -35,7 +45,7 @@ next-env.d.ts.bak
 
 # Variáveis locais e segredos
 .env*
-!.env.example
+!/.env.example
 *.key
 *.pem
 *.p12
@@ -74,3 +84,7 @@ Desktop.ini
 
 # Pacotes nativos preparados para upload
 /native-artifacts/
+
+# Manter versionados: package-lock.json, Cargo.lock, next-env.d.ts,
+# prisma/migrations/, preview/, public/, planning/ e reports/.
+# Não ignorar *.sql: as migrações Prisma fazem parte do código.
