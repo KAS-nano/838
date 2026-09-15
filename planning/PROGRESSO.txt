@@ -291,3 +291,13 @@ PASS 16 testes de acessibilidade e 6 de favoritos; 4 testes da nova home após a
 PASS teste de armazenamento dos favoritos; links locais do README/configuração; git diff --check.
 Escopo visual desta entrega: página inicial. Demais telas preservadas; não foi feita uma reestruturação geral das pastas de código.
 [ ] Conferir deploy público após publicação. Nenhum commit ou push executado nesta rodada.
+
+RODADA 2026-09-14 — APRESENTAÇÃO DA HOMEPAGE [x]
+[x] Abertura centralizada, texto mais direto e hierarquia clara entre análise e demonstração.
+[x] Painel visual separa hardware, modelo, métricas de memória e faixa de geração ilustrativa.
+[x] Layout responsivo compartilhado por Next e preview; etapas com espaçamento mais compacto.
+[x] Rótulos de exemplo e confiança preservados; sem dependências ou JavaScript adicionais.
+PASS build de produção com Webpack, incluindo TypeScript; ESLint da página; stage2; git diff --check.
+PASS 20 testes de navegador (home + acessibilidade) em Next e preview; larguras 1440, 768, 390 e 320 px.
+[x] Capturas desktop Next e mobile preview inspecionadas.
+[ ] Conferir versão pública após deploy. Nenhum commit ou push realizado nesta rodada.

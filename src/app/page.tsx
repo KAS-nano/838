@@ -1,13 +1,12 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import { ArrowRight, Cpu, Layers3, ShieldCheck } from "lucide-react";
 import "../../preview/home.css";
 
 export const metadata: Metadata = {
   title: "A IA certa para sua máquina",
   description: "Compare modelos de IA pelo seu hardware, entenda memória e compatibilidade e prepare sua configuração com o 838.",
 };
-import { ArrowRight, Cpu, Layers3, ShieldCheck, Sparkles } from "lucide-react";
-import { Button } from "@/components/ui/button";
 
 const capabilities = [
   { icon: Cpu, label: "Comece pela sua máquina", text: "CPU, GPU, VRAM, RAM e sistema operacional entram na análise." },
@@ -17,9 +16,39 @@ const capabilities = [
 
 export default function Home() {
   return <main><div className="page-container product-home">
-    <section className="hero-grid product-hero" aria-label="Escolha sua configuração de IA">
-      <div><span className="badge badge-accent"><Sparkles size={13} aria-hidden="true" /> Decida antes de baixar</span><h1 className="hero-title mt-6">A IA certa.<br />Para a <span className="text-accent">sua máquina.</span></h1><p className="mt-6 max-w-xl text-base leading-7 text-muted">Do primeiro modelo à configuração que faz sentido. Cruze seu hardware com o que você quer fazer e entenda memória, compatibilidade e limites antes de baixar.</p><div className="mt-8 flex flex-wrap gap-3"><Button size="lg" asChild><Link href="/onboarding">Analisar meu sistema <ArrowRight size={17} /></Link></Button><Button variant="secondary" size="lg" asChild><Link href="/dashboard">Ver demonstração</Link></Button></div><Link href="/explorar" className="mt-5 inline-block text-sm text-muted underline underline-offset-4">Explorar ferramentas sem analisar</Link><p className="mt-7 text-xs text-muted">Sem conta para começar · Perfil local · Você controla a instalação</p></div>
-      <div className="panel p-5 sm:p-7 product-example"><div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 pb-5"><div><p className="eyebrow">Como você vai decidir</p><h2 className="mt-2 font-medium">Modelo × computador</h2></div><span className="badge">Exemplo seed</span></div><div className="mt-5 flex flex-wrap items-center justify-between gap-3"><div><p className="text-lg font-semibold">Qwen3 14B</p><p className="mt-1 text-xs text-muted">Q4_K_M · contexto 8K</p></div><span className="text-xs text-muted">16 GB VRAM · 32 GB RAM</span></div><div className="mt-6 space-y-5">{[["VRAM estimada", "10,2 / 16 GB", 64], ["RAM estimada", "7,4 / 32 GB", 23], ["Armazenamento", "11,3 / 256 GB livres", 5]].map(([label, value, percent]) => <div key={label}><div className="mb-2 flex justify-between gap-2 text-xs"><span className="text-muted">{label}</span><span>{value}</span></div><progress className="meter" max={100} value={Number(percent)} aria-label={String(label)} /></div>)}</div><div className="mt-7 flex flex-wrap items-end justify-between gap-4 border-t border-white/10 pt-5"><div><p className="text-xs text-muted">Faixa de geração ilustrativa</p><p className="mt-2 text-3xl font-semibold text-accent">32–41 <span className="text-sm font-normal">t/s</span></p></div><span className="badge">Confiança baixa</span></div><p className="mt-5 text-xs leading-5 text-muted">Valores seed para demonstrar a interface. A análise do seu hardware recalcula memória, compatibilidade e desempenho estimado.</p></div>
+    <section className="product-hero" aria-label="Escolha sua configuração de IA">
+      <div className="product-intro">
+        <span className="product-kicker"><span aria-hidden="true" /> HARDWARE + OBJETIVO + IA</span>
+        <h1>A IA certa.<br />Para a <span>sua máquina.</span></h1>
+        <p>Descubra o que roda no seu computador.<br className="product-desktop-break" /> Compare modelos e encontre uma configuração que faz sentido.</p>
+        <div className="product-hero-actions">
+          <Link className="product-cta" href="/onboarding">Analisar meu sistema <ArrowRight size={17} aria-hidden="true" /></Link>
+          <Link className="product-cta-secondary" href="/dashboard">Ver demonstração <span aria-hidden="true">↗</span></Link>
+        </div>
+        <p className="product-assurance">Sem conta para começar <span aria-hidden="true">·</span> Seu perfil fica no navegador</p>
+      </div>
+      <div className="product-console">
+        <div className="product-console-bar"><span><span className="product-console-dot" aria-hidden="true" /> PRÉVIA DA ANÁLISE</span><span className="product-demo-label">Exemplo seed</span></div>
+        <div className="product-console-body">
+          <div className="product-machine">
+            <span className="product-small-label">01 / COMPUTADOR DE EXEMPLO</span>
+            <h2>O ponto de partida<br />é o seu hardware.</h2>
+            <div className="product-hardware-specs"><span><strong>16 GB</strong> VRAM</span><span><strong>32 GB</strong> RAM</span></div>
+            <p>O contexto e a quantização alteram o consumo. A análise ajuda você a entender essa diferença.</p>
+          </div>
+          <div className="product-model-preview">
+            <div className="product-model-heading"><div><span className="product-small-label">02 / MODELO × COMPUTADOR</span><h3>Qwen3 14B</h3></div><span className="product-quant">Q4_K_M · contexto 8K</span></div>
+            <div className="product-metric-grid">
+              <div className="product-metric"><span>VRAM estimada</span><strong>10,2 <small>GB</small></strong><progress max="100" value="64" aria-label="VRAM estimada" /><span>10,2 / 16 GB</span></div>
+              <div className="product-metric"><span>RAM estimada</span><strong>7,4 <small>GB</small></strong><progress max="100" value="23" aria-label="RAM estimada" /><span>7,4 / 32 GB</span></div>
+              <div className="product-metric"><span>Armazenamento</span><strong>11,3 <small>GB</small></strong><progress max="100" value="5" aria-label="Armazenamento" /><span>11,3 / 256 GB livres</span></div>
+            </div>
+            <div className="product-speed"><div><span>Faixa de geração ilustrativa</span><strong>32–41 <small>t/s</small></strong></div><span className="product-confidence">Confiança baixa</span></div>
+          </div>
+        </div>
+        <p className="product-console-note">Exemplo ilustrativo, não uma medição. Seu perfil recalcula memória, compatibilidade e desempenho estimado.</p>
+      </div>
+      <Link href="/explorar" className="product-explore">Explorar ferramentas sem analisar <span aria-hidden="true">→</span></Link>
     </section>
     <section className="product-steps" aria-label="Como funciona">{capabilities.map(({ icon: Icon, label, text }, i) => <article key={label} className="panel p-6"><div className="flex items-center justify-between"><Icon size={20} className="text-accent" aria-hidden="true" /><span className="text-xs text-muted">0{i + 1}</span></div><h2 className="mt-5 font-medium">{label}</h2><p className="mt-3 text-sm leading-6 text-muted">{text}</p></article>)}</section>
       <section className="product-section" aria-labelledby="start-title">

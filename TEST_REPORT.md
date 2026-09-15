@@ -413,3 +413,12 @@ PASS: npm run test:stages (41 etapas e suítes adicionais); ESLint dos scripts a
 - Teste de armazenamento dos favoritos, links locais da documentação e `git diff --check` — PASS.
 
 O build foi validado com Webpack; o comando padrão de publicação continua usando Turbopack. Não foi feita validação remota na Vercel nesta rodada. A suíte completa de motores não foi repetida: esta entrega altera apresentação e documentação.
+
+## 2026-09-14 — Apresentação da homepage
+
+- Build de produção com Webpack, incluindo TypeScript: PASS.
+- ESLint da página, stage2 e `git diff --check`: PASS.
+- Home e acessibilidade: 20 testes PASS em Next e preview.
+- Responsividade da home: 1440, 768, 390 e 320 px sem overflow horizontal; capturas de desktop Next e celular preview inspecionadas.
+- Nenhuma dependência adicionada; a home permanece componente de servidor.
+- Publicação remota e build com Turbopack não executados nesta rodada.
