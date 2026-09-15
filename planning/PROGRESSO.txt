@@ -158,7 +158,8 @@ P2.4 — FAVORITOS, CENÁRIOS E COMPARAÇÕES: EM ANDAMENTO [~]
 [x] Favoritos locais, filtro e ordenação no catálogo Next/preview; persistência e falhas cobertas.
 [x] Uma comparação salva localmente com modelos, quantizações e contexto; recuperação e exclusão explícitas.
 [x] Exportação/importação JSON para levar a configuração entre navegadores, sem hardware ou resultados.
-[ ] Cenários nomeados, múltiplas comparações, sincronização opcional e links públicos.
+[x] Até 10 comparações nomeadas locais, com recuperação e exclusão individual.
+[ ] Cenários de uso com parâmetros próprios, sincronização opcional e links públicos.
 P2.5 — INSTALAÇÃO GUIADA: 0% [ ]
 P3.1 — RENDERIZAÇÃO NEXT/PREVIEW E PUBLICAÇÃO: 97% [~]
 [x] Build Next de produção e preview gerado validados.
@@ -327,3 +328,15 @@ PASS 28 testes de navegador — comparação salva/transferência, regressões d
 [x] Nenhum arquivo rastreado conflita com as regras; git diff --check passou.
 Nenhuma regra nova necessária: downloads de teste em test-results/, relatórios e caches já estão cobertos.
 Nenhum commit, push ou deploy executado. Regra de revisar .gitignore em cada entrega adicionada a COMO ATUALIZAR.
+
+RODADA 2026-09-14 — COMPARAÇÕES NOMEADAS [x]
+[x] Biblioteca local de até 10 configurações, com nome de 1 a 60 caracteres.
+[x] Abrir recalcula no perfil atual; excluir mantém a comparação aberta; cópia rápida preservada separadamente.
+[x] Nomes duplicados (ignorando caixa) recusados sem sobrescrita; lista atualizada ao reabrir a seção.
+[x] Catálogo antigo é validado na recuperação; entradas incompatíveis ainda podem ser excluídas individualmente.
+[x] Falha de escrita ou dados corrompidos não sobrescrevem a biblioteca existente.
+PASS build Webpack com TypeScript; lint e sintaxe JS; testes unitários de nomes e portabilidade.
+PASS 14 testes de navegador em Next/preview: nomes, cópia rápida, importação/exportação e regressões do comparador.
+[x] Seção aberta validada a 320 px e com axe (sem violações sérias/críticas).
+[x] Revisão .gitignore: 4 artefatos ignorados, 5 fontes preservadas; nenhum arquivo rastreado em conflito. Nenhuma regra nova necessária.
+PASS git diff --check. Nenhum commit, push ou deploy executado.

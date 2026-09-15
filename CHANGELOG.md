@@ -1,5 +1,7 @@
 # Changelog
 
+- Biblioteca local de até 10 comparações nomeadas, com recuperação e exclusão individual, separada da cópia rápida.
+
 - Comparações podem ser exportadas e importadas em JSON, com validação local e preservação da cópia salva.
 
 - Comparador permite salvar uma configuração local de modelos, quantizações e contexto, recuperá-la no hardware atual e apagar a cópia sem perder a tela aberta.

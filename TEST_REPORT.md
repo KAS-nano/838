@@ -438,3 +438,12 @@ O build foi validado com Webpack; o comando padrão de publicação continua usa
 - Playwright: 28 testes PASS nas duas implementações, incluindo download e importação sem sobrescrever a cópia salva.
 - Gitignore: 5 artefatos ignorados e 7 arquivos importantes preservados; nenhum arquivo rastreado conflita com as regras. Nenhuma alteração necessária no .gitignore.
 - `git diff --check`: PASS. Build Turbopack e validação remota não executados nesta rodada.
+
+## 2026-09-14 — Comparações nomeadas
+
+- Build Webpack com TypeScript, ESLint e sintaxe JS: PASS.
+- Testes unitários: nomes, duplicatas, limite de entradas, falha de escrita, catálogo antigo e corrupção — PASS; regressão de portabilidade também passou.
+- Navegador: 14 testes PASS, incluindo duas comparações persistidas após reload, recuperação e exclusão individual, cópia rápida e JSON.
+- Seção nomeada aberta: sem overflow a 320 px nem violações axe sérias/críticas, Next e preview.
+- Gitignore revisado: 4 artefatos cobertos e 5 fontes preservadas; nenhum ajuste necessário.
+- Build Turbopack e validação remota não executados nesta rodada.

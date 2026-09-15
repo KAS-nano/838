@@ -1,3 +1,4 @@
+import { listNamedComparisons, addNamedComparison, loadNamedComparison, removeNamedComparison } from './named-comparisons.mjs';
 import { saveComparison, loadComparison, deleteComparison, readComparisonFile, downloadComparison } from './comparison-storage.mjs';
 import { seedModels as models, COMPARISON_METRICS, CONFIDENCE_LABELS, DEFAULT_SELECTIONS, FIT_LABELS, ORIGIN_LABELS, createComparisonRows, filterCatalog, filterComparisonRows, formatMetric, metricScale, metricValue, sortComparisonRows } from './engine.mjs';
 import { escapeHtml as html } from './shared.mjs';
@@ -119,6 +120,26 @@ export function initializeComparison(profile, initialContext = 8, isDemo = false
     } catch (error) { $('#compareSavedMessage').textContent = error.message; }
     finally { input.disabled = false; }
   });
+  function namedOptions(items, selected = $('#namedChoice').value) {
+    $('#namedChoice').innerHTML = '<option value="">Selecione uma comparação</option>' + items.map(item => `<option value="${html(item.name)}">${html(item.name)}</option>`).join('');
+    $('#namedChoice').value = selected;
+    $('#namedLoad').disabled = $('#namedRemove').disabled = !$('#namedChoice').value;
+  }
+  $('#namedChoice').addEventListener('change', () => { $('#namedLoad').disabled = $('#namedRemove').disabled = !$('#namedChoice').value; });
+  $('#namedComparisons').addEventListener('toggle', () => {
+    if (!$('#namedComparisons').open) return;
+    try { namedOptions(listNamedComparisons()); $('#namedMessage').textContent = ''; }
+    catch (error) { $('#namedMessage').textContent = error.message; }
+  });
+  for (const [id, action] of [['namedSave', 'save'], ['namedLoad', 'load'], ['namedRemove', 'remove']]) {
+    document.getElementById(id).addEventListener('click', () => {
+      try {
+        if (action === 'save') { const name = $('#comparisonName').value.trim(); namedOptions(addNamedComparison(name, models, selections, requestedContext()), name); $('#comparisonName').value = ''; $('#namedMessage').textContent = 'Comparação nomeada salva.'; }
+        if (action === 'load') { const saved = loadNamedComparison($('#namedChoice').value, models); selections = saved.selections; $('#compareContext').value = String(saved.contextK); $('#compareReset').click(); $('#namedMessage').textContent = 'Comparação nomeada aberta com o hardware atual.'; }
+        if (action === 'remove') { namedOptions(removeNamedComparison($('#namedChoice').value), ''); $('#namedMessage').textContent = 'Comparação nomeada excluída. A tela aberta foi mantida.'; }
+      } catch (error) { $('#namedMessage').textContent = error.message; }
+    });
+  }
   renderControls(); renderResults();
   return renderResults;
 }

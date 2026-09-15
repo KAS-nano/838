@@ -70,3 +70,7 @@
 .compare-transfer input { max-width: 100%; width: 280px; font-size: 12px; }
 .compare-transfer button, .compare-transfer input::file-selector-button { min-height: 44px; border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; background: var(--surface-raised); color: var(--foreground); cursor: pointer; font-size: 12px; }
 .compare-transfer button:focus-visible, .compare-transfer input:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.compare-named summary { cursor: pointer; font-size: 14px; font-weight: 600; min-height: 44px; }
+.compare-named input, .compare-named select { width: 280px; max-width: 100%; min-height: 44px; padding: 10px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface-raised); color: var(--foreground); }
+.compare-named button:disabled { opacity: .5; cursor: not-allowed; }
+.compare-named summary:focus-visible, .compare-named select:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }

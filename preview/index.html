@@ -125,6 +125,13 @@
           <p>O arquivo não inclui seu hardware. Importar altera a comparação aberta; a cópia salva só muda quando você salva novamente.</p>
           <p role="status" id="compareSavedMessage"></p>
         </section>
+        <details class="compare-saved compare-named" id="namedComparisons">
+          <summary>Minhas comparações nomeadas</summary>
+          <p>Guarde até 10 configurações neste navegador. A cópia rápida acima continua separada. Reabra esta seção para atualizar a lista.</p>
+          <div class="compare-transfer"><label>Nome da comparação<input id="comparisonName" maxlength="60" placeholder="Ex.: Programação 32K"></label><button type="button" id="namedSave">Guardar com nome</button></div>
+          <div class="compare-transfer"><label>Comparações guardadas<select id="namedChoice"><option value="">Selecione uma comparação</option></select></label><button type="button" id="namedLoad" disabled>Abrir selecionada</button><button type="button" id="namedRemove" disabled>Excluir selecionada</button></div>
+          <p role="status" id="namedMessage"></p>
+        </details>
         <div class="compare-slots" id="compareControls"></div>
         <section class="compare-filters" aria-label="Filtros da comparação">
           <div class="compare-filter-row"><label>Buscar no catálogo<input id="compareSearch" type="search" placeholder="Nome, família ou objetivo"></label><label>Família<select id="compareFamily"></select></label><label>Contexto solicitado (K)<input id="compareContext" type="number" min="1" max="256" step="1" value="8" aria-describedby="compareContextHelp"></label></div>
