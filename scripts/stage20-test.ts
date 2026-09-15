@@ -25,6 +25,13 @@ async function main() {
   };
 
   const r = await runOllamaBenchmark("x", "http://127.0.0.1:11434", fakeFetch);
+  const malformed = usageToBenchmark({
+    model: " ".repeat(300),
+    eval_count: -1,
+    eval_duration: Number.NaN,
+    prompt_eval_count: 1.5,
+    prompt_eval_duration: Number.POSITIVE_INFINITY,
+  });
   const tests: [string, boolean][] = [
     ["generation math", m.generationTps === 25],
     ["prompt math", m.promptTps === 200],
@@ -33,6 +40,7 @@ async function main() {
     ["short max tokens", captured[0]?.body.options.num_predict === 64],
     ["non streaming", captured[0]?.body.stream === false],
     ["measured flag", r.measured === true && r.generationTps === 64],
+    ["métricas inválidas neutralizadas", malformed.model === "desconhecido" && malformed.evalCount === 0 && malformed.promptCount === 0 && malformed.generationTps === null && malformed.promptTps === null],
     ["loopback permitido", parseLocalRuntimeEndpoint("http://localhost:11434") === "http://localhost:11434"],
   ];
 

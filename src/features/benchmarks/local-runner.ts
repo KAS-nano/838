@@ -20,17 +20,18 @@ export type LocalBenchmarkResult = {
   measured: true;
 };
 
-const seconds = (ns: unknown) => typeof ns === "number" && ns > 0 ? ns / 1_000_000_000 : null;
+const seconds = (ns: unknown) => typeof ns === "number" && Number.isFinite(ns) && ns > 0 ? ns / 1_000_000_000 : null;
+const count = (value: unknown) => typeof value === "number" && Number.isSafeInteger(value) && value >= 0 ? value : 0;
 
 export function usageToBenchmark(value: OllamaUsage): LocalBenchmarkResult {
   const evalSeconds = seconds(value.eval_duration);
   const promptSeconds = seconds(value.prompt_eval_duration);
   const total = seconds(value.total_duration);
   const load = seconds(value.load_duration);
-  const evalCount = typeof value.eval_count === "number" ? value.eval_count : 0;
-  const promptCount = typeof value.prompt_eval_count === "number" ? value.prompt_eval_count : 0;
+  const evalCount = count(value.eval_count);
+  const promptCount = count(value.prompt_eval_count);
   return {
-    model: value.model || "desconhecido",
+    model: typeof value.model === "string" && value.model.trim() ? value.model.slice(0, 200) : "desconhecido",
     generationTps: evalSeconds && evalCount ? +(evalCount / evalSeconds).toFixed(2) : null,
     promptTps: promptSeconds && promptCount ? +(promptCount / promptSeconds).toFixed(2) : null,
     totalSeconds: total ? +total.toFixed(3) : null,

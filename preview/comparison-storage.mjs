@@ -1,3 +1,5 @@
+import { safeReadJson, safeWriteJson } from './storage.mjs';
+
 export const COMPARISON_KEY = '838.saved-comparison.v1';
 
 export function validateComparison(value, models) {
@@ -16,19 +18,20 @@ export function validateComparison(value, models) {
 
 export function saveComparison(models, selections, contextK) {
   const value = validateComparison({ version: 1, selections, contextK }, models);
-  try { window.localStorage.setItem(COMPARISON_KEY, JSON.stringify(value)); }
-  catch { throw new Error('O navegador não permitiu salvar. Sua comparação atual continua disponível.'); }
+  const result = safeWriteJson(window.localStorage, COMPARISON_KEY, value, { maxBytes: 20_000 });
+  if (!result.ok) {
+    throw new Error('O navegador não permitiu salvar. Sua comparação atual continua disponível.');
+  }
 }
 
 export function loadComparison(models) {
-  let raw;
-  try { raw = window.localStorage.getItem(COMPARISON_KEY); }
-  catch { throw new Error('O navegador não permitiu acessar a comparação salva.'); }
-  if (raw === null) throw new Error('Nenhuma comparação salva neste navegador.');
-  let value;
-  try { if (raw.length > 20_000) throw new Error(); value = JSON.parse(raw); }
-  catch { throw new Error('Não foi possível ler a comparação salva. Salve uma nova comparação para substituí-la.'); }
-  return validateComparison(value, models);
+  try {
+    const value = safeReadJson(window.localStorage, COMPARISON_KEY, { fallback: null, maxBytes: 20_000 });
+    if (value === null) throw new Error('Nenhuma comparação salva neste navegador.');
+    return validateComparison(value, models);
+  } catch {
+    throw new Error('Não foi possível ler a comparação salva. Salve uma nova comparação para substituí-la.');
+  }
 }
 
 export function deleteComparison() {

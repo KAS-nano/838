@@ -4,12 +4,14 @@ O modo inicial usa catálogo seed e não exige banco ou autenticação. Configur
 
 ## Banco e autenticação
 
-Copie `.env.example` para `.env.local` e configure `DATABASE_URL`. Depois:
+Copie `.env.example` para `.env.local` e configure `DATABASE_URL`. Para validar diffs de migration, configure também `SHADOW_DATABASE_URL` apontando para um banco separado. Depois:
 
 ```bash
 npm run db:generate
 npm run db:migrate
 ```
+
+O banco shadow nunca deve ser o banco de produção; ele é usado apenas pelo Prisma para comparar e testar migrations.
 
 O catálogo usa o fallback empacotado por padrão. Depois de aplicar a migration e popular os 17 modelos com `upsertSeedCatalog`, selecione a persistência com:
 

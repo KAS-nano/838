@@ -15,9 +15,17 @@ export function getAuthConfiguration() {
   if (process.env.NODE_ENV === "production" && (parsedBase.protocol !== "https:" || parsedWebhook.protocol !== "https:")) {
     throw new Error("Autenticação em produção exige HTTPS.");
   }
-  const trustedOrigins = (process.env.AUTH_TRUSTED_ORIGINS ?? baseURL)
+  const trustedOriginsRaw = (process.env.AUTH_TRUSTED_ORIGINS ?? baseURL)
     .split(",")
-    .map((origin) => new URL(origin.trim()).origin);
+    .map((origin) => origin.trim())
+    .filter(Boolean);
+  const trustedOrigins = trustedOriginsRaw.map((origin) => {
+    try {
+      return new URL(origin).origin;
+    } catch {
+      throw new Error(`Origem de autenticação inválida: ${origin}`);
+    }
+  });
   return { baseURL: parsedBase.origin, secret, trustedOrigins, emailWebhookUrl: parsedWebhook.toString(), emailWebhookSecret };
 }
 

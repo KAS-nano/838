@@ -1,0 +1,491 @@
+PERMISSOES DO DESENVOLVEDOR — PROJETO 838
+=========================================
+
+Atualizado em: 2026-09-15
+Objetivo: listar credenciais, permissões, configurações externas e ações manuais necessárias para ativar as funcionalidades que permanecem opcionais ou bloqueadas.
+
+REGRA DE SEGURANÇA
+------------------
+Nunca envie senhas, tokens, chaves privadas ou o conteúdo real de `.env.local` pelo chat, commit ou issue. Cadastre segredos diretamente no terminal ou no painel do provedor. O projeto mantém recursos sensíveis desligados até que as pré-condições sejam verificadas.
+
+Legenda:
+- PRONTO: pode ser usado com a configuração atual.
+- PENDENTE: existe código, mas a ativação depende de ação externa.
+- OPCIONAL: não bloqueia o lançamento inicial.
+- NÃO AUTOMATIZADO: exige decisão, conta, aprovação ou teste físico.
+
+1. PRIORIDADE P0 — FUNCIONAMENTO BÁSICO E PUBLICAÇÃO
+----------------------------------------------------
+
+1.1 Node, npm e instalação local
+Status: PRONTO.
+Necessário para: desenvolvimento, testes e build.
+
+Pré-requisitos:
+- Node 22.x conforme `.node-version`.
+- npm compatível com o lockfile.
+- acesso de leitura ao repositório e à internet para `npm ci`.
+
+Comandos:
+    npm ci
+    npm run deploy:check
+    npm run dev
+
+Documentação:
+- Node.js: https://nodejs.org/docs/latest-v22.x/api/
+- npm: https://docs.npmjs.com/cli/v10/commands/npm-ci
+
+1.2 GitHub e CI
+Status: PENDENTE para execução remota; CI está configurada no repositório.
+Desbloqueia: validação automática em pull requests, build, navegador, PostgreSQL e agente Rust.
+
+Permissões necessárias:
+- `Read` no código para clonar e executar a CI.
+- Permissão `Write` para fazer push em `main` ou abrir pull requests.
+- Permissão de mantenedor/admin do repositório para configurar branch protection, Actions e Dependabot.
+- Não conceder tokens com escopo maior que o necessário.
+
+Ações manuais:
+1. Criar ou confirmar o repositório GitHub usado pelo projeto.
+2. Fazer push da branch `main`.
+3. Ativar Actions.
+4. Configurar proteção de `main` exigindo os jobs da CI.
+5. Conferir os jobs `Quality`, `Pure engines and generated assets`, `Production build`, `PostgreSQL schema`, `Browser` e `Hardware Agent (Linux)`.
+6. Criar a primeira tag somente depois do smoke test público.
+
+Documentação:
+- Actions permissions: https://docs.github.com/actions/using-jobs/assigning-permissions-to-jobs
+- Branch protection: https://docs.github.com/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches
+- Dependabot: https://docs.github.com/code-security/dependabot
+
+1.3 Vercel ou outra hospedagem Next.js
+Status: PENDENTE para publicação/atualização pública; o código funciona localmente.
+Desbloqueia: URL HTTPS pública, smoke test externo, CSP/HSTS em ambiente real e uso por terceiros.
+
+Permissões necessárias:
+- Conta com permissão Owner ou Developer no projeto Vercel.
+- Acesso de leitura ao repositório GitHub para importar o projeto.
+- Permissão para criar deployments e configurar Environment Variables.
+- Permissão DNS somente se for usado domínio próprio.
+
+Configuração inicial sem recursos externos:
+    AUTH_ENABLED=false
+    CATALOG_SOURCE=seed
+    COMMUNITY_BENCHMARKS_ENABLED=false
+    TRUST_PROXY_HEADERS=true
+
+Ações manuais:
+1. Criar projeto em https://vercel.com/new.
+2. Importar o repositório e usar Next.js, root `.`.
+3. Usar `npm ci` e `npm run build`.
+4. Cadastrar as variáveis acima em Development, Preview e Production.
+5. Fazer deploy.
+6. Executar:
+       npm run deploy:smoke -- https://SEU-DOMINIO
+7. Se houver domínio próprio, adicionar o domínio no painel e configurar os registros DNS indicados.
+
+Firewall/CORS:
+- Permitir acesso HTTPS público à aplicação.
+- Não expor diretamente o PostgreSQL na internet.
+- `TRUST_PROXY_HEADERS=true` só deve ser usado quando a origem estiver atrás do proxy confiável da hospedagem.
+- O domínio final deve ser usado em `APP_ORIGIN`, `BETTER_AUTH_URL` e `AUTH_TRUSTED_ORIGINS` quando autenticação for ativada.
+
+Documentação:
+- Vercel deploy: https://vercel.com/docs/deployments/overview
+- Variáveis Vercel: https://vercel.com/docs/environment-variables
+- Domínios Vercel: https://vercel.com/docs/domains/working-with-domains
+
+2. PRIORIDADE P0 — POSTGRESQL E CATÁLOGO PERSISTENTE
+----------------------------------------------------
+
+2.1 PostgreSQL local
+Status: PRONTO neste ambiente local.
+Desbloqueia: catálogo persistente, migrations, bootstrap e testes SQL locais.
+
+Configuração local já realizada:
+- banco principal: `838`
+- banco shadow: `838_shadow`
+- usuário: `838`
+- credencial local armazenada somente em `.env.local`
+- 2 migrations aplicadas
+- 17 modelos e 85 variantes populados
+
+Variáveis esperadas:
+    DATABASE_URL=postgresql://USUARIO:SENHA@HOST:5432/NOME_BANCO
+    SHADOW_DATABASE_URL=postgresql://USUARIO:SENHA@HOST:5432/NOME_SHADOW
+    CATALOG_SOURCE=database
+
+Ações:
+    npm run db:generate
+    npx prisma migrate deploy
+    npm run db:bootstrap
+    npx prisma migrate status
+
+Permissões SQL:
+- Desenvolvimento: proprietário do banco ou usuário com `CREATE`, `ALTER`, `INSERT`, `UPDATE`, `DELETE` e uso do schema `public`.
+- Produção: usuário da aplicação deve ter somente as permissões necessárias para leitura/escrita operacional; migrations devem ser executadas por um usuário de deploy separado, se possível.
+- O banco shadow deve ser separado do banco principal e nunca pode ser produção.
+
+2.2 PostgreSQL hospedado
+Status: PENDENTE.
+Desbloqueia: persistência na implantação pública, autenticação real e benchmarks comunitários.
+
+Credencial necessária:
+- URL PostgreSQL TLS fornecida pelo provedor, por exemplo Neon, Supabase, Railway, Render ou PostgreSQL gerenciado.
+- Usuário e senha do banco.
+- Se o provedor usar pooler, usar a URL recomendada para runtime e uma conexão apropriada para migrations.
+
+Permissões do provedor:
+- Criar banco/schema ou receber um banco vazio.
+- Criar usuário de aplicação e, separadamente, usuário de migration quando suportado.
+- Permitir conexão somente a partir da hospedagem/CI necessária.
+
+Firewall:
+- Liberar saída TCP 5432 da hospedagem/CI para o endpoint PostgreSQL.
+- Preferir allowlist de IP, TLS obrigatório e pooler do provedor.
+- Nunca liberar 5432 para toda a internet sem autenticação e firewall.
+
+Ações manuais:
+1. Criar banco de produção e banco shadow separado.
+2. Cadastrar `DATABASE_URL` e `SHADOW_DATABASE_URL` na hospedagem, sem commit.
+3. Executar `npx prisma migrate deploy`.
+4. Executar `npm run db:bootstrap` uma vez e confirmar 17 modelos.
+5. Definir `CATALOG_SOURCE=database`.
+6. Executar `npm run deploy:smoke -- https://SEU-DOMINIO`.
+
+Documentação:
+- Prisma migrations: https://www.prisma.io/docs/orm/prisma-migrate
+- Prisma connection management: https://www.prisma.io/docs/orm/prisma-client/setup-and-configuration/databases-connections
+- PostgreSQL roles: https://www.postgresql.org/docs/current/user-manag.html
+
+3. PRIORIDADE P0 — AUTENTICAÇÃO E E-MAIL
+-----------------------------------------
+
+3.1 Better Auth
+Status: PENDENTE e desligado por padrão.
+Desbloqueia: cadastro, login, sessão, verificação de e-mail e reset de senha.
+
+Variáveis obrigatórias:
+    AUTH_ENABLED=true
+    BETTER_AUTH_SECRET=segredo-aleatorio-com-pelo-menos-32-caracteres
+    BETTER_AUTH_URL=https://SEU-DOMINIO
+    AUTH_TRUSTED_ORIGINS=https://SEU-DOMINIO,https://outro-origem-autorizada
+    DATABASE_URL=postgresql://...
+    AUTH_EMAIL_WEBHOOK_URL=https://SEU-PROVEDOR/auth-email
+    AUTH_EMAIL_WEBHOOK_SECRET=segredo-do-webhook
+    APP_ORIGIN=https://SEU-DOMINIO
+
+Credenciais e permissões:
+- `BETTER_AUTH_SECRET`: gerar localmente com gerador criptográfico; não reutilizar em outros ambientes.
+- Acesso de escrita ao PostgreSQL para sessões, usuários, contas e verificações.
+- O provedor de e-mail deve permitir envio transacional e configuração de webhook/API.
+- A conta de e-mail precisa ter permissão de envio, não de administração total da organização.
+
+Requisitos externos:
+- HTTPS válido no domínio.
+- PostgreSQL de produção.
+- Provedor de e-mail transacional contratado/configurado.
+- Domínio remetente validado com SPF/DKIM/DMARC conforme o provedor.
+
+Contrato do webhook:
+- Método: `POST`.
+- Header: `Authorization: Bearer AUTH_EMAIL_WEBHOOK_SECRET`.
+- Header: `Content-Type: application/json`.
+- Corpo: `{ "kind": "verification" | "password-reset", "email": "...", "url": "..." }`.
+- O provedor não deve registrar URLs de verificação/reset em logs.
+- Deve responder HTTP 2xx quando a mensagem for aceita.
+
+Firewall/CORS:
+- Permitir saída HTTPS da aplicação para `AUTH_EMAIL_WEBHOOK_URL`.
+- Aceitar somente origens HTTPS explicitamente listadas em `AUTH_TRUSTED_ORIGINS`.
+- Não usar `*` em origens confiáveis.
+- Cookies devem permanecer Secure/HttpOnly/SameSite conforme HTTPS e proxy.
+
+Ações manuais:
+1. Criar banco de produção e aplicar migrations.
+2. Configurar provedor de e-mail e webhook.
+3. Validar domínio e registros SPF/DKIM/DMARC.
+4. Cadastrar variáveis no ambiente de produção.
+5. Ativar `AUTH_ENABLED=true` somente nesse ambiente.
+6. Testar cadastro, verificação, login, logout, reset, expiração e origem inválida.
+7. Confirmar que tokens e links não aparecem nos logs.
+
+Documentação:
+- Better Auth: https://www.better-auth.com/docs
+- OWASP session management: https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html
+- SPF: https://www.rfc-editor.org/rfc/rfc7208
+- DKIM: https://www.rfc-editor.org/rfc/rfc6376
+- DMARC: https://www.rfc-editor.org/rfc/rfc7489
+
+3.2 Telas de sessões e revogação
+Status: PENDENTE.
+Bloqueio: a infraestrutura de autenticação existe, mas a interface completa para listar e revogar sessões ainda não foi aprovada/implementada.
+Ação necessária: implementar e testar a tela contra PostgreSQL real antes de considerar autenticação completa.
+
+4. PRIORIDADE P0/P1 — INTEGRAÇÕES DE MODELOS E BENCHMARKS
+----------------------------------------------------------
+
+4.1 OpenRouter
+Status: OPCIONAL/PENDENTE; a rota funciona sem chave para modelos públicos, quando o provedor aceitar a chamada.
+Desbloqueia: catálogo de modelos e preços do OpenRouter com maior disponibilidade/quota.
+
+Credencial:
+    OPENROUTER_API_KEY=sk-or-v1-...
+
+Permissões:
+- Criar uma chave de API com escopo mínimo de leitura de modelos, se o painel oferecer escopos.
+- Não usar chave de administração da organização.
+- Definir limites de gasto e rotação no painel do OpenRouter.
+
+Firewall:
+- Permitir saída HTTPS para `https://openrouter.ai`.
+- Não liberar entrada pública para a chave.
+
+Ações:
+1. Criar conta em https://openrouter.ai.
+2. Criar chave no painel de Keys.
+3. Definir limite de gasto/crédito.
+4. Cadastrar `OPENROUTER_API_KEY` na hospedagem.
+5. Testar `/api/integrations/openrouter` e observar rate limit.
+
+Documentação: https://openrouter.ai/docs/api-reference/overview
+
+4.2 Hugging Face
+Status: PRONTO para consulta pública limitada; token é opcional no código atual.
+Desbloqueia: maior quota ou acesso a endpoints privados se essa funcionalidade for implementada.
+
+Credencial opcional futura:
+    HUGGINGFACE_TOKEN=hf_...
+
+Permissões:
+- Para dados públicos, nenhuma credencial é necessária.
+- Para repositórios privados, token com permissão de leitura somente.
+- Não fornecer token de escrita/admin.
+
+Firewall: permitir saída HTTPS para `https://huggingface.co`.
+
+Observação: `HUGGINGFACE_TOKEN` não deve ser ativado sem implementar seu uso explícito no cliente HTTP; deixar pendente evita criar uma falsa sensação de integração autenticada.
+
+Documentação: https://huggingface.co/docs/hub/security-tokens
+
+4.3 Ollama e LM Studio local
+Status: PRONTO no navegador, mediante ação explícita do usuário.
+Desbloqueia: listagem de modelos locais e benchmark Ollama.
+
+Não exige token de nuvem. Exige:
+- Ollama ou LM Studio instalado na máquina do usuário.
+- Serviço local ativo.
+- Porta permitida conforme o fluxo, normalmente Ollama `11434`.
+- Modelo instalado e espaço em disco suficiente.
+- Permissão do firewall local para o navegador acessar loopback.
+
+Ações:
+1. Instalar Ollama: https://ollama.com/download
+2. Instalar LM Studio: https://lmstudio.ai/download
+3. Iniciar o runtime e baixar um modelo.
+4. Permitir acesso local quando o sistema operacional perguntar.
+5. Iniciar o benchmark somente pela interface do 838.
+
+O backend hospedado não deve acessar localhost do usuário. O projeto rejeita hosts remotos, credenciais embutidas, caminhos e portas não permitidas.
+
+4.4 Agente Hardware Tauri/Rust
+Status: PENDENTE para distribuição assinada; código e testes Linux estão disponíveis.
+Desbloqueia: detecção local de hardware e coleta v2 no aplicativo nativo.
+
+Permissões do sistema:
+- Executar o instalador assinado pelo usuário.
+- Acesso somente leitura a informações de hardware e sysfs/consultas nativas permitidas.
+- Nenhuma permissão administrativa contínua deve ser concedida ao agente.
+- O projeto não habilita shell/http genérico no agente.
+
+Credenciais de publicação (opcionais, não enviar ao chat):
+- Certificado de assinatura Windows e senha do certificado.
+- Identidade/certificado Apple Developer para macOS, com notarização.
+- Credenciais de assinatura/notarização armazenadas como secrets na CI.
+- Chave GPG/age ou equivalente para assinar artefatos, se adotada.
+
+Permissões de conta:
+- Microsoft Partner Center/Code Signing para Windows, conforme o certificado escolhido.
+- Apple Developer Program com permissão de distribuição/notarização para macOS.
+- Conta GitHub com Actions secrets para a CI de release.
+
+Pendências que não serão falsificadas localmente:
+- Executar runners Windows/macOS reais.
+- Instalar e testar os pacotes em cada sistema.
+- Assinar, notarizar e publicar instaladores.
+
+Documentação:
+- Tauri signing: https://v2.tauri.app/distribute/sign/
+- Apple notarization: https://developer.apple.com/documentation/security/notarizing_macos_software_before_distribution
+- Microsoft Partner Center: https://learn.microsoft.com/windows/apps/publish/
+
+5. PRIORIDADE P1 — BENCHMARK COMUNITÁRIO E MODERAÇÃO
+-----------------------------------------------------
+
+Status: PENDENTE/desligado por padrão.
+Desbloqueia: receber medições assinadas de instalações e alimentar evidências do estimador.
+
+Variáveis:
+    COMMUNITY_BENCHMARKS_ENABLED=true
+    CATALOG_SOURCE=database
+    DATABASE_URL=postgresql://...
+    APP_ORIGIN=https://SEU-DOMINIO
+
+Permissões e dependências:
+- PostgreSQL com acesso de escrita para `CommunitySubmission`.
+- Chaves Ed25519 geradas/protegidas pelo agente ou instalação; nunca armazenar chave privada no servidor web.
+- Equipe de produto/moderação com acesso restrito para revisar status `pending` e `quarantined`.
+- Política aprovada de retenção, exclusão, privacidade e resposta a abuso.
+
+Firewall/CORS:
+- Permitir somente origem HTTPS oficial em mutações.
+- Não aceitar `Origin: *`.
+- Rate limit distribuído necessário antes de múltiplas instâncias.
+- Se houver proxy, configurar corretamente `TRUST_PROXY_HEADERS` e bloquear acesso direto à origem.
+
+Ações manuais:
+1. Aplicar migrations no PostgreSQL.
+2. Definir política de moderação e retenção.
+3. Configurar armazenamento distribuído de rate limit para produção multi-instância.
+4. Ativar a flag em staging.
+5. Testar assinatura válida, payload alterado, expiração, duplicação e limite diário.
+6. Só então avaliar ativação em produção.
+
+O sistema não considera a assinatura uma prova de hardware verdadeiro. Medições continuam pendentes até moderação.
+
+6. PRIORIDADE P1 — BACKUP, RESTORE E OPERAÇÃO
+----------------------------------------------
+
+Status: código PRONTO; primeiro ensaio real PENDENTE.
+Desbloqueia: recuperação operacional e evidência de RPO/RTO.
+
+Dependências locais/servidor:
+- `pg_dump`, `pg_restore`, `psql`.
+- `age`.
+- `sha256sum`.
+- Diretório de backup fora do repositório.
+- Chave pública age do responsável pelo backup.
+- Identidade privada age guardada separadamente do backup, com acesso restrito.
+
+Variáveis:
+    DATABASE_URL=postgresql://...
+    BACKUP_DIR=/caminho/fora/do/repositorio
+    BACKUP_AGE_RECIPIENT=age1...
+    RESTORE_DATABASE_URL=postgresql://.../838_restore
+    BACKUP_FILE=/caminho/838-postgresql-...dump.age
+    AGE_IDENTITY_FILE=/caminho/seguro/age-identity.txt
+    ALLOW_RESTORE_DRILL=true
+
+Permissões:
+- Conta PostgreSQL com permissão de leitura para `pg_dump`.
+- Banco isolado de restauração com permissão de criação/limpeza.
+- Storage de backup com retenção e criptografia contratadas, se remoto.
+- Acesso à identidade age somente pelo responsável autorizado.
+
+Ações manuais:
+1. Criar destino externo ao repositório.
+2. Criar/parar de forma segura a chave age.
+3. Executar `scripts/db-backup.sh`.
+4. Guardar o `.dump.age` e `.sha256` fora do servidor principal.
+5. Criar banco isolado para restauração.
+6. Executar `scripts/db-restore-drill.sh` com `ALLOW_RESTORE_DRILL=true`.
+7. Registrar tempo, resultado e data do ensaio.
+
+Documentação:
+- age: https://age-encryption.org/v1
+- PostgreSQL backup: https://www.postgresql.org/docs/current/backup.html
+
+7. PRIORIDADE P1 — DOMÍNIO, FIREWALL, CORS E POLÍTICAS
+--------------------------------------------------------
+
+Para a infraestrutura:
+- Liberar somente HTTPS 443 para usuários.
+- Redirecionar HTTP para HTTPS no proxy.
+- Não expor PostgreSQL 5432 publicamente.
+- Permitir saída HTTPS da aplicação para OpenRouter, Hugging Face e webhook de e-mail somente quando usados.
+- Permitir loopback apenas no navegador/agente local; o servidor hospedado não deve alcançar a rede privada do usuário.
+- Configurar CSP e headers sem sobrescrever `Content-Security-Policy`, `X-Frame-Options`, `Permissions-Policy` e HSTS definidos pelo projeto.
+- Quando existir CDN/WAF, preservar `Origin`, `X-Forwarded-For` e `X-Request-Id` de acordo com a cadeia confiável.
+- Não habilitar CORS global com `*` para rotas mutáveis.
+
+Permissões para alterar:
+- Administrador de DNS para domínio e certificados.
+- Administrador do WAF/reverse proxy para regras de origem e headers.
+- Administrador da hospedagem para variáveis e rede.
+- Responsável de segurança para aprovar exceções de CSP, CORS e firewall.
+
+8. PRIORIDADE P2 — RECURSOS AVANÇADOS NÃO CRÍTICOS
+----------------------------------------------------
+
+8.1 PWA físico/offline
+Status: implementação local PRONTA; validação física PENDENTE.
+Necessita:
+- celular ou navegador desktop compatível;
+- HTTPS público ou localhost seguro;
+- permissão do usuário para instalar o app;
+- teste de atualização do service worker e recuperação offline.
+
+Não exige token. Não ativar cache de APIs, autenticação ou dados privados sem nova revisão.
+
+8.2 Coleta externa de catálogo
+Status: PENDENTE.
+Necessita:
+- decisão das fontes oficiais permitidas;
+- quota e termos de uso de cada fonte;
+- token somente se a fonte exigir autenticação;
+- storage de ETag/backoff e job agendado;
+- revisão de licença, proveniência, retenção e moderação.
+
+Nenhuma credencial de escrita deve ser concedida ao coletor sem aprovação.
+
+8.3 Avaliação real do estimador
+Status: PENDENTE.
+Necessita:
+- conjunto de medições reais e oculto;
+- consentimento/licença para uso dos dados;
+- execução de runtimes reais em hardware representativo;
+- decisão de limiares de promoção.
+
+8.4 Histórico comunitário, custo local versus API e sincronização
+Status: PENDENTE.
+Necessita:
+- definição de produto e privacidade;
+- banco/armazenamento persistente;
+- políticas de retenção e exclusão;
+- eventualmente credenciais de provedor de preços ou billing.
+
+9. ITENS MANTIDOS PARADOS SEM QUEBRAR O PROJETO
+-----------------------------------------------
+
+Os itens abaixo não devem ser ativados automaticamente e permanecem marcados como pendentes:
+
+- Autenticação real: exige PostgreSQL hospedado, HTTPS, e-mail transacional, domínio e testes completos.
+- Interface de sessões/revogação: ainda requer implementação e teste específico.
+- Rate limit distribuído: o atual é em memória e não é suficiente para múltiplas instâncias.
+- CSP sem `unsafe-inline`: requer validação com nonce/SRI e impacto no cache/SSR.
+- Moderação comunitária e retenção: requer decisão operacional e acesso restrito.
+- Agente Windows/macOS: requer runners, instalação, certificados, assinatura e notarização reais.
+- Backup/restore de produção: requer storage externo e chave age operacional.
+- Coleta externa do catálogo: requer fontes, quotas, ETag/backoff e revisão de licenças.
+- Teste PWA em dispositivos físicos: requer dispositivo e HTTPS público.
+- PWA funcionalidade offline avançada: não cachear dados privados sem novo desenho de segurança.
+- P2.1 a P2.3 e P2.5: runtimes completos, histórico, custo e instalação guiada dependem de escopo e integrações adicionais.
+
+10. CHECKLIST DE ATIVAÇÃO SEGURA
+---------------------------------
+
+[ ] Credenciais cadastradas diretamente no ambiente correto, nunca no Git.
+[ ] Banco principal e shadow separados.
+[ ] Migrations aplicadas e `npx prisma migrate status` sem pendências.
+[ ] `npm run db:bootstrap` executado e contagem de modelos confirmada.
+[ ] Domínio HTTPS e origens confiáveis definidos.
+[ ] Firewall, proxy e CORS revisados.
+[ ] Webhook de e-mail testado sem tokens nos logs.
+[ ] Rate limit distribuído configurado antes de múltiplas instâncias.
+[ ] Backup criptografado e restore isolado testados.
+[ ] CI concluída no GitHub.
+[ ] `npm run deploy:check` aprovado.
+[ ] `npm run deploy:smoke -- https://SEU-DOMINIO` aprovado.
+[ ] Flags sensíveis ativadas uma por vez, começando em staging.
+
+Ao concluir cada item, registrar data, ambiente, responsável e evidência em `planning/PROGRESSO.txt` ou no relatório operacional correspondente.

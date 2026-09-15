@@ -1,0 +1,18 @@
+{
+  "name": "838 - IA certa para sua maquina",
+  "short_name": "838",
+  "description": "Compare modelos de IA pelo seu hardware e objetivo.",
+  "lang": "pt-BR",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#101214",
+  "theme_color": "#101214",
+  "icons": [
+    {
+      "src": "/favicon.ico?v=2",
+      "sizes": "any",
+      "type": "image/x-icon"
+    }
+  ]
+}

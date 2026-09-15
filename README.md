@@ -6,7 +6,7 @@
 
 Descubra quais modelos combinam com seu hardware, compare configurações e entenda os requisitos antes de instalar.
 
-[Acessar o site](https://838.vercel.app) · [Rodar localmente](#rodar-localmente) · [Progresso](planning/PROGRESSO.txt) · [Contribuir](#contribuir)
+[Acessar o site](https://838.vercel.app) · [Rodar localmente](#rodar-localmente) · [Progresso](planning/PROGRESSO.txt) · [Permissões do desenvolvedor](permissoes_do_dev.txt) · [Contribuir](#contribuir)
 
 </div>
 

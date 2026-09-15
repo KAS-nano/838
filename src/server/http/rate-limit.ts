@@ -1,4 +1,5 @@
 import { createHash } from "node:crypto";
+import { isIP } from "node:net";
 import { HttpError } from "./errors";
 
 type Bucket = { count: number; resetAt: number };
@@ -8,11 +9,24 @@ export type RateLimitPolicy = { limit: number; windowMs: number; name: string };
 
 export function clientKey(request: Request) {
   const trusted = process.env.TRUST_PROXY_HEADERS === "true";
-  const candidate = trusted
-    ? request.headers.get("x-real-ip") ?? request.headers.get("x-forwarded-for")?.split(",")[0]
-    : null;
-  const normalized = candidate?.trim() || "anonymous";
+  const candidate = trusted ? readTrustedClientIp(request) : null;
+  const normalized = candidate || "anonymous";
   return createHash("sha256").update(normalized).digest("hex").slice(0, 24);
+}
+
+function readTrustedClientIp(request: Request) {
+  const forwarded = request.headers.get("x-forwarded-for");
+  if (forwarded) {
+    const values = forwarded.split(",").map((item) => item.trim().replace(/^\[|\]$/g, "")).filter(Boolean);
+    for (const value of values) {
+      if (isIP(value)) return value;
+    }
+  }
+
+  const realIp = request.headers.get("x-real-ip")?.trim().replace(/^\[|\]$/g, "");
+  if (realIp && isIP(realIp)) return realIp;
+
+  return null;
 }
 
 export function rateLimit(request: Request, policy: RateLimitPolicy) {

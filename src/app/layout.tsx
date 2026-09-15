@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { SiteFrame } from "@/components/navigation/site-frame";
 
@@ -7,7 +7,10 @@ export const metadata: Metadata = {
   description: "Descubra IAs, APIs, runtimes e ferramentas adequadas ao seu computador e ao seu objetivo.",
   applicationName: "838",
   icons: { icon: "/favicon.ico?v=2" },
+  manifest: "/manifest.webmanifest",
 };
+
+export const viewport: Viewport = { themeColor: "#101214" };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return <html lang="pt-BR"><body><SiteFrame>{children}</SiteFrame></body></html>;

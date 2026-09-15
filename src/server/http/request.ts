@@ -1,10 +1,19 @@
 import { HttpError } from "./errors";
 
-export async function parseJsonWithLimit(request: Request, maxBytes: number) {
-  const contentType = request.headers.get("content-type")?.split(";", 1)[0].trim().toLowerCase();
-  if (contentType !== "application/json") {
-    throw new HttpError(415, "unsupported_media_type", "Use Content-Type application/json.");
+export function validateContentType(request: Request, allowed: string[] = ["application/json"]) {
+  const value = request.headers.get("content-type");
+  if (!value) {
+    throw new HttpError(415, "unsupported_media_type", "Content-Type ausente. Use application/json.");
   }
+  const contentType = value.split(";", 1)[0].trim().toLowerCase();
+  if (!allowed.includes(contentType)) {
+    throw new HttpError(415, "unsupported_media_type", `Tipo de conteúdo não suportado: ${contentType}.`);
+  }
+  return contentType;
+}
+
+export async function parseJsonWithLimit(request: Request, maxBytes: number) {
+  validateContentType(request);
   const announced = Number(request.headers.get("content-length"));
   if (Number.isFinite(announced) && announced > maxBytes) {
     throw new HttpError(413, "payload_too_large", "Corpo da requisição excede o limite permitido.");

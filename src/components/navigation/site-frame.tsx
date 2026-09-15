@@ -54,6 +54,10 @@ export function SiteFrame({ children }: { children: React.ReactNode }) {
     window.addEventListener("keydown", onKey);
     return () => { document.body.style.overflow = previous; window.removeEventListener("keydown", onKey); window.removeEventListener("resize", onResize); };
   }, [open]);
+  useEffect(() => {
+    if (process.env.NODE_ENV !== "production" || !("serviceWorker" in navigator)) return;
+    navigator.serviceWorker.register("/sw.js", { scope: "/" }).catch(() => undefined);
+  }, []);
   return <div className="site-frame">
     <a className="skip-link" href="#main-content">Pular para o conteúdo</a>
     <ModelRain />

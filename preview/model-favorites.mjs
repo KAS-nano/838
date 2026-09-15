@@ -1,3 +1,5 @@
+import { safeReadJson, safeWriteJson } from './storage.mjs';
+
 export const FAVORITES_KEY = '838.model-favorites.v1';
 const empty = Object.freeze({ ids: [], error: '' });
 
@@ -14,9 +16,7 @@ export function createFavoritesStore(allowedIds) {
   function refresh() {
     if (sessionOnly) return;
     try {
-      const raw = window.localStorage.getItem(FAVORITES_KEY);
-      if (raw !== null && raw.length > 100_000) throw new Error('Favorites too large');
-      const value = raw === null ? { version: 1, ids: [] } : JSON.parse(raw);
+      const value = safeReadJson(window.localStorage, FAVORITES_KEY, { fallback: { version: 1, ids: [] }, maxBytes: 100_000, throwOnError: true });
       if (value?.version !== 1 || !Array.isArray(value.ids) || value.ids.length > 1000) throw new Error('Invalid favorites');
       publish({ ids: [...new Set(value.ids.filter(id => typeof id === 'string' && allowed.has(id)))], error: '' });
     } catch {
@@ -42,8 +42,14 @@ export function createFavoritesStore(allowedIds) {
       if (!allowed.has(id)) return;
       const ids = snapshot.ids.includes(id) ? snapshot.ids.filter(item => item !== id) : [...snapshot.ids, id];
       let error = '';
-      try { window.localStorage.setItem(FAVORITES_KEY, JSON.stringify({ version: 1, ids })); sessionOnly = false; }
-      catch { sessionOnly = true; error = 'Favoritos atualizados apenas nesta sessão: o navegador não permitiu salvar.'; }
+      try {
+        const result = safeWriteJson(window.localStorage, FAVORITES_KEY, { version: 1, ids }, { maxBytes: 100_000 });
+        if (!result.ok) throw new Error(result.error || 'write_failed');
+        sessionOnly = false;
+      } catch {
+        sessionOnly = true;
+        error = 'Favoritos atualizados apenas nesta sessão: o navegador não permitiu salvar.';
+      }
       publish({ ids, error });
     },
   };

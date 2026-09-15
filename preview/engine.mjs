@@ -540,7 +540,7 @@ function recommendHybrid(profile, objective, models, apis) { const local = (0, e
 "src/features/profile/local-store.ts": (exports, load) => {
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.demoHardwareProfile = exports.PROFILE_CHANGED_EVENT = exports.PROFILE_KEY = exports.isHardwareProfile = void 0;
+exports.demoHardwareProfile = exports.PROFILE_MAX_BYTES = exports.PROFILE_CHANGED_EVENT = exports.PROFILE_KEY = exports.isHardwareProfile = void 0;
 exports.parseHardwareProfile = parseHardwareProfile;
 exports.readHardwareProfile = readHardwareProfile;
 exports.saveHardwareProfile = saveHardwareProfile;
@@ -551,6 +551,7 @@ const validation_1 = load("src/features/onboarding/validation.ts");
 Object.defineProperty(exports, "isHardwareProfile", { enumerable: true, get: function () { return validation_1.isHardwareProfile; } });
 exports.PROFILE_KEY = "838.hardwareProfile";
 exports.PROFILE_CHANGED_EVENT = "838:profile-changed";
+exports.PROFILE_MAX_BYTES = 100_000;
 // The UI identifies this fallback as a demo whenever no valid profile is saved.
 exports.demoHardwareProfile = {
     ...types_1.initialHardwareProfile,
@@ -564,6 +565,25 @@ exports.demoHardwareProfile = {
     distro: "CachyOS",
     objectives: ["Programação"],
 };
+function readJsonValue(storage, key) {
+    if (!storage)
+        return null;
+    const raw = storage.getItem(key);
+    if (raw === null || raw === undefined)
+        return null;
+    if (raw.length > exports.PROFILE_MAX_BYTES)
+        throw new Error("payload_too_large");
+    return JSON.parse(raw);
+}
+function writeJsonValue(storage, key, value) {
+    if (!storage)
+        return false;
+    const serialized = JSON.stringify(value);
+    if (serialized.length > exports.PROFILE_MAX_BYTES)
+        throw new Error("payload_too_large");
+    storage.setItem(key, serialized);
+    return true;
+}
 function parseHardwareProfile(raw) {
     if (!raw)
         return null;
@@ -579,7 +599,8 @@ function readHardwareProfile() {
     if (typeof window === "undefined")
         return null;
     try {
-        return parseHardwareProfile(window.localStorage.getItem(exports.PROFILE_KEY));
+        const saved = readJsonValue(window.localStorage, exports.PROFILE_KEY);
+        return saved === null ? null : (0, validation_1.isHardwareProfile)(saved) ? saved : null;
     }
     catch {
         return null;
@@ -588,8 +609,15 @@ function readHardwareProfile() {
 function saveHardwareProfile(profile) {
     if (!(0, validation_1.isHardwareProfile)(profile))
         throw new Error("Perfil de hardware inválido.");
-    window.localStorage.setItem(exports.PROFILE_KEY, JSON.stringify(profile));
-    window.dispatchEvent(new Event(exports.PROFILE_CHANGED_EVENT));
+    try {
+        const stored = writeJsonValue(window.localStorage, exports.PROFILE_KEY, profile);
+        if (!stored)
+            throw new Error("storage_unavailable");
+        window.dispatchEvent(new Event(exports.PROFILE_CHANGED_EVENT));
+    }
+    catch {
+        throw new Error("Não foi possível salvar o perfil neste navegador.");
+    }
 }
 function exportProfile(raw) {
     return { version: 1, exportedAt: new Date().toISOString(), hardware: parseHardwareProfile(raw) };

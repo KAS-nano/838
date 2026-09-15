@@ -1,12 +1,24 @@
+export function withTimeout<T>(operation: (signal: AbortSignal) => Promise<T>, timeoutMs: number, message = "Tempo limite excedido.") {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(new Error(message)), timeoutMs);
+  return Promise.resolve(operation(controller.signal)).finally(() => clearTimeout(timeout));
+}
+
 export async function fetchWithTimeout(
   input: RequestInfo | URL,
   init: RequestInit = {},
   timeoutMs = 8_000,
   fetcher: typeof fetch = fetch,
 ) {
-  const timeout = AbortSignal.timeout(timeoutMs);
-  const signal = init.signal ? AbortSignal.any([init.signal, timeout]) : timeout;
-  return fetcher(input, { ...init, signal });
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(new Error("Tempo limite excedido.")), timeoutMs);
+  try {
+    const signal = init.signal ? AbortSignal.any([init.signal, controller.signal]) : controller.signal;
+    const response = await fetcher(input, { ...init, signal });
+    return response;
+  } finally {
+    clearTimeout(timeout);
+  }
 }
 
 export async function readJsonWithLimit(response: Response, maxBytes = 2_000_000) {

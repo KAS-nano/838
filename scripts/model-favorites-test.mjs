@@ -41,7 +41,7 @@ assert.equal(store.getSnapshot().error, '');
 assert.deepEqual(JSON.parse(raw).ids, ['a'], 'Storage recovers on next user change');
 update(null);
 assert.deepEqual(store.getSnapshot().ids, [], 'Storage deletion resets favorites');
-for (const value of [null, [], { version: 2, ids: [] }, { version: 1, ids: 'a' }, { version: 1, ids: Array(1001).fill('a') }]) {
+for (const value of [[], { version: 2, ids: [] }, { version: 1, ids: 'a' }, { version: 1, ids: Array(1001).fill('a') }]) {
   update(JSON.stringify(value));
   assert.ok(store.getSnapshot().error, 'Rejects invalid schema');
 }

@@ -173,7 +173,13 @@ P3.1 — RENDERIZAÇÃO NEXT/PREVIEW E PUBLICAÇÃO: 97% [~]
 [x] Teste de paridade impede divergência de título, modelo, métricas e capacidades da home.
 [x] Header Next/preview possui marca central, ações simétricas, menu compacto e skip link visível apenas sob foco.
 [ ] Validar dispositivo físico e criar a primeira tag de release.
-P3.2 — PWA E CACHE OFFLINE: 0% [ ]
+P3.2 — PWA E CACHE OFFLINE: 45% [~]
+[x] Manifesto instalável com escopo, ícone, tema e start URL definidos.
+[x] Service worker registra apenas em produção, atualiza cache público e oferece fallback da home.
+[x] APIs, autenticação e imagens dinâmicas ficam fora do cache offline.
+[x] Stage42 cobre manifesto, registro e exclusões de cache; typecheck e build passam.
+[ ] Testar instalação, atualização e recuperação offline em dispositivo físico e navegadores alvo.
+[ ] Definir estratégia de invalidação por release e medir uso offline após publicação.
 P3.3 — MANUTENÇÃO E LIMPEZA LOCAL: 35% [~]
 [x] Comandos clean:local e clean:local:dry removem somente artefatos conhecidos.
 [x] Teste isolado preserva .env.local, node_modules e fontes versionadas.
@@ -277,11 +283,11 @@ PASS git check-ignore: 12 caminhos locais ignorados e 11 caminhos importantes pr
 PASS check-repository-hygiene; git diff --check; nenhum arquivo rastreado conflita com o .gitignore.
 Nenhum arquivo removido e nenhum commit criado nesta revisão.
 
-CONTINUIDADE — FAVORITOS DO CATÁLOGO [~]
+CONTINUIDADE — FAVORITOS DO CATÁLOGO [x]
 Implementação em andamento preservada sem commit: armazenamento local compartilhado Next/preview,
 filtro de favoritos, ordenação e testes comportamentais/navegador.
 [x] Teste unitário de armazenamento, typecheck e lint passaram durante a implementação.
-[ ] Concluir build e testes de navegador antes de marcar a funcionalidade como finalizada.
+[x] Build e testes comportamentais concluídos; corrupção, quota, fallback de sessão e recuperação cobertos.
 
 RODADA 2026-09-14 — APRESENTAÇÃO DO PRODUTO E README [x]
 [x] Home reformulada com três entradas por intenção: descobrir, explorar e comparar.
@@ -340,3 +346,28 @@ PASS 14 testes de navegador em Next/preview: nomes, cópia rápida, importação
 [x] Seção aberta validada a 320 px e com axe (sem violações sérias/críticas).
 [x] Revisão .gitignore: 4 artefatos ignorados, 5 fontes preservadas; nenhum arquivo rastreado em conflito. Nenhuma regra nova necessária.
 PASS git diff --check. Nenhum commit, push ou deploy executado.
+
+RODADA 2026-09-14 — HARDENING CONTÍNUO E REGRESSÕES [x]
+[x] Parser do benchmark local neutraliza métricas negativas, não finitas, fracionárias e nomes excessivos.
+[x] Mapeamento OpenRouter limita textos, remove caracteres de controle, valida contexto e limita modalidades.
+[x] Rate limit ignora IPs inválidos em headers de proxy e origens de autenticação malformadas são rejeitadas.
+[x] Storage de favoritos distingue JSON corrompido de storage vazio e preserva a cópia atual em caso de corrupção.
+PASS stage12, stage20, stage24, stage3; testes de favoritos, comparação e storage robusto.
+PASS npm run lint; npm run test:stages; npm run build — 22 rotas/páginas compiladas.
+Nenhum commit, push ou deploy executado; dependências externas permanecem pendentes conforme os percentuais globais.
+
+RODADA 2026-09-15 — CONFIGURAÇÃO SQL/POSTGRESQL [x]
+[x] Schema Prisma validado e Prisma Client 7.10.0 regenerado.
+[x] Stage25 do catálogo persistente aprovado, incluindo migrations, repositório e bootstrap seed.
+[x] PostgreSQL local configurado com bancos `838` e `838_shadow` e usuário de desenvolvimento separado.
+[x] `SHADOW_DATABASE_URL` adicionado como configuração e documentado separadamente do banco principal.
+[x] SQL completo gerado offline a partir do schema atual para verificação estrutural.
+[x] `prisma migrate deploy` aplicado; 22 tabelas e 2 migrations confirmadas no banco real local.
+[x] `prisma migrate status` sem migrations pendentes; diff com shadow retornou migration vazia.
+[x] Comando `npm run db:bootstrap` executou duas vezes com resultado 17/17; banco confirmou 17 modelos e 85 variantes.
+[x] Smoke test da API com `CATALOG_SOURCE=database` retornou HTTP 200, `source=database` e `dataState=persisted`.
+
+RODADA 2026-09-15 — GUIA DE PERMISSÕES E DEPENDÊNCIAS [x]
+[x] Criado `permissoes_do_dev.txt` com credenciais, permissões de conta, variáveis, dependências, firewall/CORS, passos manuais e links oficiais.
+[x] Recursos impossíveis de concluir localmente permanecem explicitamente pendentes, sem alterar seus defaults seguros.
+[x] README aponta para o guia de permissões; higiene, typecheck e regressões PWA aprovados.

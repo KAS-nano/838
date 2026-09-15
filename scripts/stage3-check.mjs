@@ -26,6 +26,9 @@ const tests = [
   ["Linux distro required", Boolean(validateHardware({...base,os:"linux",distro:""}).distro)],
   ["goals required", Boolean(validateGoals({...base,objectives:[]}).objectives)],
   ["preview onboarding exists", fs.existsSync("preview/onboarding.html")],
-  ["localStorage persistence", fs.readFileSync("src/features/profile/local-store.ts","utf8").includes("localStorage.setItem")],
+  ["localStorage persistence", (() => {
+    const source = fs.readFileSync("src/features/profile/local-store.ts", "utf8");
+    return source.includes("window.localStorage") && source.includes("storage.setItem") && source.includes("storage.getItem");
+  })()],
 ];
 let fail=false; for(const [name,pass] of tests){console.log(`${pass?"PASS":"FAIL"} ${name}`);if(!pass)fail=true} process.exit(fail?1:0);

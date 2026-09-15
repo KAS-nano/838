@@ -14,6 +14,10 @@ function perM(value: unknown) {
   return Number.isFinite(number) && number >= 0 ? number * 1_000_000 : undefined;
 }
 
+function text(value: unknown, fallback = "") {
+  return typeof value === "string" ? value.replace(/[\u0000-\u001f\u007f]/g, "").trim().slice(0, 300) : fallback;
+}
+
 function record(value: unknown): Record<string, unknown> {
   return value && typeof value === "object" && !Array.isArray(value) ? value as Record<string, unknown> : {};
 }
@@ -22,10 +26,11 @@ export function mapOpenRouterModel(input: unknown): OpenRouterModel {
   const value = record(input), pricing = record(value.pricing), architecture = record(value.architecture);
   const strings = (items: unknown) => Array.isArray(items) ? items.filter((item): item is string => typeof item === "string") : [];
   return {
-    id: String(value.id ?? ""), name: String(value.name ?? value.id ?? ""),
-    contextLength: typeof value.context_length === "number" ? value.context_length : undefined,
+    id: text(value.id), name: text(value.name, text(value.id)),
+    contextLength: typeof value.context_length === "number" && Number.isSafeInteger(value.context_length) && value.context_length > 0 ? value.context_length : undefined,
     inputUsdPerM: perM(pricing.prompt), outputUsdPerM: perM(pricing.completion),
-    inputModalities: strings(architecture.input_modalities), outputModalities: strings(architecture.output_modalities),
+    inputModalities: strings(architecture.input_modalities).map((item) => text(item)).filter(Boolean).slice(0, 20),
+    outputModalities: strings(architecture.output_modalities).map((item) => text(item)).filter(Boolean).slice(0, 20),
   };
 }
 
