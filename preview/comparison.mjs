@@ -1,3 +1,4 @@
+import { saveComparison, loadComparison, deleteComparison, readComparisonFile, downloadComparison } from './comparison-storage.mjs';
 import { seedModels as models, COMPARISON_METRICS, CONFIDENCE_LABELS, DEFAULT_SELECTIONS, FIT_LABELS, ORIGIN_LABELS, createComparisonRows, filterCatalog, filterComparisonRows, formatMetric, metricScale, metricValue, sortComparisonRows } from './engine.mjs';
 import { escapeHtml as html } from './shared.mjs';
 
@@ -86,6 +87,37 @@ export function initializeComparison(profile, initialContext = 8, isDemo = false
     filters.query = ''; filters.family = 'all';
     $('#compareSearch').value = ''; $('#compareFamily').value = 'all'; $('#compareFit').value = 'all'; $('#compareSort').value = 'selection';
     renderControls(); renderResults();
+  });
+  for (const [id, action] of [['compareSave', 'save'], ['compareLoad', 'load'], ['compareDelete', 'delete']]) {
+    document.getElementById(id).addEventListener('click', () => {
+      try {
+        if (action === 'save') { saveComparison(models, selections, requestedContext()); $('#compareSavedMessage').textContent = 'Comparação salva neste navegador. A versão anterior foi substituída.'; }
+        if (action === 'load') {
+          const saved = loadComparison(models);
+          selections = saved.selections; $('#compareContext').value = String(saved.contextK);
+          $('#compareReset').click();
+          $('#compareSavedMessage').textContent = 'Comparação recuperada e recalculada com o hardware atual.';
+        }
+        if (action === 'delete') { deleteComparison(); $('#compareSavedMessage').textContent = 'Cópia salva apagada. A comparação aberta foi mantida.'; }
+      } catch (error) { $('#compareSavedMessage').textContent = error.message; }
+    });
+  }
+  $('#compareExport').addEventListener('click', () => {
+    try { downloadComparison(models, selections, requestedContext()); $('#compareSavedMessage').textContent = 'Download solicitado. O arquivo contém somente modelos, quantizações e contexto.'; }
+    catch { $('#compareSavedMessage').textContent = 'Não foi possível exportar a comparação.'; }
+  });
+  $('#compareImport').addEventListener('change', async event => {
+    const input = event.target;
+    const file = input.files?.[0]; input.value = '';
+    if (!file) return;
+    input.disabled = true;
+    try {
+      const saved = await readComparisonFile(file, models);
+      selections = saved.selections; $('#compareContext').value = String(saved.contextK);
+      $('#compareReset').click();
+      $('#compareSavedMessage').textContent = 'Comparação importada e recalculada. Use Salvar comparação para guardar uma cópia neste navegador.';
+    } catch (error) { $('#compareSavedMessage').textContent = error.message; }
+    finally { input.disabled = false; }
   });
   renderControls(); renderResults();
   return renderResults;

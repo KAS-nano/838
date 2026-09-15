@@ -56,3 +56,17 @@
 @media (max-width: 1180px) and (min-width: 901px) { .compare-slot, .compare-card { padding-left: 12px; padding-right: 12px; } .compare-metrics div { display: grid; gap: 4px; } }
 @media (max-width: 760px) { .compare-slots, .compare-cards { grid-template-columns: 1fr; } .compare-slot { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; } .compare-slot label + label { margin-top: 0; } .compare-filter-row { grid-template-columns: 1fr; } .compare-chart-row { grid-template-columns: 1fr auto; gap: 10px; } .compare-chart-track { grid-row: 2; grid-column: 1 / -1; } .compare-chart-row > b { grid-column: 2; grid-row: 1; } .compare-chart-panel { padding: 18px; } }
 @media (max-width: 420px) { .compare-slot { grid-template-columns: 1fr; } .compare-slot label + label { margin-top: 2px; } .compare-filter-footer { align-items: stretch; } .compare-filter-footer button { width: 100%; } }
+
+.compare-saved { margin: 20px 0; padding: 20px; border: 1px solid var(--border); border-radius: 12px; background: var(--surface); }
+.compare-saved h2 { font-size: 15px; font-weight: 600; margin: 0 0 8px; }
+.compare-saved p { font-size: 12px; line-height: 1.7; color: var(--muted); margin: 0; }
+.compare-saved-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
+.compare-saved-actions button { min-height: 44px; padding: 10px 14px; border: 1px solid var(--border); border-radius: 8px; color: var(--foreground); background: var(--surface-raised); cursor: pointer; font-size: 12px; }
+.compare-saved-actions button:hover { border-color: var(--accent); }
+.compare-saved-actions button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.compare-saved [role="status"]:not(:empty) { margin-top: 12px; }
+.compare-transfer { display: flex; flex-wrap: wrap; align-items: end; gap: 14px; margin: 16px 0 12px; padding-top: 16px; border-top: 1px solid var(--border); }
+.compare-transfer label { display: grid; gap: 8px; min-width: 0; color: var(--muted); font-size: 12px; }
+.compare-transfer input { max-width: 100%; width: 280px; font-size: 12px; }
+.compare-transfer button, .compare-transfer input::file-selector-button { min-height: 44px; border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; background: var(--surface-raised); color: var(--foreground); cursor: pointer; font-size: 12px; }
+.compare-transfer button:focus-visible, .compare-transfer input:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }

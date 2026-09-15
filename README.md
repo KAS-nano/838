@@ -29,7 +29,7 @@ O perfil pode ficar salvo no navegador. A análise inicial funciona sem conta e 
 | --- | --- |
 | Dashboard | Analisar modelo × computador, ajustando quantização e contexto. |
 | Modelos | Buscar modelos, consultar arquivos por precisão e guardar favoritos locais. |
-| Comparador | Comparar alternativas com filtros, ordenação e visualização das métricas. |
+| Comparador | Comparar alternativas com filtros, ordenação e métricas; salvar uma configuração no navegador e exportar/importar a comparação em JSON. |
 | Recomendações e ferramentas | Explorar modelos locais, APIs, runtimes e ferramentas por objetivo. |
 | Hardware e upgrades | Entender limitações da máquina e simular alterações de capacidade. |
 | Instalação | Consultar receitas por sistema, GPU e runtime, com comandos visíveis. |

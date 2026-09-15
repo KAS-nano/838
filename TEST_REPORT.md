@@ -422,3 +422,19 @@ O build foi validado com Webpack; o comando padrão de publicação continua usa
 - Responsividade da home: 1440, 768, 390 e 320 px sem overflow horizontal; capturas de desktop Next e celular preview inspecionadas.
 - Nenhuma dependência adicionada; a home permanece componente de servidor.
 - Publicação remota e build com Turbopack não executados nesta rodada.
+
+## 2026-09-14 — Comparação salva
+
+- Build Webpack com TypeScript, ESLint dos arquivos alterados e `git diff --check`: PASS.
+- `node scripts/comparison-storage-test.mjs`: PASS; valida limites, versão, catálogo, normalização dos slots e descarte de campos extras.
+- Playwright: 26 testes PASS (comparação salva, regressões do comparador e acessibilidade), Next e preview.
+- Recuperação após reload, exclusão, ausência de cópia, JSON corrompido e falha de armazenamento exercitados em navegador.
+- Sem validação remota ou build Turbopack nesta rodada.
+
+## 2026-09-14 — Portabilidade e revisão do gitignore
+
+- Build Webpack com TypeScript, ESLint e sintaxe JS: PASS.
+- Validação unitária: serialização sem campos extras, round-trip, versão, JSON malformado e tamanho máximo — PASS.
+- Playwright: 28 testes PASS nas duas implementações, incluindo download e importação sem sobrescrever a cópia salva.
+- Gitignore: 5 artefatos ignorados e 7 arquivos importantes preservados; nenhum arquivo rastreado conflita com as regras. Nenhuma alteração necessária no .gitignore.
+- `git diff --check`: PASS. Build Turbopack e validação remota não executados nesta rodada.

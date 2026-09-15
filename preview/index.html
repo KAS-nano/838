@@ -118,6 +118,13 @@
       <section class="page compare-page" id="page-comparar">
         <div class="page-head compact"><div><div class="eyebrow">COMPARADOR</div><h1>Leia as opções lado a lado</h1><p class="muted">Compare versões, consumo e velocidade para a sua máquina. Você também pode selecionar duas quantizações do mesmo modelo.</p></div><a href="#modelos" class="ghost">Ver catálogo</a></div>
         <p class="compare-profile" id="compareProfile"></p>
+        <section class="compare-saved" aria-label="Comparação salva">
+          <div><h2>Retome sua comparação</h2><p>Salve modelos, quantizações e contexto neste navegador. Um novo salvamento substitui o anterior; os resultados usam sempre o hardware atual.</p></div>
+          <div class="compare-saved-actions"><button type="button" id="compareSave">Salvar comparação</button><button type="button" id="compareLoad">Recuperar comparação</button><button type="button" id="compareDelete">Apagar cópia salva</button></div>
+          <div class="compare-transfer"><button type="button" id="compareExport">Exportar comparação</button><label>Importar comparação (JSON)<input id="compareImport" type="file" accept=".json,application/json"></label></div>
+          <p>O arquivo não inclui seu hardware. Importar altera a comparação aberta; a cópia salva só muda quando você salva novamente.</p>
+          <p role="status" id="compareSavedMessage"></p>
+        </section>
         <div class="compare-slots" id="compareControls"></div>
         <section class="compare-filters" aria-label="Filtros da comparação">
           <div class="compare-filter-row"><label>Buscar no catálogo<input id="compareSearch" type="search" placeholder="Nome, família ou objetivo"></label><label>Família<select id="compareFamily"></select></label><label>Contexto solicitado (K)<input id="compareContext" type="number" min="1" max="256" step="1" value="8" aria-describedby="compareContextHelp"></label></div>

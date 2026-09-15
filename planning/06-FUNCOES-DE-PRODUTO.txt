@@ -50,6 +50,12 @@ Testes:
 Aceite: custo estimado é separado de preço confirmado e não inclui hardware já adquirido sem escolha do usuário.
 
 FUNÇÃO 5 — FAVORITOS, COMPARAÇÕES E PERFIS SALVOS (P2)
+Entrega local:
+[x] Favoritos no catálogo Next/preview.
+[x] Uma comparação salva por origem, com modelos, quantizações e contexto; recuperação explícita e exclusão.
+[x] Leitura valida versão, contexto e variantes disponíveis; falhas preservam a comparação aberta.
+[x] Exportação/importação JSON validada e processada localmente, sem hardware.
+[ ] Múltiplos cenários nomeados, sincronização opcional e links públicos.
 Aplicação:
 - Primeiro local; sincronização opcional após autenticação.
 - IDs versionados e migração do localStorage.

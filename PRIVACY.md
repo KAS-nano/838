@@ -5,6 +5,13 @@ O 838 foi estruturado para funcionar inicialmente com um perfil local no navegad
 ## Perfil local
 O onboarding pode ser persistido em localStorage. O usuário pode exportar/importar esse perfil em JSON.
 
+## Favoritos e comparação salva
+Favoritos e a comparação salva ficam no localStorage do navegador, separados por origem (endereço do site). Não são sincronizados com uma conta ou enviados ao servidor por essas funções.
+
+A comparação salva contém apenas os modelos, as quantizações e o contexto. Não inclui o perfil de hardware nem resultados de benchmark. Ao recuperar, as estimativas são recalculadas com o hardware atual. Um novo salvamento substitui a cópia anterior; “Apagar cópia salva” remove somente essa cópia. Limpar os dados do site no navegador também remove os dados locais.
+
+A exportação da comparação gera um JSON com modelos, quantizações e contexto. A importação lê esse arquivo no próprio navegador, sem upload ao servidor, e não substitui a cópia salva automaticamente. Compartilhar o arquivo revela as escolhas de modelos e contexto; não inclui seu hardware.
+
 ## Benchmark local
 Só começa após ação explícita. O benchmark Ollama mede dados técnicos de inferência.
 

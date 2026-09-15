@@ -1,0 +1,23 @@
+import assert from 'node:assert/strict';
+import { validateComparison } from '../preview/comparison-storage.mjs';
+const models = [{ id: 'a', variants: [{ quantization: 'Q4_K_M' }] }];
+const value = { version: 1, contextK: 32, selections: Array.from({ length: 3 }, () => ({ modelId: 'a', quantization: 'Q4_K_M', slotId: 'untrusted', hardware: 'private' })), hardware: 'private' };
+const clean = validateComparison(value, models);
+assert.deepEqual(Object.keys(clean).sort(), ['contextK', 'selections', 'version']);
+assert.deepEqual(clean.selections.map(item => item.slotId), ['model-1', 'model-2', 'model-3']);
+assert.ok(clean.selections.every(item => !('hardware' in item)));
+for (const contextK of [null, '8', 0, 257, Infinity, NaN]) assert.throws(() => validateComparison({ ...value, contextK }, models));
+for (const invalid of [null, {}, { ...value, version: 2 }, { ...value, selections: [] }, { ...value, selections: [null, null, null] }]) assert.throws(() => validateComparison(invalid, models));
+assert.throws(() => validateComparison(value, []));
+assert.throws(() => validateComparison(value, [{ id: 'a', variants: [] }]));
+console.log('PASS comparação salva: limites, versão, catálogo, slots e exclusão de dados extras');
+
+const { serializeComparison, readComparisonFile } = await import('../preview/comparison-storage.mjs');
+const serialized = serializeComparison(models, value.selections, value.contextK);
+assert.ok(!serialized.includes('private'));
+assert.deepEqual(await readComparisonFile(new File([serialized], 'comparison.json'), models), clean);
+await assert.rejects(() => readComparisonFile(new File(['{broken'], 'bad.json'), models));
+await assert.rejects(() => readComparisonFile(new File([' '.repeat(20_001)], 'large.json'), models));
+await assert.rejects(() => readComparisonFile(new File([JSON.stringify({ ...value, version: 2 })], 'future.json'), models));
+assert.deepEqual(value.selections.map(item => item.slotId), ['untrusted', 'untrusted', 'untrusted']);
+console.log('PASS portabilidade: round-trip, privacidade, JSON inválido, tamanho e versão');

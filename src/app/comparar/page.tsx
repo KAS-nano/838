@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { saveComparison, loadComparison, deleteComparison, readComparisonFile, downloadComparison } from "../../../preview/comparison-storage.mjs";
 import { useMemo, useState } from "react";
 import { seedModels } from "@/data/seed-models";
 import { useHardwareProfile } from "@/features/profile/use-hardware-profile";
@@ -18,6 +19,8 @@ const numberFormat = new Intl.NumberFormat("pt-BR", { maximumFractionDigits: 2 }
 const gb = (value: number) => `${numberFormat.format(value)} GB`;
 
 export default function ComparePage() {
+  const [importing, setImporting] = useState(false);
+  const [savedMessage, setSavedMessage] = useState("");
   const [selections, setSelections] = useState<ComparisonSelection[]>(DEFAULT_SELECTIONS);
   const [query, setQuery] = useState("");
   const [family, setFamily] = useState("all");
@@ -42,6 +45,23 @@ export default function ComparePage() {
       quantization: model.variants.some((variant) => variant.quantization === item.quantization) ? item.quantization : model.variants[0].quantization,
     } : item));
   }
+  function manageSaved(action: "save" | "load" | "delete" | "export") {
+    try {
+      if (action === "export") { downloadComparison(seedModels, selections, contextK); setSavedMessage("Download solicitado. O arquivo contém somente modelos, quantizações e contexto."); }
+      if (action === "save") { saveComparison(seedModels, selections, contextK); setSavedMessage("Comparação salva neste navegador. A versão anterior foi substituída."); }
+      if (action === "load") { const saved = loadComparison(seedModels); setSelections(saved.selections); setContextInput(String(saved.contextK)); resetFilters(); setSavedMessage("Comparação recuperada e recalculada com o hardware atual."); }
+      if (action === "delete") { deleteComparison(); setSavedMessage("Cópia salva apagada. A comparação aberta foi mantida."); }
+    } catch (error) { setSavedMessage(error instanceof Error ? error.message : "Não foi possível acessar a comparação salva."); }
+  }
+  async function importFile(file: File) {
+    setImporting(true);
+    try {
+      const saved = await readComparisonFile(file, seedModels);
+      setSelections(saved.selections); setContextInput(String(saved.contextK)); resetFilters();
+      setSavedMessage("Comparação importada e recalculada. Use Salvar comparação para guardar uma cópia neste navegador.");
+    } catch (error) { setSavedMessage(error instanceof Error ? error.message : "Não foi possível importar o arquivo."); }
+    finally { setImporting(false); }
+  }
   function resetFilters() { setQuery(""); setFamily("all"); setFit("all"); setSort("selection"); }
   const tableRows: { label: string; value: (row: ComparisonRow) => string }[] = [
     { label: "Quantização simulada", value: (row) => row.variant.quantization },
@@ -63,6 +83,13 @@ export default function ComparePage() {
     <div className="page-heading"><div><p className="eyebrow">Comparador</p><h1 className="page-title">Leia as opções lado a lado</h1><p className="page-description">Compare versões, consumo e velocidade para a sua máquina. Você também pode selecionar duas quantizações do mesmo modelo.</p></div><Link href="/modelos" className="text-sm text-accent">Ver catálogo</Link></div>
     <p className="compare-profile">{isDemo ? "Perfil de demonstração" : "Seu perfil"} · {profile.gpu} · {profile.vramGb} GB VRAM · {profile.ramGb} GB RAM · {profile.storageFreeGb} GB livres. <Link href="/onboarding">Editar hardware</Link></p>
 
+    <section className="compare-saved" aria-label="Comparação salva">
+      <div><h2>Retome sua comparação</h2><p>Salve modelos, quantizações e contexto neste navegador. Um novo salvamento substitui o anterior; os resultados usam sempre o hardware atual.</p></div>
+      <div className="compare-saved-actions"><button type="button" onClick={() => manageSaved("save")}>Salvar comparação</button><button type="button" onClick={() => manageSaved("load")}>Recuperar comparação</button><button type="button" onClick={() => manageSaved("delete")}>Apagar cópia salva</button></div>
+      <div className="compare-transfer"><button type="button" onClick={() => manageSaved("export")}>Exportar comparação</button><label>Importar comparação (JSON)<input type="file" accept=".json,application/json" disabled={importing} onChange={event => { const file = event.target.files?.[0]; event.target.value = ""; if (file) void importFile(file); }} /></label></div>
+      <p>O arquivo não inclui seu hardware. Importar altera a comparação aberta; a cópia salva só muda quando você salva novamente.</p>
+      <p role="status">{savedMessage}</p>
+    </section>
     <div className="compare-slots" id="compareControls">{selections.map((selection, index) => {
       const selected = seedModels.find((model) => model.id === selection.modelId)!;
       const options = candidates.some((model) => model.id === selected.id) ? candidates : [selected, ...candidates];
