@@ -1,0 +1,27 @@
+.scenario-panel { margin-top: 24px; padding: 22px; border: 1px solid var(--border); border-radius: 14px; background: var(--surface); }
+.scenario-heading { display: flex; align-items: start; justify-content: space-between; gap: 16px; }
+.scenario-heading h2 { margin-top: 8px; font-size: 20px; font-weight: 600; }
+.scenario-presets { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; }
+.scenario-presets button { min-height: 42px; padding: 9px 13px; border: 1px solid var(--border); border-radius: 9px; background: var(--surface-raised); color: var(--foreground); cursor: pointer; font-size: 12px; }
+.scenario-presets button[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); }
+.scenario-fields { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 14px; margin-top: 20px; }
+.scenario-fields label { min-width: 0; color: var(--muted); font-size: 11px; }
+.scenario-fields :is(input, select) { display: block; width: 100%; min-height: 44px; margin-top: 7px; padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface-raised); color: var(--foreground); }
+.scenario-explanations { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 18px 0 0; padding: 16px 0 0; border-top: 1px solid var(--border); list-style: none; }
+.scenario-explanations li { color: var(--muted); font-size: 11px; line-height: 1.7; }
+.scenario-explanations li::before { content: "·"; margin-right: 7px; color: var(--accent); }
+.scenario-result-count, .scenario-disclaimer { margin-top: 18px; color: var(--muted); font-size: 12px; line-height: 1.7; }
+.recommendation-list { display: grid; gap: 12px; margin-top: 16px; }
+.recommendation-card { display: grid; grid-template-columns: 52px minmax(0, 1fr) 110px; gap: 16px; padding: 20px; }
+.recommendation-rank { color: var(--muted); font-size: 22px; }
+.recommendation-title { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+.recommendation-title > span { color: var(--accent); font-size: 10px; text-transform: uppercase; }
+.recommendation-title h2 { font-size: 15px; font-weight: 600; }
+.recommendation-card p { margin-top: 8px; color: var(--muted); font-size: 12px; line-height: 1.6; }
+.recommendation-card .scenario-reason { color: var(--foreground); }
+.recommendation-card .recommendation-cost { font-size: 11px; }
+.recommendation-score strong { display: block; font-size: 20px; }
+.recommendation-score a { display: inline-block; margin-top: 12px; color: var(--accent); font-size: 11px; }
+.scenario-presets button:focus-visible, .scenario-fields :is(input, select):focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+@media (max-width: 800px) { .scenario-fields { grid-template-columns: repeat(2, minmax(0, 1fr)); } .scenario-explanations { grid-template-columns: 1fr; } }
+@media (max-width: 520px) { .scenario-panel { padding: 17px; } .scenario-fields { grid-template-columns: 1fr; } .recommendation-card { grid-template-columns: 38px minmax(0, 1fr); } .recommendation-score { grid-column: 2; } }

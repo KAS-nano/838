@@ -11,6 +11,7 @@
 <link rel="stylesheet" href="comparison.css?v=20260908">
 <link rel="stylesheet" href="model-links.css?v=20260908">
 <link rel="stylesheet" href="support.css?v=20260908">
+<link rel="stylesheet" href="scenario.css?v=20260915">
 </head>
 <body>
 <a class="skip-link" href="#main">Pular para o conteúdo</a>
@@ -108,11 +109,25 @@
         <div class="page-head compact">
           <div>
             <div class="eyebrow">MOTOR 838</div>
-            <h1>Recomendações</h1>
-            <p class="muted">Ranking da configuração atual combinando objetivo, memória, disco e adequação.</p>
+            <h1>Recomendações por cenário</h1>
+            <p class="muted">Contexto, resposta, concorrência e latência alteram o ranking e aparecem nas explicações.</p>
           </div>
         </div>
-        <div id="recommendations" class="stack"></div>
+        <section class="scenario-panel" aria-labelledby="scenarioTitle">
+          <div class="scenario-heading"><div><div class="eyebrow">CENÁRIO DE USO</div><h2 id="scenarioTitle">O que você precisa fazer?</h2></div><span class="badge">Configuração local</span></div>
+          <div class="scenario-presets" id="scenarioPresets" role="group" aria-label="Presets de cenário"></div>
+          <div class="scenario-fields">
+            <label>Contexto (K)<input id="scenarioContext" aria-label="Contexto do cenário" type="number" min="1" max="256"></label>
+            <label>Resposta máxima (tokens)<input id="scenarioResponse" aria-label="Resposta máxima" type="number" min="64" max="32768" step="64"></label>
+            <label>Execuções simultâneas<input id="scenarioConcurrency" aria-label="Execuções simultâneas" type="number" min="1" max="64"></label>
+            <label>Latência<select id="scenarioLatency" aria-label="Preferência de latência"><option value="responsive">Resposta rápida</option><option value="balanced">Equilíbrio</option><option value="quality">Aceito esperar por qualidade</option></select></label>
+            <label>Prioridade<select id="scenarioPriority" aria-label="Prioridade do cenário"><option value="quality">Qualidade</option><option value="speed">Velocidade</option><option value="efficiency">Eficiência</option><option value="privacy">Privacidade</option><option value="ease">Facilidade</option><option value="cost">Menor custo</option></select></label>
+          </div>
+          <ul class="scenario-explanations" id="scenarioExplanations"></ul>
+        </section>
+        <p class="scenario-result-count" id="scenarioResultCount" role="status"></p>
+        <div id="recommendations" class="recommendation-list"></div>
+        <p class="scenario-disclaimer">Ranking heurístico. Preços de API são demonstrativos e latência de rede não foi medida.</p>
       </section>
 
       <section class="page compare-page" id="page-comparar">

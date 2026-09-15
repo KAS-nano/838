@@ -18,6 +18,7 @@ const entries = {
   'src/features/benchmarks/estimator.ts': ['estimatePerformance'],
   'src/features/recommendation/engine.ts': ['calculateCompatibility'],
   'src/features/recommendation/hybrid.ts': ['recommendHybrid'],
+  'src/features/recommendation/scenario.ts': ['scenarioPresets', 'validateScenario', 'scenarioExplanations'],
   'src/features/profile/local-store.ts': ['demoHardwareProfile', 'isHardwareProfile', 'parseHardwareProfile'],
   'src/features/hardware/strength.ts': ['hardwareStrength', 'primaryBottleneck'],
   'src/features/hardware/upgrades.ts': ['suggestUpgrades', 'simulateUpgrade'],

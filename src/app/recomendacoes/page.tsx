@@ -1,3 +1,47 @@
 "use client";
-import { useHardwareProfile } from "@/features/profile/use-hardware-profile";import Link from"next/link";import{useMemo}from"react";import{seedModels}from"@/data/seed-models";import{seedApiModels}from"@/data/seed-api-models";import{recommendHybrid}from"@/features/recommendation/hybrid";
-export default function Recommendations(){const{profile:p}=useHardwareProfile();const objective=p.objectives[0]??"Assistente geral";const list=useMemo(()=>recommendHybrid(p,objective,seedModels,seedApiModels).filter(r=>p.preference==="both"||r.mode===p.preference),[p,objective]);return <main><div className="page-container"><section><div className="page-heading"><div><p className="text-xs uppercase tracking-[.2em] text-accent">Local + API</p><h1 className="page-title">Recomendações para {objective}</h1><p className="mt-3 text-sm text-muted">Preços dos cards de API são demonstrativos até a sincronização dinâmica ser habilitada.</p></div><Link href="/dashboard" className="text-sm text-accent">Dashboard</Link></div><div className="mt-6 space-y-3">{list.slice(0,6).map((r,i)=><article key={`${r.mode}-${r.name}`} className="grid gap-3 panel p-5 md:grid-cols-[50px_1fr_100px]"><strong className="text-2xl text-muted">#{i+1}</strong><div><div className="flex gap-2"><span className="text-xs uppercase text-accent">{r.mode}</span><h2 className="font-semibold">{r.name}</h2></div><p className="mt-2 text-sm text-muted">{r.reason}</p><p className="mt-2 text-xs text-muted">{r.costNote}</p></div><div><strong className="text-xl">{r.score}/100</strong><Link className="mt-3 block text-xs text-accent" href={r.mode==="local"?`/dashboard?model=${seedModels.find(m=>m.name===r.name)?.id??seedModels[0].id}`:"/ferramentas"}>{r.mode==="local"?"Configurar →":"Ver ferramentas →"}</Link></div></article>)}</div></section></div></main>}
+
+import Link from "next/link";
+import { useMemo, useState } from "react";
+import { seedModels } from "@/data/seed-models";
+import { seedApiModels } from "@/data/seed-api-models";
+import { useHardwareProfile } from "@/features/profile/use-hardware-profile";
+import { recommendHybrid } from "@/features/recommendation/hybrid";
+import { scenarioExplanations, scenarioPresets, type RecommendationScenario } from "@/features/recommendation/scenario";
+import "../../../preview/scenario.css";
+
+export default function Recommendations() {
+  const { profile } = useHardwareProfile();
+  const [scenario, setScenario] = useState<RecommendationScenario>(scenarioPresets[0]);
+  const list = useMemo(() => recommendHybrid(profile, scenario.objective, seedModels, seedApiModels, scenario)
+    .filter((item) => profile.preference === "both" || item.mode === profile.preference), [profile, scenario]);
+  const explanations = scenarioExplanations(scenario);
+
+  function updateNumber(field: "contextK" | "responseTokens" | "concurrency", value: string) {
+    const parsed = Number(value);
+    if (!Number.isInteger(parsed)) return;
+    const limits = { contextK: [1, 256], responseTokens: [64, 32768], concurrency: [1, 64] } as const;
+    const [minimum, maximum] = limits[field];
+    setScenario((current) => ({ ...current, [field]: Math.max(minimum, Math.min(maximum, parsed)) }));
+  }
+
+  return <main><div className="page-container recommendation-page"><section>
+    <div className="page-heading"><div><p className="eyebrow">Local + API</p><h1 className="page-title">Recomendações por cenário</h1><p className="page-description">Escolha como você pretende usar a IA. Contexto, resposta, concorrência e latência alteram o ranking e aparecem nas explicações.</p></div><Link href="/dashboard" className="text-sm text-accent">Dashboard</Link></div>
+    <section className="scenario-panel" aria-labelledby="scenario-title">
+      <div className="scenario-heading"><div><p className="eyebrow">Cenário de uso</p><h2 id="scenario-title">O que você precisa fazer?</h2></div><span className="badge">Configuração local</span></div>
+      <div className="scenario-presets" role="group" aria-label="Presets de cenário">{scenarioPresets.map((preset) => <button type="button" key={preset.id} aria-pressed={scenario.id === preset.id} onClick={() => setScenario(preset)}>{preset.label}</button>)}</div>
+      <div className="scenario-fields">
+        <label>Contexto (K)<input aria-label="Contexto do cenário" type="number" min="1" max="256" value={scenario.contextK} onChange={(event) => updateNumber("contextK", event.target.value)} onBlur={() => setScenario((current) => ({ ...current, contextK: Math.max(1, Math.min(256, current.contextK)) }))}/></label>
+        <label>Resposta máxima (tokens)<input aria-label="Resposta máxima" type="number" min="64" max="32768" step="64" value={scenario.responseTokens} onChange={(event) => updateNumber("responseTokens", event.target.value)} onBlur={() => setScenario((current) => ({ ...current, responseTokens: Math.max(64, Math.min(32768, current.responseTokens)) }))}/></label>
+        <label>Execuções simultâneas<input aria-label="Execuções simultâneas" type="number" min="1" max="64" value={scenario.concurrency} onChange={(event) => updateNumber("concurrency", event.target.value)} onBlur={() => setScenario((current) => ({ ...current, concurrency: Math.max(1, Math.min(64, current.concurrency)) }))}/></label>
+        <label>Latência<select aria-label="Preferência de latência" value={scenario.latency} onChange={(event) => setScenario((current) => ({ ...current, latency: event.target.value as RecommendationScenario["latency"] }))}><option value="responsive">Resposta rápida</option><option value="balanced">Equilíbrio</option><option value="quality">Aceito esperar por qualidade</option></select></label>
+        <label>Prioridade<select aria-label="Prioridade do cenário" value={scenario.priority} onChange={(event) => setScenario((current) => ({ ...current, priority: event.target.value as RecommendationScenario["priority"] }))}><option value="quality">Qualidade</option><option value="speed">Velocidade</option><option value="efficiency">Eficiência</option><option value="privacy">Privacidade</option><option value="ease">Facilidade</option><option value="cost">Menor custo</option></select></label>
+      </div>
+      <ul className="scenario-explanations">{explanations.map((text) => <li key={text}>{text}</li>)}</ul>
+    </section>
+    <p className="scenario-result-count" role="status">{list.length} alternativas para {scenario.label.toLocaleLowerCase("pt-BR")} · objetivo {scenario.objective.toLocaleLowerCase("pt-BR")}</p>
+    <div className="recommendation-list">{list.slice(0, 6).map((item, index) => <article key={`${item.mode}-${item.name}`} className="recommendation-card panel">
+      <strong className="recommendation-rank">#{index + 1}</strong><div><div className="recommendation-title"><span>{item.mode === "local" ? "IA local" : "API"}</span><h2>{item.name}</h2></div><p>{item.reason}</p>{item.scenarioReasons.map((reason) => <p className="scenario-reason" key={reason}>{reason}</p>)}<p className="recommendation-cost">{item.costNote}</p></div><div className="recommendation-score"><strong>{item.score}/100</strong><Link href={item.mode === "local" ? `/dashboard?model=${seedModels.find((model) => model.name === item.name)?.id ?? seedModels[0].id}` : "/ferramentas"}>{item.mode === "local" ? "Configurar →" : "Ver ferramentas →"}</Link></div>
+    </article>)}</div>
+    <p className="scenario-disclaimer">Ranking heurístico. Preços de API são demonstrativos e latência de rede não foi medida. Confirme requisitos e preços no provedor.</p>
+  </section></div></main>;
+}

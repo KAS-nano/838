@@ -1,6 +1,6 @@
 import { createFavoritesStore } from './model-favorites.mjs';
 import { initializeComparison } from './comparison.mjs';
-import { seedModels as models, seedBenchmarks, estimateMemory, estimatePerformance, calculateCompatibility, recommendHybrid, seedApiModels, hardwareStrength, primaryBottleneck, suggestUpgrades, recommendSystems, recipeFor } from './engine.mjs';
+import { seedModels as models, seedBenchmarks, estimateMemory, estimatePerformance, calculateCompatibility, recommendHybrid, seedApiModels, scenarioPresets, scenarioExplanations, hardwareStrength, primaryBottleneck, suggestUpgrades, recommendSystems, recipeFor } from './engine.mjs';
 import { demoProfile, readProfile, escapeHtml as html, profileSummary } from './shared.mjs';
 import { getModelExternalLinks, modelExternalLinks } from './engine.mjs';
 import { renderModelLinks } from './model-links.mjs';
@@ -18,6 +18,7 @@ const objective = profile.objectives[0] || 'Assistente geral';
 let selected = models.find(model => model.id === 'qwen3-8b') || models[0];
 let quant = 'Q4_K_M';
 let contextK = 8;
+let recommendationScenario = { ...scenarioPresets[0] };
 try {
   const saved = JSON.parse(localStorage.getItem('838.preview.selection') || 'null');
   if (saved) {
@@ -91,8 +92,16 @@ function renderModels() {
   $('#modelGrid').innerHTML = matched.map(model => `<article class="panel model-catalog-card"><div class="model-card-heading"><div><p class="eyebrow">${html(model.family)}</p><h2>${html(model.name)}</h2></div><span class="badge">${model.paramsB}B${model.activeParamsB ? ` · ${model.activeParamsB}B ativos` : ''}</span></div><button type="button" class="model-favorite-button" data-favorite="${html(model.id)}" aria-label="Favoritar ${html(model.name)}" aria-pressed="${favorites.ids.includes(model.id)}"><span aria-hidden="true">${favorites.ids.includes(model.id) ? '★' : '☆'}</span> ${favorites.ids.includes(model.id) ? 'Salvo nos favoritos' : 'Salvar favorito'}</button><p class="model-card-description">${html(model.description)}</p><div class="model-card-tags">${model.modalities.map(item => `<span>${item === 'vision' ? 'Visão' : item === 'text' ? 'Texto' : html(item)}</span>`).join('')}<span>${model.contextK}K contexto · seed</span></div>${renderModelLinks(model.id, precision)}<div class="model-card-footer"><span>Requisitos e desempenho estimados</span><button class="ghost" type="button" data-select-model="${model.id}">Analisar na minha máquina →</button></div></article>`).join('') || '<div><p class="muted">Nenhum modelo encontrado com estes filtros.</p><button type="button" class="model-favorite-button" data-reset-models>Limpar filtros</button></div>';
 }
 function renderRecommendations() {
-  const recommendations = recommendHybrid(profile, objective, models, seedApiModels).filter(item => profile.preference === 'both' || item.mode === profile.preference);
-  $('#recommendations').innerHTML = recommendations.slice(0, 8).map((item, index) => `<article class="rank"><span class="rank-num">${index + 1}</span><div><span class="eyebrow">${item.mode === 'local' ? 'IA Local' : 'API'} · estimado</span><strong>${html(item.name)}</strong><span class="muted">${html(item.reason)}</span><span class="muted">${html(item.costNote)}</span></div><div class="metric"><b>${item.score}/100</b><a class="ghost mt-16" href="${item.mode === 'local' ? '#modelos' : '#ferramentas'}">${item.mode === 'local' ? 'Configurar' : 'Ver ferramentas'}</a></div></article>`).join('') + '<p class="notice">Ranking heurístico para os objetivos e preferências do perfil. Preços de API são demonstrativos; confirme no provedor.</p>';
+  const recommendations = recommendHybrid(profile, recommendationScenario.objective, models, seedApiModels, recommendationScenario).filter(item => profile.preference === 'both' || item.mode === profile.preference);
+  $('#scenarioPresets').innerHTML = scenarioPresets.map(preset => `<button type="button" data-scenario="${html(preset.id)}" aria-pressed="${preset.id === recommendationScenario.id}">${html(preset.label)}</button>`).join('');
+  $('#scenarioContext').value = recommendationScenario.contextK;
+  $('#scenarioResponse').value = recommendationScenario.responseTokens;
+  $('#scenarioConcurrency').value = recommendationScenario.concurrency;
+  $('#scenarioLatency').value = recommendationScenario.latency;
+  $('#scenarioPriority').value = recommendationScenario.priority;
+  $('#scenarioExplanations').innerHTML = scenarioExplanations(recommendationScenario).map(text => `<li>${html(text)}</li>`).join('');
+  $('#scenarioResultCount').textContent = `${recommendations.length} alternativas para ${recommendationScenario.label.toLocaleLowerCase('pt-BR')} · objetivo ${recommendationScenario.objective.toLocaleLowerCase('pt-BR')}`;
+  $('#recommendations').innerHTML = recommendations.slice(0, 6).map((item, index) => `<article class="recommendation-card panel"><strong class="recommendation-rank">#${index + 1}</strong><div><div class="recommendation-title"><span>${item.mode === 'local' ? 'IA local' : 'API'}</span><h2>${html(item.name)}</h2></div><p>${html(item.reason)}</p>${item.scenarioReasons.map(reason => `<p class="scenario-reason">${html(reason)}</p>`).join('')}<p class="recommendation-cost">${html(item.costNote)}</p></div><div class="recommendation-score"><strong>${item.score}/100</strong><a href="${item.mode === 'local' ? '#modelos' : '#ferramentas'}">${item.mode === 'local' ? 'Configurar →' : 'Ver ferramentas →'}</a></div></article>`).join('');
 }
 const renderCompareTable = initializeComparison(profile, 8, !savedProfile);
 const tools = [['Ollama', 'Runtime', 'Gerenciador local com API para modelos.'], ['LM Studio', 'Runtime', 'Interface desktop e servidor local.'], ['llama.cpp', 'Runtime', 'Inferência local e servidor para GGUF.'], ['VS Code', 'IDE', 'Editor extensível para programação.'], ['Zed', 'IDE', 'Editor com integração de ferramentas de IA.'], ['OBS Studio', 'Vídeo', 'Captura e gravação.'], ['Kdenlive', 'Vídeo', 'Editor de vídeo livre.'], ['Krita', 'Imagem', 'Criação e edição de imagens.'], ['Audacity', 'Áudio', 'Edição e gravação de áudio.'], ['OpenRouter', 'API', 'Acesso a modelos hospedados.']];
@@ -154,6 +163,21 @@ $('#modelGrid').addEventListener('click', event => {
   if (favorite) { const id = favorite.dataset.favorite; favoritesStore.toggle(id); const remaining = [...document.querySelectorAll('[data-favorite]')].find(button => button.dataset.favorite === id); (remaining || $('#onlyFavorites')).focus(); return; }
   if (event.target.closest('[data-reset-models]')) { $('#modelSearch').value = ''; $('#modelModality').value = 'all'; $('#modelPrecision').value = 'all'; onlyFavorites = false; renderModels(); $('#modelSearch').focus(); return; }
   const button = event.target.closest('[data-select-model]'); if (!button) return; selected = models.find(model => model.id === button.dataset.selectModel); fillControls(); updateDashboard(); location.hash = 'dashboard'; });
+$('#scenarioPresets').addEventListener('click', event => {
+  const button = event.target.closest('[data-scenario]');
+  if (!button) return;
+  const preset = scenarioPresets.find(item => item.id === button.dataset.scenario);
+  if (preset) { recommendationScenario = { ...preset }; renderRecommendations(); }
+});
+for (const [selector, field, minimum, maximum] of [['#scenarioContext', 'contextK', 1, 256], ['#scenarioResponse', 'responseTokens', 64, 32768], ['#scenarioConcurrency', 'concurrency', 1, 64]]) {
+  $(selector).addEventListener('change', event => {
+    const parsed = Number(event.target.value);
+    recommendationScenario = { ...recommendationScenario, [field]: Number.isInteger(parsed) ? clamp(parsed, minimum, maximum) : recommendationScenario[field] };
+    renderRecommendations();
+  });
+}
+$('#scenarioLatency').addEventListener('change', event => { recommendationScenario = { ...recommendationScenario, latency: event.target.value }; renderRecommendations(); });
+$('#scenarioPriority').addEventListener('change', event => { recommendationScenario = { ...recommendationScenario, priority: event.target.value }; renderRecommendations(); });
 $('#installTool').addEventListener('change', renderInstall);
 $('#installOs').addEventListener('change', renderInstall);
 $('#mobileMenu').addEventListener('click', () => { const open = $('#sidebar').classList.toggle('open'); $('#menuBackdrop').classList.toggle('visible', open); $('#mobileMenu').setAttribute('aria-expanded', String(open)); $('#mobileMenu').setAttribute('aria-label', open ? 'Fechar menu' : 'Abrir menu'); $('#main').inert = open; document.body.style.overflow = open ? 'hidden' : ''; if (open) $('#nav a').focus(); });
