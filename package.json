@@ -11,6 +11,7 @@
     "test:static": "node scripts/static-check.mjs",
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",
+    "db:bootstrap": "node --experimental-strip-types --loader ./scripts/ts-loader.mjs scripts/bootstrap-catalog.mjs",
     "db:studio": "prisma studio",
     "db:backup": "bash scripts/db-backup.sh",
     "db:restore:drill": "bash scripts/db-restore-drill.sh",
