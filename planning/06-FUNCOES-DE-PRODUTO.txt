@@ -55,7 +55,7 @@ Entrega local:
 [x] Uma comparação salva por origem, com modelos, quantizações e contexto; recuperação explícita e exclusão.
 [x] Leitura valida versão, contexto e variantes disponíveis; falhas preservam a comparação aberta.
 [x] Exportação/importação JSON validada e processada localmente, sem hardware.
-[x] Biblioteca de até 10 comparações nomeadas, com exclusão e recuperação individual.
+[x] Biblioteca de até 10 comparações nomeadas, com exclusão, recuperação, renomeação e substituição individual.
 [ ] Cenários de uso com parâmetros próprios, sincronização opcional e links públicos.
 Aplicação:
 - Primeiro local; sincronização opcional após autenticação.

@@ -21,3 +21,11 @@ await assert.rejects(() => readComparisonFile(new File([' '.repeat(20_001)], 'la
 await assert.rejects(() => readComparisonFile(new File([JSON.stringify({ ...value, version: 2 })], 'future.json'), models));
 assert.deepEqual(value.selections.map(item => item.slotId), ['untrusted', 'untrusted', 'untrusted']);
 console.log('PASS portabilidade: round-trip, privacidade, JSON inválido, tamanho e versão');
+
+const { loadComparison } = await import('../preview/comparison-storage.mjs');
+globalThis.window = { localStorage: { getItem: () => null } };
+assert.throws(() => loadComparison(models), /Nenhuma comparação/);
+window.localStorage.getItem = () => '{broken';
+assert.throws(() => loadComparison(models), /Não foi possível ler/);
+delete globalThis.window;
+console.log('PASS leitura diferencia ausência de conteúdo corrompido');

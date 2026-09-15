@@ -30,3 +30,29 @@ test('guarda duas comparações, recupera após reload e exclui somente a escolh
   const audit = await new AxeBuilder({ page }).include('.compare-named').withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa']).analyze();
   expect(audit.violations.filter(item => item.impact === 'serious' || item.impact === 'critical')).toEqual([]);
 });
+
+
+test('renomeia sem alterar o conteúdo e atualiza somente a selecionada', async ({ page }, info) => {
+  await page.goto(info.project.name === 'next' ? '/comparar' : '/index.html#comparar');
+  const section = page.locator('details.compare-named');
+  await section.locator('summary').click();
+  const name = section.getByLabel('Nome da comparação', { exact: true });
+  await name.fill('Original');
+  await page.locator('#compareContext').fill('16');
+  await section.getByRole('button', { name: 'Guardar com nome' }).click();
+  await page.locator('#compareContext').fill('4');
+  await name.fill('Renomeada');
+  await section.getByRole('button', { name: 'Renomear selecionada' }).click();
+  await expect(section.getByRole('status')).toContainText('renomeada');
+  await section.getByRole('button', { name: 'Abrir selecionada' }).click();
+  await expect(page.locator('#compareContext')).toHaveValue('16');
+  await page.locator('#compareContext').fill('64');
+  await section.getByRole('button', { name: 'Substituir selecionada pela comparação aberta' }).click();
+  await expect(section.getByRole('status')).toContainText('atualizada');
+  await page.reload();
+  await section.locator('summary').click();
+  await section.getByLabel('Comparações guardadas').selectOption('Renomeada');
+  await section.getByRole('button', { name: 'Abrir selecionada' }).click();
+  await expect(page.locator('#compareContext')).toHaveValue('64');
+  await expect(section.getByLabel('Comparações guardadas').locator('option')).toHaveCount(2);
+});

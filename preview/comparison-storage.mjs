@@ -25,13 +25,14 @@ export function saveComparison(models, selections, contextK) {
 }
 
 export function loadComparison(models) {
+  let value;
   try {
-    const value = safeReadJson(window.localStorage, COMPARISON_KEY, { fallback: null, maxBytes: 20_000 });
-    if (value === null) throw new Error('Nenhuma comparação salva neste navegador.');
-    return validateComparison(value, models);
+    value = safeReadJson(window.localStorage, COMPARISON_KEY, { fallback: null, maxBytes: 20_000, throwOnError: true });
   } catch {
     throw new Error('Não foi possível ler a comparação salva. Salve uma nova comparação para substituí-la.');
   }
+  if (value === null) throw new Error('Nenhuma comparação salva neste navegador.');
+  return validateComparison(value, models);
 }
 
 export function deleteComparison() {

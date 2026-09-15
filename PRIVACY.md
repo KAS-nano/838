@@ -12,7 +12,7 @@ A comparação salva contém apenas os modelos, as quantizações e o contexto. 
 
 A exportação da comparação gera um JSON com modelos, quantizações e contexto. A importação lê esse arquivo no próprio navegador, sem upload ao servidor, e não substitui a cópia salva automaticamente. Compartilhar o arquivo revela as escolhas de modelos e contexto; não inclui seu hardware.
 
-As comparações nomeadas guardam também o nome escolhido por você, com limite de 10 entradas por origem. Elas ficam separadas da cópia rápida e podem ser excluídas individualmente. A exportação da comparação aberta contém apenas a configuração, sem o nome da entrada.
+As comparações nomeadas guardam também o nome escolhido por você, com limite de 10 entradas por origem. Elas ficam separadas da cópia rápida e podem ser excluídas individualmente. Renomear altera apenas o nome; substituir grava a configuração aberta na entrada selecionada. A exportação da comparação aberta contém apenas a configuração, sem o nome da entrada.
 
 ## Benchmark local
 Só começa após ação explícita. O benchmark Ollama mede dados técnicos de inferência.

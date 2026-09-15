@@ -371,3 +371,13 @@ RODADA 2026-09-15 — GUIA DE PERMISSÕES E DEPENDÊNCIAS [x]
 [x] Criado `permissoes_do_dev.txt` com credenciais, permissões de conta, variáveis, dependências, firewall/CORS, passos manuais e links oficiais.
 [x] Recursos impossíveis de concluir localmente permanecem explicitamente pendentes, sem alterar seus defaults seguros.
 [x] README aponta para o guia de permissões; higiene, typecheck e regressões PWA aprovados.
+
+RODADA 2026-09-15 — EDIÇÃO DE COMPARAÇÕES NOMEADAS [x]
+[x] Renomear preserva configuração e rejeita nomes vazios, longos ou duplicados.
+[x] Substituir atualiza apenas a entrada selecionada com a configuração aberta; falhas preservam os dados.
+[x] Next e preview oferecem as mesmas ações e explicam seus efeitos.
+[x] Corrigida regressão da cópia rápida: ausência após exclusão é diferenciada de JSON corrompido.
+PASS testes unitários de nomes e persistência; ESLint, sintaxe JS e git diff --check.
+PASS build Webpack com TypeScript; 16 testes de navegador após corrigir a regressão detectada na primeira execução.
+[x] Revisão .gitignore: 4 caminhos de artefatos ignorados, 5 fontes preservadas; nenhum arquivo rastreado conflita com as regras. Nenhum ajuste necessário.
+Nenhum commit, push ou deploy realizado. Build Turbopack e validação remota não executados.

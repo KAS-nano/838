@@ -447,3 +447,12 @@ O build foi validado com Webpack; o comando padrão de publicação continua usa
 - Seção nomeada aberta: sem overflow a 320 px nem violações axe sérias/críticas, Next e preview.
 - Gitignore revisado: 4 artefatos cobertos e 5 fontes preservadas; nenhum ajuste necessário.
 - Build Turbopack e validação remota não executados nesta rodada.
+
+## 2026-09-15 — Renomeação e atualização de comparações
+
+- Testes unitários: renomeação preserva conteúdo, nomes conflitantes são recusados, atualização não afeta outra entrada e falhas de escrita preservam dados — PASS.
+- Regressão detectada: recuperar após excluir a cópia rápida mostrava erro de leitura genérico. Corrigido o tratamento de ausência fora do catch e habilitada propagação de erros de JSON.
+- Playwright: primeira execução 14/16; após correção, 16/16 PASS em Next e preview, incluindo acessibilidade da seção nomeada aberta e layout a 320 px.
+- Build Webpack/TypeScript, ESLint, sintaxe JS e git diff --check — PASS.
+- Gitignore revisado sem necessidade de novas regras; fontes preservadas e artefatos locais cobertos.
+- Sem build Turbopack ou validação remota nesta rodada.

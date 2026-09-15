@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { listNamedComparisons, addNamedComparison, loadNamedComparison, removeNamedComparison, type NamedComparison } from "../../../preview/named-comparisons.mjs";
+import { renameNamedComparison, updateNamedComparison, listNamedComparisons, addNamedComparison, loadNamedComparison, removeNamedComparison, type NamedComparison } from "../../../preview/named-comparisons.mjs";
 import { saveComparison, loadComparison, deleteComparison, readComparisonFile, downloadComparison } from "../../../preview/comparison-storage.mjs";
 import { useMemo, useState } from "react";
 import { seedModels } from "@/data/seed-models";
@@ -67,8 +67,10 @@ export default function ComparePage() {
     } catch (error) { setSavedMessage(error instanceof Error ? error.message : "Não foi possível importar o arquivo."); }
     finally { setImporting(false); }
   }
-  function manageNamed(action: "list" | "save" | "load" | "remove") {
+  function manageNamed(action: "list" | "save" | "load" | "remove" | "rename" | "update") {
     try {
+      if (action === "rename") { setNamed(renameNamedComparison(chosenName, comparisonName)); setChosenName(comparisonName.trim()); setComparisonName(""); setNamedMessage("Comparação renomeada. A configuração guardada foi mantida."); }
+      if (action === "update") { setNamed(updateNamedComparison(chosenName, seedModels, selections, contextK)); setNamedMessage("Comparação selecionada atualizada com os modelos, quantizações e contexto da tela."); }
       if (action === "list") { const items = listNamedComparisons(); setNamed(items); setChosenName(current => items.some(item => item.name === current) ? current : ""); setNamedMessage(""); }
       if (action === "save") { setNamed(addNamedComparison(comparisonName, seedModels, selections, contextK)); setChosenName(comparisonName.trim()); setComparisonName(""); setNamedMessage("Comparação nomeada salva."); }
       if (action === "load") { const saved = loadNamedComparison(chosenName, seedModels); setSelections(saved.selections); setContextInput(String(saved.contextK)); resetFilters(); setNamedMessage("Comparação nomeada aberta com o hardware atual."); }
@@ -108,6 +110,8 @@ export default function ComparePage() {
       <p>Guarde até 10 configurações neste navegador. A cópia rápida acima continua separada. Reabra esta seção para atualizar a lista.</p>
       <div className="compare-transfer"><label>Nome da comparação<input value={comparisonName} maxLength={60} onChange={event => setComparisonName(event.target.value)} placeholder="Ex.: Programação 32K" /></label><button type="button" onClick={() => manageNamed("save")}>Guardar com nome</button></div>
       <div className="compare-transfer"><label>Comparações guardadas<select value={chosenName} onChange={event => setChosenName(event.target.value)}><option value="">Selecione uma comparação</option>{named.map(item => <option key={item.name} value={item.name}>{item.name}</option>)}</select></label><button type="button" disabled={!chosenName} onClick={() => manageNamed("load")}>Abrir selecionada</button><button type="button" disabled={!chosenName} onClick={() => manageNamed("remove")}>Excluir selecionada</button></div>
+      <div className="compare-transfer"><button type="button" disabled={!chosenName || !comparisonName.trim()} onClick={() => manageNamed("rename")}>Renomear selecionada</button><button type="button" disabled={!chosenName} onClick={() => manageNamed("update")}>Substituir selecionada pela comparação aberta</button></div>
+      <p>Para renomear, preencha o campo Nome da comparação. Substituir grava os modelos e o contexto da tela na entrada selecionada.</p>
       <p role="status">{namedMessage}</p>
     </details>
     <div className="compare-slots" id="compareControls">{selections.map((selection, index) => {

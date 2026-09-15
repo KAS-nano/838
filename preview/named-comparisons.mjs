@@ -42,3 +42,19 @@ export function removeNamedComparison(name) {
   if (!items.some(item => item.name === name)) throw new Error('Escolha uma comparação disponível na lista.');
   return write(items.filter(item => item.name !== name));
 }
+
+export function renameNamedComparison(currentName, newName) {
+  newName = newName.trim();
+  if (!newName || newName.length > 60) throw new Error('Informe um nome de 1 a 60 caracteres.');
+  const items = listNamedComparisons();
+  if (!items.some(item => item.name === currentName)) throw new Error('Escolha uma comparação disponível na lista.');
+  if (items.some(item => item.name !== currentName && item.name.toLocaleLowerCase('pt-BR') === newName.toLocaleLowerCase('pt-BR'))) throw new Error('Esse nome já existe. Escolha outro nome.');
+  return write(items.map(item => item.name === currentName ? { ...item, name: newName } : item));
+}
+
+export function updateNamedComparison(name, models, selections, contextK) {
+  const comparison = validateComparison({ version: 1, selections, contextK }, models);
+  const items = listNamedComparisons();
+  if (!items.some(item => item.name === name)) throw new Error('Escolha uma comparação disponível na lista.');
+  return write(items.map(item => item.name === name ? { name, comparison } : item));
+}

@@ -1,5 +1,7 @@
 # Changelog
 
+- Comparações nomeadas podem ser renomeadas e atualizadas com a configuração aberta; recuperação da cópia rápida distingue ausência de corrupção.
+
 - Biblioteca local de até 10 comparações nomeadas, com recuperação e exclusão individual, separada da cópia rápida.
 
 - Comparações podem ser exportadas e importadas em JSON, com validação local e preservação da cópia salva.

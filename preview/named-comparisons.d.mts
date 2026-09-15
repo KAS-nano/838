@@ -7,3 +7,5 @@ export function listNamedComparisons(): NamedComparison[];
 export function addNamedComparison(name: string, models: Catalog, selections: ComparisonSelection[], contextK: number): NamedComparison[];
 export function loadNamedComparison(name: string, models: Catalog): SavedComparison;
 export function removeNamedComparison(name: string): NamedComparison[];
+export function renameNamedComparison(currentName: string, newName: string): NamedComparison[];
+export function updateNamedComparison(name: string, models: Catalog, selections: ComparisonSelection[], contextK: number): NamedComparison[];
