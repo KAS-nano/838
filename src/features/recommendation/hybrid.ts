@@ -1,48 +1,33 @@
 import type { HardwareProfile, Objective } from "../onboarding/types";
-import type { AiModel } from "../catalog/types";
+import type { AiModel, Quantization } from "../catalog/types";
 import type { SeedApiModel } from "../../data/seed-api-models";
 import type { RecommendationScenario } from "./scenario";
 import { validateScenario } from "./scenario";
-import { rankModels } from "./engine";
+import { calculateCompatibility } from "./engine";
 
-export type HybridRecommendation = { mode: "local" | "api"; name: string; score: number; reason: string; costNote: string; scenarioReasons: string[] };
+export type RecommendationMode = "local" | "api";
+export type RecommendationReason = { sourceType: "exact_benchmark" | "similar_hardware" | "interpolated" | "heuristic"; text: string };
+export type RecommendationAlternative = { name: string; detail: string; score: number };
+export type HybridRecommendation = { mode: RecommendationMode; name: string; modelId?: string; provider?: string; quantization?: Quantization; score: number; availabilityType: "local" | "api" | "both"; reason: string; scenarioReasons: string[]; costNote: string; runtime: string; vramEstimatedGb?: number; ramEstimatedGb?: number; contextK: number; speedRange?: { min: number; max: number }; outputTokensPerSecond?: number; ttftMs?: number; priceInput?: number; priceOutput?: number; speedStatus: "measured" | "unknown" | "estimate"; confidence: "high" | "medium" | "low"; benchmarkSource?: string; benchmarkDate?: string; alternatives: RecommendationAlternative[]; reasons: RecommendationReason[] };
 
+export const apiScoringWeights = { taskSuitability: 30, outputSpeed: 28, ttft: 18, reliability: 10, price: 8, context: 6 } as const;
 const bounded = (score: number) => Math.min(100, Math.max(0, Math.round(score)));
+const quantizationRank: Quantization[] = ["Q5_K_M", "Q6_K", "Q4_K_M", "Q8_0", "Q3_K_M", "FP16", "BF16"];
+const runtimeFor = (profile: HardwareProfile) => profile.os === "macos" ? "llama.cpp / Ollama / LM Studio" : "Ollama / llama.cpp / LM Studio";
+const speedEstimate = (score: number, size: number) => { const center = Math.max(3, Math.round((score * .72) / Math.max(1, size / 8))); return { min: Math.max(2, Math.round(center * .82)), max: Math.max(3, Math.round(center * 1.18)) }; };
+
+function localRecommendations(profile: HardwareProfile, objective: Objective, models: AiModel[], scenario?: RecommendationScenario) {
+  const contextK = scenario?.contextK ?? 8;
+  return models.flatMap(model => model.variants.map(variant => { const result = calculateCompatibility(profile, model, variant, objective, contextK); const rank = quantizationRank.indexOf(variant.quantization); const speed = speedEstimate(result.score, model.paramsB); return { model, variant, result, speed, score: bounded(result.score + (rank < 0 ? 0 : 8 - rank) + (scenario?.priority === "quality" ? variant.qualityFactor * 4 : 0)) }; })).filter(item => item.result.fit !== "incompatible").sort((a, b) => b.score - a.score);
+}
+
+function apiScore(api: SeedApiModel, objective: Objective, scenario?: RecommendationScenario) { const benchmark = api.benchmark; const task = api.strengths.includes(objective) ? 100 : 55; const speed = benchmark?.outputTokensPerSecond ? Math.min(100, benchmark.outputTokensPerSecond / 3) : 50; const ttft = benchmark?.timeToFirstTokenMs ? Math.max(0, 100 - benchmark.timeToFirstTokenMs / 5) : 50; const price = Math.max(0, 100 - api.outputUsdPerM * 8); const context = Math.min(100, api.contextK / 2.56); const latency = scenario?.latency === "responsive" ? 1.25 : 1; return bounded((task * apiScoringWeights.taskSuitability + speed * apiScoringWeights.outputSpeed * latency + ttft * apiScoringWeights.ttft * latency + 70 * apiScoringWeights.reliability + price * apiScoringWeights.price + context * apiScoringWeights.context) / 100); }
 
 export function recommendHybrid(profile: HardwareProfile, objective: Objective, models: AiModel[], apis: SeedApiModel[], scenario?: RecommendationScenario): HybridRecommendation[] {
-  const active = scenario ? validateScenario(scenario) : undefined;
-  const target = active?.objective ?? objective;
-  const contextK = active?.contextK ?? 8;
-  const priority = active?.priority ?? profile.priority;
-  const local = rankModels(profile, models, target, "Q4_K_M", contextK).slice(0, 3).map((item) => {
-    let score = item.result.score - (profile.preference === "api" ? 15 : 0) + (priority === "privacy" ? 10 : 0);
-    const reasons: string[] = [];
-    if (active) {
-      if (item.model.contextK < active.contextK) { score -= 18; reasons.push(`O modelo limita o contexto a ${item.model.contextK}K.`); }
-      else reasons.push(`Atende aos ${active.contextK}K solicitados.`);
-      if (active.concurrency > 1) { score -= Math.min(16, active.concurrency * 2); reasons.push(`${active.concurrency} execuções simultâneas aumentam o uso local de recursos.`); }
-      if (active.responseTokens > 2048) { score -= item.model.benchmarkClass === "small" ? 6 : 2; reasons.push("Respostas longas aumentam o tempo e a memória da execução local."); }
-      if (active.latency === "responsive") { score += item.model.benchmarkClass === "small" ? 8 : item.model.benchmarkClass === "large" ? -8 : 0; reasons.push("A preferência por resposta rápida favorece modelos menores."); }
-      if (priority === "quality" && item.model.benchmarkClass === "large") score += 5;
-      if (priority === "efficiency" && item.model.benchmarkClass === "small") score += 6;
-    }
-    return { mode: "local" as const, name: item.model.name, score: bounded(score), reason: item.result.reasons[0], costNote: "Sem custo por token após instalação; energia e hardware continuam contando.", scenarioReasons: reasons };
-  });
-  const remote = apis.map((api) => {
-    let score = 68 + (api.strengths.includes(target) ? 12 : 0);
-    const reasons: string[] = [];
-    if (profile.preference === "local") score -= 15;
-    if (priority === "quality") score += 8;
-    if (priority === "privacy") score -= 18;
-    if (priority === "cost") score -= Math.min(15, api.outputUsdPerM);
-    if (active) {
-      if (api.contextK < active.contextK) { score -= 20; reasons.push(`O limite demonstrativo de ${api.contextK}K não atende ao contexto solicitado.`); }
-      else reasons.push(`Atende aos ${active.contextK}K solicitados.`);
-      if (active.concurrency > 1) { score += 8; reasons.push("A API evita concentrar as execuções simultâneas nesta máquina."); }
-      if (active.responseTokens > 2048) { score += 3; reasons.push("Respostas longas não consomem a memória local, mas aumentam o custo por saída."); }
-      if (active.latency === "responsive") { score += 6; reasons.push("API favorecida pela preferência por resposta rápida; latência de rede não foi medida."); }
-    }
-    return { mode: "api" as const, name: api.name, score: bounded(score), reason: `API com ${api.contextK}K de contexto no catálogo demonstrativo.`, costNote: `Demo: US$ ${api.inputUsdPerM}/M entrada · US$ ${api.outputUsdPerM}/M saída.`, scenarioReasons: reasons };
-  });
-  return [...local, ...remote].sort((a, b) => b.score - a.score);
+  const active = scenario ? validateScenario(scenario) : undefined; const target = active?.objective ?? objective;
+  const locals: HybridRecommendation[] = localRecommendations(profile, target, models, active).slice(0, 8).map(item => { const scenarioReasons = active ? [`${item.variant.quantization} selecionada entre as variantes compatíveis para ${active.contextK}K.`] : []; let score = item.score; if (active?.concurrency && active.concurrency > 1) { score -= Math.min(16, active.concurrency * 2); scenarioReasons.push(`${active.concurrency} execuções simultâneas aumentam o uso local de recursos.`); } if (active?.responseTokens && active.responseTokens > 2048) { score -= 5; scenarioReasons.push("Respostas longas aumentam o custo de memória e tempo local."); } if (active?.priority === "privacy") { score += 10; scenarioReasons.push("Privacidade favorece processamento local."); } return { mode: "local" as const, name: item.model.name, modelId: item.model.id, quantization: item.variant.quantization, score: bounded(score), availabilityType: "local" as const, reason: item.result.reasons[0], scenarioReasons, costNote: "Sem custo por token; energia e hardware continuam contando.", runtime: runtimeFor(profile), vramEstimatedGb: item.result.vramEstimatedGb, ramEstimatedGb: item.result.ramEstimatedGb, contextK: Math.min(active?.contextK ?? 8, item.model.contextK), speedRange: item.speed, speedStatus: "estimate" as const, confidence: item.result.confidence, alternatives: [], reasons: [{ sourceType: "heuristic" as const, text: "Velocidade baseada em compatibilidade, tamanho, quantização e backend; não é medição desta máquina." }] }; });
+  const remote: HybridRecommendation[] = apis.map(api => { const benchmark = api.benchmark; let score = apiScore(api, target, active); const scenarioReasons = active ? [`Contexto disponível: ${api.contextK}K.`] : []; if (active?.concurrency && active.concurrency > 1) { score += 20; scenarioReasons.push("A API evita concentrar execuções simultâneas nesta máquina."); } if (active?.responseTokens && active.responseTokens > 2048) { score += 3; scenarioReasons.push("Respostas longas não consomem a memória local, mas aumentam o custo por saída."); } if (active?.priority === "privacy") { score -= 18; scenarioReasons.push("API requer envio dos dados ao provedor."); } return { mode: "api" as const, name: api.name, provider: api.provider, score: bounded(score), availabilityType: api.availabilityType, reason: api.strengths.includes(target) ? `Adequado para ${target}, com prioridade para experiência de velocidade.` : "Alternativa de API com capacidade geral para o cenário.", scenarioReasons, costNote: `US$ ${api.inputUsdPerM}/M entrada · US$ ${api.outputUsdPerM}/M saída.`, runtime: "API do provedor", contextK: api.contextK, outputTokensPerSecond: benchmark?.outputTokensPerSecond, ttftMs: benchmark?.timeToFirstTokenMs, priceInput: api.inputUsdPerM, priceOutput: api.outputUsdPerM, speedStatus: benchmark ? "measured" as const : "unknown" as const, confidence: benchmark?.confidence ?? "low" as const, benchmarkSource: benchmark?.source, benchmarkDate: benchmark?.date, alternatives: [], reasons: [{ sourceType: benchmark ? "exact_benchmark" as const : "heuristic" as const, text: benchmark ? `Benchmark informado por ${benchmark.source}; confirme região e data.` : "Benchmark real ainda não disponível; velocidade e TTFT não foram inventados." }] }; }).sort((a, b) => b.score - a.score).slice(0, 8);
+  if (locals[0]) locals[0].alternatives = locals.slice(1, 4).map(item => ({ name: item.name, detail: `${item.quantization} · ${item.speedRange?.min}-${item.speedRange?.max} t/s estimados`, score: item.score }));
+  if (remote[0]) remote[0].alternatives = remote.slice(1, 5).map(item => ({ name: item.name, detail: `${item.provider} · ${item.speedStatus === "unknown" ? "benchmark não disponível" : `${item.outputTokensPerSecond} t/s`}`, score: item.score }));
+  return [...locals, ...remote].sort((a, b) => b.score - a.score);
 }

@@ -15,7 +15,7 @@ test("comparison filters preserve selections and support two quantizations of on
   await expect(page.locator("#compareCards .compare-card")).toHaveCount(3);
   await expect(model1.locator("option")).toHaveCount(1);
   await page.getByRole("button", { name: "Limpar filtros e ordenação" }).click();
-  await expect(model1.locator("option")).toHaveCount(17);
+  await expect(model1.locator("option")).toHaveCount(21);
   await page.getByLabel("Modelo 2", { exact: true }).selectOption("qwen3-8b");
   await page.getByLabel("Quantização 2", { exact: true }).selectOption("Q8_0");
   const versions = page.locator('#compareCards [data-model="qwen3-8b"]');

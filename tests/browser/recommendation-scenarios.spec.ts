@@ -5,12 +5,13 @@ test("presets alteram o ranking e explicam os campos do cenário", async ({ page
   await page.goto(info.project.name === "next" ? "/recomendacoes" : "/index.html#recomendacoes");
   const result = page.locator("#scenarioResultCount, .scenario-result-count");
   await expect(result).toContainText("chat curto");
-  const before = await page.locator(".recommendation-card").first().textContent();
+  const cards = page.locator(".recommendation-feature, .recommendation-card");
+  const before = await cards.first().textContent();
   await page.getByRole("button", { name: "Processamento em lote", exact: true }).click();
   await expect(result).toContainText("processamento em lote");
   await expect(page.locator(".scenario-explanations")).toContainText("8 execuções simultâneas");
-  await expect(page.locator(".recommendation-card").filter({ hasText: "API" }).first()).toContainText("execuções simultâneas");
-  expect(await page.locator(".recommendation-card").first().textContent()).not.toBe(before);
+  await expect(cards.filter({ hasText: "API" }).first()).toContainText("execuções simultâneas");
+  expect(await cards.first().textContent()).not.toBe(before);
   await page.getByLabel("Contexto do cenário").fill("300");
   await page.getByLabel("Contexto do cenário").blur();
   await expect(page.getByLabel("Contexto do cenário")).toHaveValue("256");

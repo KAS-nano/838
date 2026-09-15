@@ -105,6 +105,8 @@ function isHardwareProfile(input) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getModel = exports.seedModels = void 0;
 const v = (base) => [
+    { quantization: "BF16", diskGb: +(base * 2.25).toFixed(1), weightVramGb: +(base * 2.35).toFixed(1), qualityFactor: 1.01 },
+    { quantization: "FP16", diskGb: +(base * 2.05).toFixed(1), weightVramGb: +(base * 2.15).toFixed(1), qualityFactor: 1 },
     { quantization: "Q8_0", diskGb: +(base * 1.78).toFixed(1), weightVramGb: +(base * 1.88).toFixed(1), qualityFactor: 1 },
     { quantization: "Q6_K", diskGb: +(base * 1.38).toFixed(1), weightVramGb: +(base * 1.47).toFixed(1), qualityFactor: .985 },
     { quantization: "Q5_K_M", diskGb: +(base * 1.16).toFixed(1), weightVramGb: +(base * 1.25).toFixed(1), qualityFactor: .97 },
@@ -271,8 +273,18 @@ exports.supportPayment = {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.seedApiModels = void 0;
 exports.seedApiModels = [
-    { id: "api-fast", name: "API econômica (exemplo)", provider: "Catálogo dinâmico", inputUsdPerM: .2, outputUsdPerM: .8, contextK: 128, strengths: ["Programação", "Escrita", "Produtividade"], source: "demo-seed" },
-    { id: "api-quality", name: "API qualidade (exemplo)", provider: "Catálogo dinâmico", inputUsdPerM: 2, outputUsdPerM: 8, contextK: 256, strengths: ["Programação", "Documentos", "Criação de ideias"], source: "demo-seed" },
+    { id: "api-fast", name: "API econômica (exemplo)", provider: "Catálogo demonstrativo", inputUsdPerM: .2, outputUsdPerM: .8, contextK: 128, strengths: ["Programação", "Escrita", "Produtividade"], source: "demo-seed", availabilityType: "api" },
+    { id: "api-quality", name: "API qualidade (exemplo)", provider: "Catálogo demonstrativo", inputUsdPerM: 2, outputUsdPerM: 8, contextK: 256, strengths: ["Programação", "Documentos", "Criação de ideias"], source: "demo-seed", availabilityType: "api" },
+    { id: "openrouter-qwen", name: "Qwen3 14B", provider: "OpenRouter", inputUsdPerM: .3, outputUsdPerM: .9, contextK: 128, strengths: ["Programação", "Documentos", "Assistente geral"], source: "demo-seed", availabilityType: "both" },
+    { id: "groq-llama", name: "Llama 3.3 70B", provider: "Groq", inputUsdPerM: .6, outputUsdPerM: .9, contextK: 128, strengths: ["Programação", "Escrita", "Assistente geral"], source: "demo-seed", availabilityType: "api" },
+    { id: "together-qwen", name: "Qwen2.5 72B", provider: "Together AI", inputUsdPerM: .8, outputUsdPerM: 1.2, contextK: 128, strengths: ["Programação", "Documentos", "Criação de ideias"], source: "demo-seed", availabilityType: "api" },
+    { id: "fireworks-llama", name: "Llama 3.3 70B", provider: "Fireworks AI", inputUsdPerM: .9, outputUsdPerM: .9, contextK: 128, strengths: ["Programação", "Escrita", "Assistente geral"], source: "demo-seed", availabilityType: "api" },
+    { id: "cerebras-llama", name: "Llama 3.3 70B", provider: "Cerebras", inputUsdPerM: .6, outputUsdPerM: .8, contextK: 128, strengths: ["Programação", "Escrita", "Assistente geral"], source: "demo-seed", availabilityType: "api" },
+    { id: "deepinfra-qwen", name: "Qwen2.5 72B", provider: "DeepInfra", inputUsdPerM: .2, outputUsdPerM: .3, contextK: 128, strengths: ["Programação", "Documentos"], source: "demo-seed", availabilityType: "api" },
+    { id: "mistral-api", name: "Mistral Large", provider: "Mistral API", inputUsdPerM: 2, outputUsdPerM: 6, contextK: 128, strengths: ["Escrita", "Documentos", "Criação de ideias"], source: "demo-seed", availabilityType: "api" },
+    { id: "gemini-api", name: "Gemini 2.5 Pro", provider: "Google Gemini", inputUsdPerM: 1.25, outputUsdPerM: 10, contextK: 256, strengths: ["Documentos", "Criação de ideias", "Assistente geral"], source: "demo-seed", availabilityType: "api" },
+    { id: "openai-api", name: "GPT-4.1", provider: "OpenAI API", inputUsdPerM: 2, outputUsdPerM: 8, contextK: 128, strengths: ["Programação", "Documentos", "Assistente geral"], source: "demo-seed", availabilityType: "api" },
+    { id: "anthropic-api", name: "Claude Sonnet", provider: "Anthropic", inputUsdPerM: 3, outputUsdPerM: 15, contextK: 200, strengths: ["Programação", "Escrita", "Documentos"], source: "demo-seed", availabilityType: "api" },
 ];
 },
 "src/features/benchmarks/data.ts": (exports, load) => {
@@ -541,78 +553,48 @@ function rankModels(profile, models, objective, quantization = "Q4_K_M", context
 "src/features/recommendation/hybrid.ts": (exports, load) => {
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.apiScoringWeights = void 0;
 exports.recommendHybrid = recommendHybrid;
 const scenario_1 = load("src/features/recommendation/scenario.ts");
 const engine_1 = load("src/features/recommendation/engine.ts");
+exports.apiScoringWeights = { taskSuitability: 30, outputSpeed: 28, ttft: 18, reliability: 10, price: 8, context: 6 };
 const bounded = (score) => Math.min(100, Math.max(0, Math.round(score)));
+const quantizationRank = ["Q5_K_M", "Q6_K", "Q4_K_M", "Q8_0", "Q3_K_M", "FP16", "BF16"];
+const runtimeFor = (profile) => profile.os === "macos" ? "llama.cpp / Ollama / LM Studio" : "Ollama / llama.cpp / LM Studio";
+const speedEstimate = (score, size) => { const center = Math.max(3, Math.round((score * .72) / Math.max(1, size / 8))); return { min: Math.max(2, Math.round(center * .82)), max: Math.max(3, Math.round(center * 1.18)) }; };
+function localRecommendations(profile, objective, models, scenario) {
+    const contextK = scenario?.contextK ?? 8;
+    return models.flatMap(model => model.variants.map(variant => { const result = (0, engine_1.calculateCompatibility)(profile, model, variant, objective, contextK); const rank = quantizationRank.indexOf(variant.quantization); const speed = speedEstimate(result.score, model.paramsB); return { model, variant, result, speed, score: bounded(result.score + (rank < 0 ? 0 : 8 - rank) + (scenario?.priority === "quality" ? variant.qualityFactor * 4 : 0)) }; })).filter(item => item.result.fit !== "incompatible").sort((a, b) => b.score - a.score);
+}
+function apiScore(api, objective, scenario) { const benchmark = api.benchmark; const task = api.strengths.includes(objective) ? 100 : 55; const speed = benchmark?.outputTokensPerSecond ? Math.min(100, benchmark.outputTokensPerSecond / 3) : 50; const ttft = benchmark?.timeToFirstTokenMs ? Math.max(0, 100 - benchmark.timeToFirstTokenMs / 5) : 50; const price = Math.max(0, 100 - api.outputUsdPerM * 8); const context = Math.min(100, api.contextK / 2.56); const latency = scenario?.latency === "responsive" ? 1.25 : 1; return bounded((task * exports.apiScoringWeights.taskSuitability + speed * exports.apiScoringWeights.outputSpeed * latency + ttft * exports.apiScoringWeights.ttft * latency + 70 * exports.apiScoringWeights.reliability + price * exports.apiScoringWeights.price + context * exports.apiScoringWeights.context) / 100); }
 function recommendHybrid(profile, objective, models, apis, scenario) {
     const active = scenario ? (0, scenario_1.validateScenario)(scenario) : undefined;
     const target = active?.objective ?? objective;
-    const contextK = active?.contextK ?? 8;
-    const priority = active?.priority ?? profile.priority;
-    const local = (0, engine_1.rankModels)(profile, models, target, "Q4_K_M", contextK).slice(0, 3).map((item) => {
-        let score = item.result.score - (profile.preference === "api" ? 15 : 0) + (priority === "privacy" ? 10 : 0);
-        const reasons = [];
-        if (active) {
-            if (item.model.contextK < active.contextK) {
-                score -= 18;
-                reasons.push(`O modelo limita o contexto a ${item.model.contextK}K.`);
-            }
-            else
-                reasons.push(`Atende aos ${active.contextK}K solicitados.`);
-            if (active.concurrency > 1) {
-                score -= Math.min(16, active.concurrency * 2);
-                reasons.push(`${active.concurrency} execuções simultâneas aumentam o uso local de recursos.`);
-            }
-            if (active.responseTokens > 2048) {
-                score -= item.model.benchmarkClass === "small" ? 6 : 2;
-                reasons.push("Respostas longas aumentam o tempo e a memória da execução local.");
-            }
-            if (active.latency === "responsive") {
-                score += item.model.benchmarkClass === "small" ? 8 : item.model.benchmarkClass === "large" ? -8 : 0;
-                reasons.push("A preferência por resposta rápida favorece modelos menores.");
-            }
-            if (priority === "quality" && item.model.benchmarkClass === "large")
-                score += 5;
-            if (priority === "efficiency" && item.model.benchmarkClass === "small")
-                score += 6;
-        }
-        return { mode: "local", name: item.model.name, score: bounded(score), reason: item.result.reasons[0], costNote: "Sem custo por token após instalação; energia e hardware continuam contando.", scenarioReasons: reasons };
-    });
-    const remote = apis.map((api) => {
-        let score = 68 + (api.strengths.includes(target) ? 12 : 0);
-        const reasons = [];
-        if (profile.preference === "local")
-            score -= 15;
-        if (priority === "quality")
-            score += 8;
-        if (priority === "privacy")
-            score -= 18;
-        if (priority === "cost")
-            score -= Math.min(15, api.outputUsdPerM);
-        if (active) {
-            if (api.contextK < active.contextK) {
-                score -= 20;
-                reasons.push(`O limite demonstrativo de ${api.contextK}K não atende ao contexto solicitado.`);
-            }
-            else
-                reasons.push(`Atende aos ${active.contextK}K solicitados.`);
-            if (active.concurrency > 1) {
-                score += 8;
-                reasons.push("A API evita concentrar as execuções simultâneas nesta máquina.");
-            }
-            if (active.responseTokens > 2048) {
-                score += 3;
-                reasons.push("Respostas longas não consomem a memória local, mas aumentam o custo por saída.");
-            }
-            if (active.latency === "responsive") {
-                score += 6;
-                reasons.push("API favorecida pela preferência por resposta rápida; latência de rede não foi medida.");
-            }
-        }
-        return { mode: "api", name: api.name, score: bounded(score), reason: `API com ${api.contextK}K de contexto no catálogo demonstrativo.`, costNote: `Demo: US$ ${api.inputUsdPerM}/M entrada · US$ ${api.outputUsdPerM}/M saída.`, scenarioReasons: reasons };
-    });
-    return [...local, ...remote].sort((a, b) => b.score - a.score);
+    const locals = localRecommendations(profile, target, models, active).slice(0, 8).map(item => { const scenarioReasons = active ? [`${item.variant.quantization} selecionada entre as variantes compatíveis para ${active.contextK}K.`] : []; let score = item.score; if (active?.concurrency && active.concurrency > 1) {
+        score -= Math.min(16, active.concurrency * 2);
+        scenarioReasons.push(`${active.concurrency} execuções simultâneas aumentam o uso local de recursos.`);
+    } if (active?.responseTokens && active.responseTokens > 2048) {
+        score -= 5;
+        scenarioReasons.push("Respostas longas aumentam o custo de memória e tempo local.");
+    } if (active?.priority === "privacy") {
+        score += 10;
+        scenarioReasons.push("Privacidade favorece processamento local.");
+    } return { mode: "local", name: item.model.name, modelId: item.model.id, quantization: item.variant.quantization, score: bounded(score), availabilityType: "local", reason: item.result.reasons[0], scenarioReasons, costNote: "Sem custo por token; energia e hardware continuam contando.", runtime: runtimeFor(profile), vramEstimatedGb: item.result.vramEstimatedGb, ramEstimatedGb: item.result.ramEstimatedGb, contextK: Math.min(active?.contextK ?? 8, item.model.contextK), speedRange: item.speed, speedStatus: "estimate", confidence: item.result.confidence, alternatives: [], reasons: [{ sourceType: "heuristic", text: "Velocidade baseada em compatibilidade, tamanho, quantização e backend; não é medição desta máquina." }] }; });
+    const remote = apis.map(api => { const benchmark = api.benchmark; let score = apiScore(api, target, active); const scenarioReasons = active ? [`Contexto disponível: ${api.contextK}K.`] : []; if (active?.concurrency && active.concurrency > 1) {
+        score += 20;
+        scenarioReasons.push("A API evita concentrar execuções simultâneas nesta máquina.");
+    } if (active?.responseTokens && active.responseTokens > 2048) {
+        score += 3;
+        scenarioReasons.push("Respostas longas não consomem a memória local, mas aumentam o custo por saída.");
+    } if (active?.priority === "privacy") {
+        score -= 18;
+        scenarioReasons.push("API requer envio dos dados ao provedor.");
+    } return { mode: "api", name: api.name, provider: api.provider, score: bounded(score), availabilityType: api.availabilityType, reason: api.strengths.includes(target) ? `Adequado para ${target}, com prioridade para experiência de velocidade.` : "Alternativa de API com capacidade geral para o cenário.", scenarioReasons, costNote: `US$ ${api.inputUsdPerM}/M entrada · US$ ${api.outputUsdPerM}/M saída.`, runtime: "API do provedor", contextK: api.contextK, outputTokensPerSecond: benchmark?.outputTokensPerSecond, ttftMs: benchmark?.timeToFirstTokenMs, priceInput: api.inputUsdPerM, priceOutput: api.outputUsdPerM, speedStatus: benchmark ? "measured" : "unknown", confidence: benchmark?.confidence ?? "low", benchmarkSource: benchmark?.source, benchmarkDate: benchmark?.date, alternatives: [], reasons: [{ sourceType: benchmark ? "exact_benchmark" : "heuristic", text: benchmark ? `Benchmark informado por ${benchmark.source}; confirme região e data.` : "Benchmark real ainda não disponível; velocidade e TTFT não foram inventados." }] }; }).sort((a, b) => b.score - a.score).slice(0, 8);
+    if (locals[0])
+        locals[0].alternatives = locals.slice(1, 4).map(item => ({ name: item.name, detail: `${item.quantization} · ${item.speedRange?.min}-${item.speedRange?.max} t/s estimados`, score: item.score }));
+    if (remote[0])
+        remote[0].alternatives = remote.slice(1, 5).map(item => ({ name: item.name, detail: `${item.provider} · ${item.speedStatus === "unknown" ? "benchmark não disponível" : `${item.outputTokensPerSecond} t/s`}`, score: item.score }));
+    return [...locals, ...remote].sort((a, b) => b.score - a.score);
 }
 },
 "src/features/recommendation/scenario.ts": (exports, load) => {

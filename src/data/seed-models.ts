@@ -1,5 +1,7 @@
 import type { AiModel, ModelVariant } from "../features/catalog/types";
 const v=(base:number):ModelVariant[]=>[
+ {quantization:"BF16",diskGb:+(base*2.25).toFixed(1),weightVramGb:+(base*2.35).toFixed(1),qualityFactor:1.01},
+ {quantization:"FP16",diskGb:+(base*2.05).toFixed(1),weightVramGb:+(base*2.15).toFixed(1),qualityFactor:1},
  {quantization:"Q8_0",diskGb:+(base*1.78).toFixed(1),weightVramGb:+(base*1.88).toFixed(1),qualityFactor:1},
  {quantization:"Q6_K",diskGb:+(base*1.38).toFixed(1),weightVramGb:+(base*1.47).toFixed(1),qualityFactor:.985},
  {quantization:"Q5_K_M",diskGb:+(base*1.16).toFixed(1),weightVramGb:+(base*1.25).toFixed(1),qualityFactor:.97},

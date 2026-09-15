@@ -400,6 +400,16 @@ RODADA 2026-09-15 — CATÁLOGO DE MODELOS E INSTALAÇÃO [~]
 [x] PostgreSQL local atualizado para 21 modelos e 105 variantes; preview regenerado.
 [ ] Validar os novos instaladores em cada sistema operacional e conferir links externos em revisão periódica.
 
+RODADA 2026-09-15 — RECOMENDAÇÕES LOCAL/API [~]
+[x] Página de recomendações dividida em duas colunas responsivas: melhor IA local e melhor experiência via API.
+[x] Seleção local avalia variantes BF16/FP16/quantizadas, compatibilidade de memória, contexto, offload, tarefa, runtime e velocidade estimada em faixa.
+[x] Seleção API separa modelo de provedor, suporta OpenRouter, Groq, Together, Fireworks, Cerebras, DeepInfra, Mistral, Gemini, OpenAI e Anthropic no catálogo demonstrativo.
+[x] Benchmarks API têm contrato de fonte/data/confiança; ausência de benchmark aparece como desconhecida, sem números inventados.
+[x] Cards exibem availabilityType, confiança, custo, TTFT quando disponível, alternativas, motivo e links funcionais.
+[x] Testes de cenário preservam concorrência/API, privacidade/local, custo de respostas longas e ranking ordenado.
+PASS typecheck, lint, stage43, build e 14 testes Playwright afetados.
+[ ] Inserir benchmarks externos verificados e substituir o catálogo API demonstrativo por ingestão persistente com fonte e região.
+
 RODADA 2026-09-15 — EDIÇÃO DE COMPARAÇÕES NOMEADAS [x]
 [x] Renomear preserva configuração e rejeita nomes vazios, longos ou duplicados.
 [x] Substituir atualiza apenas a entrada selecionada com a configuração aberta; falhas preservam os dados.

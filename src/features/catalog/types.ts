@@ -1,5 +1,5 @@
 import type { Objective } from "../onboarding/types";
-export type Quantization = "Q8_0" | "Q6_K" | "Q5_K_M" | "Q4_K_M" | "Q3_K_M";
+export type Quantization = "BF16" | "FP16" | "Q8_0" | "Q6_K" | "Q5_K_M" | "Q4_K_M" | "Q3_K_M";
 export type ModelModality = "text" | "vision" | "audio" | "video";
 export type ModelVariant = { quantization: Quantization; diskGb: number; weightVramGb: number; qualityFactor: number };
 export type AiModel = {
