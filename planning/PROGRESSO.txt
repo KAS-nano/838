@@ -159,7 +159,8 @@ P2.4 — FAVORITOS, CENÁRIOS E COMPARAÇÕES: EM ANDAMENTO [~]
 [x] Uma comparação salva localmente com modelos, quantizações e contexto; recuperação e exclusão explícitas.
 [x] Exportação/importação JSON para levar a configuração entre navegadores, sem hardware ou resultados.
 [x] Até 10 comparações nomeadas locais, com recuperação e exclusão individual.
-[ ] Cenários de uso com parâmetros próprios, sincronização opcional e links públicos.
+[x] Cenários versionados com seis presets e parâmetros próprios influenciam e explicam o ranking.
+[ ] Persistência de cenários personalizados, sincronização opcional e links públicos.
 P2.5 — INSTALAÇÃO GUIADA: 0% [ ]
 P3.1 — RENDERIZAÇÃO NEXT/PREVIEW E PUBLICAÇÃO: 97% [~]
 [x] Build Next de produção e preview gerado validados.
@@ -381,3 +382,16 @@ PASS testes unitários de nomes e persistência; ESLint, sintaxe JS e git diff -
 PASS build Webpack com TypeScript; 16 testes de navegador após corrigir a regressão detectada na primeira execução.
 [x] Revisão .gitignore: 4 caminhos de artefatos ignorados, 5 fontes preservadas; nenhum arquivo rastreado conflita com as regras. Nenhum ajuste necessário.
 Nenhum commit, push ou deploy realizado. Build Turbopack e validação remota não executados.
+
+RODADA 2026-09-15 — CENÁRIOS DE RECOMENDAÇÃO [x]
+[x] Seis presets versionados: chat curto, documento longo, programação, imagem, transcrição e lote.
+[x] Cenário contém objetivo, contexto, tamanho da resposta, concorrência, latência e prioridade.
+[x] Motor recebe o cenário, recalcula local/API e explica limite de contexto, concorrência, resposta longa e preferência de latência.
+[x] Next e preview oferecem presets e ajustes manuais equivalentes, sem persistir o cenário personalizado nesta etapa.
+[x] Texto de pluralização corrigido após falha inicial de navegador.
+PASS stage43 e suíte completa test:stages; preview gerado a partir de 20 módulos canônicos e preview:check aprovado.
+PASS typecheck, ESLint dos arquivos alterados, sintaxe do preview e git diff --check.
+PASS build padrão Next/Turbopack: 22 páginas/rotas; 4 testes Playwright em Next e preview, incluindo 320 px e axe.
+[x] Revisão .gitignore: .test-stage43, test-results, playwright-report e .next cobertos; fontes, CSS e testes preservados. Nenhuma regra nova necessária.
+[ ] Persistência e compartilhamento seguro de cenários permanecem pendentes.
+O VS Code criou o commit 51adef1 durante a execução com a implementação principal; correções finais, testes e documentação ficaram fora dele. Nenhum push ou deploy executado por esta rodada.

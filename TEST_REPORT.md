@@ -456,3 +456,13 @@ O build foi validado com Webpack; o comando padrão de publicação continua usa
 - Build Webpack/TypeScript, ESLint, sintaxe JS e git diff --check — PASS.
 - Gitignore revisado sem necessidade de novas regras; fontes preservadas e artefatos locais cobertos.
 - Sem build Turbopack ou validação remota nesta rodada.
+
+## 2026-09-15 — Cenários de recomendação
+
+- Stage43: seis presets versionados, validação de limites, explicações, concorrência, privacidade, respostas longas, ordenação e limites de score — PASS.
+- `npm run test:stages`: PASS, incluindo os motores anteriores e a nova etapa 43.
+- `npm run build`: PASS com Next/Turbopack, TypeScript e 22 páginas/rotas.
+- Playwright: 4/4 PASS em Next e preview; presets, ajustes, mudança do ranking, 320 px e axe sem violações sérias/críticas.
+- A primeira execução de navegador encontrou apenas a pluralização “execuçãoões”; o texto foi corrigido e a suíte repetida integralmente.
+- Preview gerado de 20 módulos canônicos; preview:check, ESLint, typecheck, sintaxe JS e `git diff --check` — PASS.
+- Gitignore revisado: artefatos da etapa e do navegador já cobertos; nenhuma regra adicionada. Sem validação remota da Vercel.

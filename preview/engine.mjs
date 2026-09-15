@@ -530,12 +530,116 @@ function rankModels(profile, models, objective, quantization = "Q4_K_M", context
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.recommendHybrid = recommendHybrid;
+const scenario_1 = load("src/features/recommendation/scenario.ts");
 const engine_1 = load("src/features/recommendation/engine.ts");
-function recommendHybrid(profile, objective, models, apis) { const local = (0, engine_1.rankModels)(profile, models, objective).slice(0, 3).map((x) => ({ mode: "local", name: x.model.name, score: Math.min(100, Math.max(0, x.result.score - (profile.preference === "api" ? 15 : 0) + (profile.priority === "privacy" ? 10 : 0))), reason: x.result.reasons[0], costNote: "Sem custo por token após instalação; energia e hardware continuam contando." })); const remote = apis.map((a) => { let score = 68 + (a.strengths.includes(objective) ? 12 : 0); if (profile.preference === "local")
-    score -= 15; if (profile.priority === "quality")
-    score += 8; if (profile.priority === "privacy")
-    score -= 18; if (profile.priority === "cost")
-    score -= Math.min(15, a.outputUsdPerM); return { mode: "api", name: a.name, score: Math.round(score), reason: `API com ${a.contextK}K de contexto no catálogo demonstrativo.`, costNote: `Demo: US$ ${a.inputUsdPerM}/M entrada · US$ ${a.outputUsdPerM}/M saída.` }; }); return [...local, ...remote].sort((a, b) => b.score - a.score); }
+const bounded = (score) => Math.min(100, Math.max(0, Math.round(score)));
+function recommendHybrid(profile, objective, models, apis, scenario) {
+    const active = scenario ? (0, scenario_1.validateScenario)(scenario) : undefined;
+    const target = active?.objective ?? objective;
+    const contextK = active?.contextK ?? 8;
+    const priority = active?.priority ?? profile.priority;
+    const local = (0, engine_1.rankModels)(profile, models, target, "Q4_K_M", contextK).slice(0, 3).map((item) => {
+        let score = item.result.score - (profile.preference === "api" ? 15 : 0) + (priority === "privacy" ? 10 : 0);
+        const reasons = [];
+        if (active) {
+            if (item.model.contextK < active.contextK) {
+                score -= 18;
+                reasons.push(`O modelo limita o contexto a ${item.model.contextK}K.`);
+            }
+            else
+                reasons.push(`Atende aos ${active.contextK}K solicitados.`);
+            if (active.concurrency > 1) {
+                score -= Math.min(16, active.concurrency * 2);
+                reasons.push(`${active.concurrency} execuções simultâneas aumentam o uso local de recursos.`);
+            }
+            if (active.responseTokens > 2048) {
+                score -= item.model.benchmarkClass === "small" ? 6 : 2;
+                reasons.push("Respostas longas aumentam o tempo e a memória da execução local.");
+            }
+            if (active.latency === "responsive") {
+                score += item.model.benchmarkClass === "small" ? 8 : item.model.benchmarkClass === "large" ? -8 : 0;
+                reasons.push("A preferência por resposta rápida favorece modelos menores.");
+            }
+            if (priority === "quality" && item.model.benchmarkClass === "large")
+                score += 5;
+            if (priority === "efficiency" && item.model.benchmarkClass === "small")
+                score += 6;
+        }
+        return { mode: "local", name: item.model.name, score: bounded(score), reason: item.result.reasons[0], costNote: "Sem custo por token após instalação; energia e hardware continuam contando.", scenarioReasons: reasons };
+    });
+    const remote = apis.map((api) => {
+        let score = 68 + (api.strengths.includes(target) ? 12 : 0);
+        const reasons = [];
+        if (profile.preference === "local")
+            score -= 15;
+        if (priority === "quality")
+            score += 8;
+        if (priority === "privacy")
+            score -= 18;
+        if (priority === "cost")
+            score -= Math.min(15, api.outputUsdPerM);
+        if (active) {
+            if (api.contextK < active.contextK) {
+                score -= 20;
+                reasons.push(`O limite demonstrativo de ${api.contextK}K não atende ao contexto solicitado.`);
+            }
+            else
+                reasons.push(`Atende aos ${active.contextK}K solicitados.`);
+            if (active.concurrency > 1) {
+                score += 8;
+                reasons.push("A API evita concentrar as execuções simultâneas nesta máquina.");
+            }
+            if (active.responseTokens > 2048) {
+                score += 3;
+                reasons.push("Respostas longas não consomem a memória local, mas aumentam o custo por saída.");
+            }
+            if (active.latency === "responsive") {
+                score += 6;
+                reasons.push("API favorecida pela preferência por resposta rápida; latência de rede não foi medida.");
+            }
+        }
+        return { mode: "api", name: api.name, score: bounded(score), reason: `API com ${api.contextK}K de contexto no catálogo demonstrativo.`, costNote: `Demo: US$ ${api.inputUsdPerM}/M entrada · US$ ${api.outputUsdPerM}/M saída.`, scenarioReasons: reasons };
+    });
+    return [...local, ...remote].sort((a, b) => b.score - a.score);
+}
+},
+"src/features/recommendation/scenario.ts": (exports, load) => {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.scenarioPresets = void 0;
+exports.validateScenario = validateScenario;
+exports.scenarioExplanations = scenarioExplanations;
+exports.scenarioPresets = [
+    { version: 1, id: "short-chat", label: "Chat curto", objective: "Assistente geral", contextK: 8, responseTokens: 512, concurrency: 1, latency: "responsive", priority: "speed" },
+    { version: 1, id: "long-document", label: "Documento longo", objective: "Documentos", contextK: 64, responseTokens: 2048, concurrency: 1, latency: "balanced", priority: "quality" },
+    { version: 1, id: "programming", label: "Programação", objective: "Programação", contextK: 32, responseTokens: 1024, concurrency: 1, latency: "responsive", priority: "quality" },
+    { version: 1, id: "vision", label: "Análise de imagem", objective: "Imagem", contextK: 16, responseTokens: 768, concurrency: 1, latency: "balanced", priority: "quality" },
+    { version: 1, id: "transcription", label: "Transcrição", objective: "Transcrição", contextK: 16, responseTokens: 2048, concurrency: 1, latency: "balanced", priority: "speed" },
+    { version: 1, id: "batch", label: "Processamento em lote", objective: "Produtividade", contextK: 8, responseTokens: 512, concurrency: 8, latency: "balanced", priority: "efficiency" },
+];
+function validateScenario(value) {
+    if (value.version !== 1)
+        throw new Error("O cenário usa uma versão incompatível.");
+    if (!exports.scenarioPresets.some((preset) => preset.id === value.id))
+        throw new Error("Selecione um cenário disponível.");
+    if (!Number.isInteger(value.contextK) || value.contextK < 1 || value.contextK > 256)
+        throw new Error("O contexto deve ficar entre 1K e 256K.");
+    if (!Number.isInteger(value.responseTokens) || value.responseTokens < 64 || value.responseTokens > 32768)
+        throw new Error("A resposta deve ter entre 64 e 32768 tokens.");
+    if (!Number.isInteger(value.concurrency) || value.concurrency < 1 || value.concurrency > 64)
+        throw new Error("A concorrência deve ficar entre 1 e 64.");
+    return { ...value };
+}
+function scenarioExplanations(scenario) {
+    const validated = validateScenario(scenario);
+    const priorityLabels = { quality: "qualidade", speed: "velocidade", efficiency: "eficiência", privacy: "privacidade", ease: "facilidade", cost: "menor custo" };
+    const latencyLabels = { responsive: "resposta rápida", balanced: "equilibrada", quality: "foco em qualidade" };
+    return [
+        `${validated.contextK}K de contexto para ${validated.label.toLocaleLowerCase("pt-BR")}.`,
+        `Resposta de até ${validated.responseTokens} tokens e ${validated.concurrency} ${validated.concurrency === 1 ? "execução simultânea" : "execuções simultâneas"}.`,
+        `Prioridade em ${priorityLabels[validated.priority]}; latência ${latencyLabels[validated.latency]}.`,
+    ];
+}
 },
 "src/features/profile/local-store.ts": (exports, load) => {
 "use strict";
@@ -850,6 +954,9 @@ export const estimateMemory = load("src/features/estimation/memory.ts").estimate
 export const estimatePerformance = load("src/features/benchmarks/estimator.ts").estimatePerformance;
 export const calculateCompatibility = load("src/features/recommendation/engine.ts").calculateCompatibility;
 export const recommendHybrid = load("src/features/recommendation/hybrid.ts").recommendHybrid;
+export const scenarioPresets = load("src/features/recommendation/scenario.ts").scenarioPresets;
+export const validateScenario = load("src/features/recommendation/scenario.ts").validateScenario;
+export const scenarioExplanations = load("src/features/recommendation/scenario.ts").scenarioExplanations;
 export const demoHardwareProfile = load("src/features/profile/local-store.ts").demoHardwareProfile;
 export const isHardwareProfile = load("src/features/profile/local-store.ts").isHardwareProfile;
 export const parseHardwareProfile = load("src/features/profile/local-store.ts").parseHardwareProfile;

@@ -1,5 +1,8 @@
 # Changelog
 
+- Recomendações passam a aceitar cenários versionados de chat, documentos, programação, visão, transcrição e lote, com parâmetros e explicações do impacto no ranking.
+- Prioridade e latência dos cenários aparecem em português; testes cobrem limites, mudanças no ranking e responsividade.
+
 - Comparações nomeadas podem ser renomeadas e atualizadas com a configuração aberta; recuperação da cópia rápida distingue ausência de corrupção.
 
 - Biblioteca local de até 10 comparações nomeadas, com recuperação e exclusão individual, separada da cópia rápida.

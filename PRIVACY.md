@@ -17,6 +17,9 @@ As comparações nomeadas guardam também o nome escolhido por você, com limite
 ## Benchmark local
 Só começa após ação explícita. O benchmark Ollama mede dados técnicos de inferência.
 
+## Cenários de recomendação
+Os controles de cenário recalculam o ranking no navegador. Nesta versão, o cenário personalizado não é salvo, sincronizado ou enviado ao servidor. O perfil local de hardware continua sendo usado para estimar compatibilidade.
+
 ## Comunidade
 Envio comunitário é desativado por padrão e exige consentimento explícito. O payload sanitizado não contém hostname, nome de usuário, e-mail, arquivos ou prompt pessoal.
 

@@ -17,6 +17,10 @@ Testes:
 Aceite: detecção nunca altera, baixa ou remove modelos.
 
 FUNÇÃO 2 — CENÁRIOS DE USO (P2)
+[x] Estrutura versionada com tarefa, contexto, resposta, concorrência, latência e prioridade.
+[x] Presets de chat curto, documento longo, programação, visão, transcrição e lote no Next e preview.
+[x] Motor recebe o cenário, recalcula o ranking e explica contexto, concorrência, resposta e latência.
+[ ] Persistência de cenários personalizados e compartilhamento sem dados pessoais.
 Aplicação:
 - Criar cenário com tarefa, contexto, tamanho esperado da resposta, concorrência, latência e prioridade.
 - Motor recebe Scenario em vez de inferir tudo apenas do primeiro objetivo.
@@ -56,7 +60,8 @@ Entrega local:
 [x] Leitura valida versão, contexto e variantes disponíveis; falhas preservam a comparação aberta.
 [x] Exportação/importação JSON validada e processada localmente, sem hardware.
 [x] Biblioteca de até 10 comparações nomeadas, com exclusão, recuperação, renomeação e substituição individual.
-[ ] Cenários de uso com parâmetros próprios, sincronização opcional e links públicos.
+[x] Cenários de uso com parâmetros próprios integrados ao ranking.
+[ ] Persistência de cenários personalizados, sincronização opcional e links públicos.
 Aplicação:
 - Primeiro local; sincronização opcional após autenticação.
 - IDs versionados e migração do localStorage.
@@ -101,4 +106,3 @@ Aceite: aplicação offline nunca apresenta dado antigo como atual.
 
 ORDEM INTERNA
 Modelos instalados -> cenários -> benchmark confiável/histórico -> Local x API -> salvos -> instalação guiada -> alertas -> PWA.
-
