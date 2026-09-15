@@ -609,6 +609,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.scenarioPresets = void 0;
 exports.validateScenario = validateScenario;
 exports.scenarioExplanations = scenarioExplanations;
+const types_1 = load("src/features/onboarding/types.ts");
 exports.scenarioPresets = [
     { version: 1, id: "short-chat", label: "Chat curto", objective: "Assistente geral", contextK: 8, responseTokens: 512, concurrency: 1, latency: "responsive", priority: "speed" },
     { version: 1, id: "long-document", label: "Documento longo", objective: "Documentos", contextK: 64, responseTokens: 2048, concurrency: 1, latency: "balanced", priority: "quality" },
@@ -617,18 +618,33 @@ exports.scenarioPresets = [
     { version: 1, id: "transcription", label: "Transcrição", objective: "Transcrição", contextK: 16, responseTokens: 2048, concurrency: 1, latency: "balanced", priority: "speed" },
     { version: 1, id: "batch", label: "Processamento em lote", objective: "Produtividade", contextK: 8, responseTokens: 512, concurrency: 8, latency: "balanced", priority: "efficiency" },
 ];
-function validateScenario(value) {
+const priorities = ["quality", "speed", "efficiency", "privacy", "ease", "cost"];
+const latencies = ["responsive", "balanced", "quality"];
+const customIdPattern = /^custom-[a-z0-9-]{1,72}$/;
+function validateScenario(input) {
+    if (!input || typeof input !== "object" || Array.isArray(input))
+        throw new Error("O cenário é inválido.");
+    const value = input;
     if (value.version !== 1)
         throw new Error("O cenário usa uma versão incompatível.");
-    if (!exports.scenarioPresets.some((preset) => preset.id === value.id))
-        throw new Error("Selecione um cenário disponível.");
-    if (!Number.isInteger(value.contextK) || value.contextK < 1 || value.contextK > 256)
+    const presetId = exports.scenarioPresets.some((preset) => preset.id === value.id);
+    if (typeof value.id !== "string" || (!presetId && !customIdPattern.test(value.id)))
+        throw new Error("O identificador do cenário é inválido.");
+    if (typeof value.label !== "string" || value.label.trim().length < 1 || value.label.trim().length > 60)
+        throw new Error("O nome do cenário deve ter entre 1 e 60 caracteres.");
+    if (!types_1.objectives.includes(value.objective))
+        throw new Error("O objetivo do cenário é inválido.");
+    if (typeof value.contextK !== "number" || !Number.isInteger(value.contextK) || value.contextK < 1 || value.contextK > 256)
         throw new Error("O contexto deve ficar entre 1K e 256K.");
-    if (!Number.isInteger(value.responseTokens) || value.responseTokens < 64 || value.responseTokens > 32768)
+    if (typeof value.responseTokens !== "number" || !Number.isInteger(value.responseTokens) || value.responseTokens < 64 || value.responseTokens > 32768)
         throw new Error("A resposta deve ter entre 64 e 32768 tokens.");
-    if (!Number.isInteger(value.concurrency) || value.concurrency < 1 || value.concurrency > 64)
+    if (typeof value.concurrency !== "number" || !Number.isInteger(value.concurrency) || value.concurrency < 1 || value.concurrency > 64)
         throw new Error("A concorrência deve ficar entre 1 e 64.");
-    return { ...value };
+    if (!latencies.includes(value.latency))
+        throw new Error("A preferência de latência é inválida.");
+    if (!priorities.includes(value.priority))
+        throw new Error("A prioridade do cenário é inválida.");
+    return { ...value, label: value.label.trim() };
 }
 function scenarioExplanations(scenario) {
     const validated = validateScenario(scenario);

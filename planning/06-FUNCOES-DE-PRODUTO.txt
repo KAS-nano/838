@@ -20,7 +20,7 @@ FUNÇÃO 2 — CENÁRIOS DE USO (P2)
 [x] Estrutura versionada com tarefa, contexto, resposta, concorrência, latência e prioridade.
 [x] Presets de chat curto, documento longo, programação, visão, transcrição e lote no Next e preview.
 [x] Motor recebe o cenário, recalcula o ranking e explica contexto, concorrência, resposta e latência.
-[ ] Persistência de cenários personalizados e compartilhamento sem dados pessoais.
+[x] Persistência de até 10 cenários personalizados e compartilhamento explícito sem nome, hardware ou perfil.
 Aplicação:
 - Criar cenário com tarefa, contexto, tamanho esperado da resposta, concorrência, latência e prioridade.
 - Motor recebe Scenario em vez de inferir tudo apenas do primeiro objetivo.
@@ -61,7 +61,8 @@ Entrega local:
 [x] Exportação/importação JSON validada e processada localmente, sem hardware.
 [x] Biblioteca de até 10 comparações nomeadas, com exclusão, recuperação, renomeação e substituição individual.
 [x] Cenários de uso com parâmetros próprios integrados ao ranking.
-[ ] Persistência de cenários personalizados, sincronização opcional e links públicos.
+[x] Persistência de cenários personalizados e links públicos com parâmetros técnicos minimizados.
+[ ] Sincronização opcional após autenticação, sem apagar a cópia local em caso de falha.
 Aplicação:
 - Primeiro local; sincronização opcional após autenticação.
 - IDs versionados e migração do localStorage.

@@ -1,20 +1,91 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { seedModels } from "@/data/seed-models";
 import { seedApiModels } from "@/data/seed-api-models";
 import { useHardwareProfile } from "@/features/profile/use-hardware-profile";
 import { recommendHybrid } from "@/features/recommendation/hybrid";
-import { scenarioExplanations, scenarioPresets, type RecommendationScenario } from "@/features/recommendation/scenario";
+import { scenarioExplanations, scenarioPresets, validateScenario, type RecommendationScenario } from "@/features/recommendation/scenario";
+import { createScenarioShareUrl, listSavedScenarios, loadSavedScenario, readScenarioShareUrl, removeSavedScenario, saveScenario, type SavedScenario } from "../../../preview/scenario-storage.mjs";
 import "../../../preview/scenario.css";
 
 export default function Recommendations() {
   const { profile } = useHardwareProfile();
   const [scenario, setScenario] = useState<RecommendationScenario>(scenarioPresets[0]);
+  const [scenarioName, setScenarioName] = useState("");
+  const [savedScenarios, setSavedScenarios] = useState<SavedScenario[]>([]);
+  const [selectedSaved, setSelectedSaved] = useState("");
+  const [scenarioMessage, setScenarioMessage] = useState("");
+  const [scenarioToolsOpen, setScenarioToolsOpen] = useState(false);
   const list = useMemo(() => recommendHybrid(profile, scenario.objective, seedModels, seedApiModels, scenario)
     .filter((item) => profile.preference === "both" || item.mode === profile.preference), [profile, scenario]);
   const explanations = scenarioExplanations(scenario);
+
+  useEffect(() => {
+    let active = true;
+    queueMicrotask(() => {
+      if (!active) return;
+      try {
+        const items = listSavedScenarios(validateScenario);
+        setSavedScenarios(items);
+        const shared = readScenarioShareUrl(window.location.href, validateScenario);
+        if (shared) {
+          setScenario(shared);
+          setScenarioToolsOpen(true);
+          setScenarioMessage("Cenário carregado do link. Ele ainda não foi salvo neste navegador.");
+        }
+      } catch (error) {
+        setScenarioToolsOpen(true);
+        setScenarioMessage(error instanceof Error ? error.message : "Não foi possível carregar os cenários.");
+      }
+    });
+    return () => { active = false; };
+  }, []);
+
+  function runScenarioAction(action: () => void) {
+    try { action(); }
+    catch (error) { setScenarioMessage(error instanceof Error ? error.message : "Não foi possível concluir a ação."); }
+  }
+
+  function saveCurrentScenario() {
+    runScenarioAction(() => {
+      const saved = saveScenario(scenarioName, scenario, validateScenario);
+      const items = listSavedScenarios(validateScenario);
+      setScenario(saved);
+      setSavedScenarios(items);
+      setSelectedSaved(saved.label);
+      setScenarioName("");
+      setScenarioMessage("Cenário salvo somente neste navegador.");
+    });
+  }
+
+  function openSavedScenario() {
+    runScenarioAction(() => {
+      const saved = loadSavedScenario(selectedSaved, validateScenario);
+      setScenario(saved);
+      setScenarioMessage(`Cenário “${saved.label}” aberto.`);
+    });
+  }
+
+  function deleteSavedScenario() {
+    runScenarioAction(() => {
+      const items = removeSavedScenario(selectedSaved, validateScenario);
+      setSavedScenarios(items);
+      setSelectedSaved("");
+      setScenarioMessage("Cenário excluído. A configuração aberta foi mantida.");
+    });
+  }
+
+  async function copyShareLink() {
+    runScenarioAction(() => {
+      const url = createScenarioShareUrl(scenario, validateScenario, window.location.href);
+      void navigator.clipboard.writeText(url).then(
+        () => setScenarioMessage("Link copiado. Ele contém somente os parâmetros técnicos do cenário."),
+        () => setScenarioMessage("Não foi possível copiar. Verifique a permissão da área de transferência."),
+      );
+    });
+  }
 
   function updateNumber(field: "contextK" | "responseTokens" | "concurrency", value: string) {
     const parsed = Number(value);
@@ -37,6 +108,21 @@ export default function Recommendations() {
         <label>Prioridade<select aria-label="Prioridade do cenário" value={scenario.priority} onChange={(event) => setScenario((current) => ({ ...current, priority: event.target.value as RecommendationScenario["priority"] }))}><option value="quality">Qualidade</option><option value="speed">Velocidade</option><option value="efficiency">Eficiência</option><option value="privacy">Privacidade</option><option value="ease">Facilidade</option><option value="cost">Menor custo</option></select></label>
       </div>
       <ul className="scenario-explanations">{explanations.map((text) => <li key={text}>{text}</li>)}</ul>
+      <details className="scenario-saved" open={scenarioToolsOpen} onToggle={(event) => setScenarioToolsOpen(event.currentTarget.open)}>
+        <summary>Meus cenários e compartilhamento</summary>
+        <p>Guarde até 10 configurações neste navegador. O link compartilhável exclui nome, hardware e perfil.</p>
+        <div className="scenario-save-row">
+          <label>Nome do cenário<input aria-label="Nome do cenário" maxLength={60} value={scenarioName} onChange={(event) => setScenarioName(event.target.value)}/></label>
+          <button type="button" onClick={saveCurrentScenario}>Salvar cenário atual</button>
+        </div>
+        <div className="scenario-save-row">
+          <label>Cenários salvos<select aria-label="Cenários salvos" value={selectedSaved} onChange={(event) => setSelectedSaved(event.target.value)}><option value="">Selecione</option>{savedScenarios.map((item) => <option key={item.name} value={item.name}>{item.name}</option>)}</select></label>
+          <button type="button" disabled={!selectedSaved} onClick={openSavedScenario}>Abrir</button>
+          <button type="button" disabled={!selectedSaved} onClick={deleteSavedScenario}>Excluir</button>
+          <button type="button" onClick={copyShareLink}>Copiar link técnico</button>
+        </div>
+        <p className="scenario-storage-message" role="status">{scenarioMessage}</p>
+      </details>
     </section>
     <p className="scenario-result-count" role="status">{list.length} alternativas para {scenario.label.toLocaleLowerCase("pt-BR")} · objetivo {scenario.objective.toLocaleLowerCase("pt-BR")}</p>
     <div className="recommendation-list">{list.slice(0, 6).map((item, index) => <article key={`${item.mode}-${item.name}`} className="recommendation-card panel">

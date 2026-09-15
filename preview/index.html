@@ -124,6 +124,21 @@
             <label>Prioridade<select id="scenarioPriority" aria-label="Prioridade do cenário"><option value="quality">Qualidade</option><option value="speed">Velocidade</option><option value="efficiency">Eficiência</option><option value="privacy">Privacidade</option><option value="ease">Facilidade</option><option value="cost">Menor custo</option></select></label>
           </div>
           <ul class="scenario-explanations" id="scenarioExplanations"></ul>
+          <details class="scenario-saved" id="scenarioLibrary">
+            <summary>Meus cenários e compartilhamento</summary>
+            <p>Guarde até 10 configurações neste navegador. O link compartilhável exclui nome, hardware e perfil.</p>
+            <div class="scenario-save-row">
+              <label>Nome do cenário<input id="scenarioName" aria-label="Nome do cenário" maxlength="60"></label>
+              <button type="button" id="saveScenario">Salvar cenário atual</button>
+            </div>
+            <div class="scenario-save-row">
+              <label>Cenários salvos<select id="savedScenarioChoice" aria-label="Cenários salvos"><option value="">Selecione</option></select></label>
+              <button type="button" id="openSavedScenario" disabled>Abrir</button>
+              <button type="button" id="deleteSavedScenario" disabled>Excluir</button>
+              <button type="button" id="shareScenario">Copiar link técnico</button>
+            </div>
+            <p class="scenario-storage-message" id="scenarioStorageMessage" role="status"></p>
+          </details>
         </section>
         <p class="scenario-result-count" id="scenarioResultCount" role="status"></p>
         <div id="recommendations" class="recommendation-list"></div>

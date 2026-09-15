@@ -1,4 +1,4 @@
-import type { Objective, Priority } from "../onboarding/types";
+import { objectives, type Objective, type Priority } from "../onboarding/types";
 
 export type ScenarioLatency = "responsive" | "balanced" | "quality";
 export type RecommendationScenario = {
@@ -22,13 +22,24 @@ export const scenarioPresets: RecommendationScenario[] = [
   { version: 1, id: "batch", label: "Processamento em lote", objective: "Produtividade", contextK: 8, responseTokens: 512, concurrency: 8, latency: "balanced", priority: "efficiency" },
 ];
 
-export function validateScenario(value: RecommendationScenario): RecommendationScenario {
+const priorities: Priority[] = ["quality", "speed", "efficiency", "privacy", "ease", "cost"];
+const latencies: ScenarioLatency[] = ["responsive", "balanced", "quality"];
+const customIdPattern = /^custom-[a-z0-9-]{1,72}$/;
+
+export function validateScenario(input: unknown): RecommendationScenario {
+  if (!input || typeof input !== "object" || Array.isArray(input)) throw new Error("O cenário é inválido.");
+  const value = input as Partial<RecommendationScenario>;
   if (value.version !== 1) throw new Error("O cenário usa uma versão incompatível.");
-  if (!scenarioPresets.some((preset) => preset.id === value.id)) throw new Error("Selecione um cenário disponível.");
-  if (!Number.isInteger(value.contextK) || value.contextK < 1 || value.contextK > 256) throw new Error("O contexto deve ficar entre 1K e 256K.");
-  if (!Number.isInteger(value.responseTokens) || value.responseTokens < 64 || value.responseTokens > 32768) throw new Error("A resposta deve ter entre 64 e 32768 tokens.");
-  if (!Number.isInteger(value.concurrency) || value.concurrency < 1 || value.concurrency > 64) throw new Error("A concorrência deve ficar entre 1 e 64.");
-  return { ...value };
+  const presetId = scenarioPresets.some((preset) => preset.id === value.id);
+  if (typeof value.id !== "string" || (!presetId && !customIdPattern.test(value.id))) throw new Error("O identificador do cenário é inválido.");
+  if (typeof value.label !== "string" || value.label.trim().length < 1 || value.label.trim().length > 60) throw new Error("O nome do cenário deve ter entre 1 e 60 caracteres.");
+  if (!objectives.includes(value.objective as Objective)) throw new Error("O objetivo do cenário é inválido.");
+  if (typeof value.contextK !== "number" || !Number.isInteger(value.contextK) || value.contextK < 1 || value.contextK > 256) throw new Error("O contexto deve ficar entre 1K e 256K.");
+  if (typeof value.responseTokens !== "number" || !Number.isInteger(value.responseTokens) || value.responseTokens < 64 || value.responseTokens > 32768) throw new Error("A resposta deve ter entre 64 e 32768 tokens.");
+  if (typeof value.concurrency !== "number" || !Number.isInteger(value.concurrency) || value.concurrency < 1 || value.concurrency > 64) throw new Error("A concorrência deve ficar entre 1 e 64.");
+  if (!latencies.includes(value.latency as ScenarioLatency)) throw new Error("A preferência de latência é inválida.");
+  if (!priorities.includes(value.priority as Priority)) throw new Error("A prioridade do cenário é inválida.");
+  return { ...value, label: value.label.trim() } as RecommendationScenario;
 }
 
 export function scenarioExplanations(scenario: RecommendationScenario) {

@@ -49,6 +49,9 @@
 - Parser nativo de GPU ganha fixtures Windows/macOS e deixa de criar GPU fictícia para saída vazia; truncamentos acima de oito dispositivos agora geram aviso.
 - Detecção Linux passa a aceitar uma raiz sysfs isolada para testes e o encerramento por timeout de comandos nativos é exercitado com processo real.
 - Header Next/preview recebe marca central precisa, ações compactas, acabamento visual responsivo e correção do link de salto que deslocava a página.
+- Recomendações passam a salvar até 10 cenários personalizados localmente e gerar links técnicos sem nome, hardware ou perfil.
+- Dependabot deixa de propor ESLint/TypeScript majors incompatíveis com a cadeia atual do Next; versões suportadas foram restauradas no lockfile.
+- Dependência direta zod sem uso removida; pngjs passa a ser dependência direta do teste de QR e decisões de persistência/preview ganham ADRs.
 - CI fixa Actions por SHA, executa OSV nos lockfiles e gera checksums junto ao SBOM de release; exceções temporárias possuem vencimento verificável.
 
 ## Em desenvolvimento

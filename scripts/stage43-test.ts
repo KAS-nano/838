@@ -24,8 +24,8 @@ check("concurrency favors API capacity", average(batchRanking, "api") > average(
 check("privacy shifts score from API to local", average(privacyRanking, "local") >= average(qualityRanking, "local") && average(privacyRanking, "api") < average(qualityRanking, "api") && average(privacyRanking, "local") - average(privacyRanking, "api") > average(qualityRanking, "local") - average(qualityRanking, "api"));
 check("long responses explain local resource cost", longRanking.some((item) => item.mode === "local" && item.scenarioReasons.some((reason) => reason.includes("Respostas longas"))));
 check("scores remain sorted and bounded", [shortRanking, batchRanking, privacyRanking].every((ranking) => ranking.every((item, index) => item.score >= 0 && item.score <= 100 && (index === 0 || ranking[index - 1].score >= item.score))));
-for (const scenario of [{ ...short, version: 2 }, { ...short, contextK: 0 }, { ...short, responseTokens: 63 }, { ...short, concurrency: 65 }, { ...short, id: "unknown" }]) {
+for (const scenario of [{ ...short, version: 2 }, { ...short, contextK: 0 }, { ...short, responseTokens: 63 }, { ...short, concurrency: 65 }, { ...short, id: "unknown" }, { ...short, label: "" }, { ...short, priority: "unknown" }]) {
   try { validateScenario(scenario as RecommendationScenario); failures.push("invalid scenario accepted"); } catch { /* expected */ }
 }
-check("invalid ranges and preset IDs rejected", !failures.includes("invalid scenario accepted"));
+check("invalid ranges and scenario fields rejected", !failures.includes("invalid scenario accepted"));
 if (failures.length) throw new Error(`stage43 failed: ${failures.join(", ")}`);

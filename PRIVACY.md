@@ -6,7 +6,7 @@ O 838 foi estruturado para funcionar inicialmente com um perfil local no navegad
 O onboarding pode ser persistido em localStorage. O usuário pode exportar/importar esse perfil em JSON.
 
 ## Favoritos e comparação salva
-Favoritos e a comparação salva ficam no localStorage do navegador, separados por origem (endereço do site). Não são sincronizados com uma conta ou enviados ao servidor por essas funções.
+Favoritos, comparações e cenários personalizados ficam no localStorage do navegador, separados por origem (endereço do site). Não são sincronizados com uma conta ou enviados ao servidor por essas funções.
 
 A comparação salva contém apenas os modelos, as quantizações e o contexto. Não inclui o perfil de hardware nem resultados de benchmark. Ao recuperar, as estimativas são recalculadas com o hardware atual. Um novo salvamento substitui a cópia anterior; “Apagar cópia salva” remove somente essa cópia. Limpar os dados do site no navegador também remove os dados locais.
 
@@ -18,7 +18,9 @@ As comparações nomeadas guardam também o nome escolhido por você, com limite
 Só começa após ação explícita. O benchmark Ollama mede dados técnicos de inferência.
 
 ## Cenários de recomendação
-Os controles de cenário recalculam o ranking no navegador. Nesta versão, o cenário personalizado não é salvo, sincronizado ou enviado ao servidor. O perfil local de hardware continua sendo usado para estimar compatibilidade.
+Os controles de cenário recalculam o ranking no navegador. O usuário pode salvar até 10 cenários localmente e excluí-los individualmente. A sincronização com conta permanece desativada.
+
+O link de cenário só é criado quando o usuário escolhe compartilhá-lo. Ele contém objetivo, contexto, tamanho de resposta, concorrência, latência e prioridade. O nome digitado, o identificador local, o hardware e o perfil não são incluídos. Quem receber o link verá esses parâmetros técnicos na própria URL.
 
 ## Comunidade
 Envio comunitário é desativado por padrão e exige consentimento explícito. O payload sanitizado não contém hostname, nome de usuário, e-mail, arquivos ou prompt pessoal.

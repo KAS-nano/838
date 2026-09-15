@@ -5,7 +5,7 @@ Data: 2026-09-06. Este documento substitui o relatório de execução de 2026-09
 ## Ambiente
 
 - Linux, Node 22.23.2 portátil, npm 10.9.8, Python 3.14.7.
-- Next.js 16.3.3 / React 19 / Prisma 7.10.0.
+- Next.js 16.3.5 / React 19 / Prisma 7.10.0.
 - Playwright 1.63.0 com Brave/Chromium instalado em `/opt/brave-bin/brave`.
 - Node/npm estavam ausentes do PATH; runtime obtido com checksum validado. Nesta sessão: `export PATH=/tmp/838-toolchain/node-v22.23.2-linux-x64/bin:$PATH`.
 
@@ -466,3 +466,23 @@ O build foi validado com Webpack; o comando padrão de publicação continua usa
 - A primeira execução de navegador encontrou apenas a pluralização “execuçãoões”; o texto foi corrigido e a suíte repetida integralmente.
 - Preview gerado de 20 módulos canônicos; preview:check, ESLint, typecheck, sintaxe JS e `git diff --check` — PASS.
 - Gitignore revisado: artefatos da etapa e do navegador já cobertos; nenhuma regra adicionada. Sem validação remota da Vercel.
+
+## 2026-09-15 — Cenários salvos e compartilhamento técnico
+
+- Armazenamento unitário: criação, recuperação, duplicidade, exclusão, corrupção e preservação dos dados — PASS.
+- Link: round-trip dos campos técnicos, remoção de nome/ID/hardware/query anterior e rejeição de campos extras — PASS.
+- Build Next/Turbopack com TypeScript e 22 rotas/páginas — PASS.
+- Playwright: 6/6 PASS em Next e preview, incluindo persistência após reload, cópia e abertura do link, 320 px e axe.
+- Preview gerado dos módulos canônicos, typecheck, lint, stage43 e `git diff --check` — PASS.
+- `.gitignore`: saídas de Next/Playwright/etapas já cobertas; módulos, declarações e testes novos confirmados como versionáveis. Nenhuma regra adicionada.
+- Dependências: ESLint 10 e TypeScript 7, integrados automaticamente no remoto, tinham peers incompatíveis; restaurados para ESLint 9.39.5 e TypeScript 5.9.3. `npm ls eslint typescript next --depth=1` passou sem pacote inválido.
+- Regressão comum após `npm ci`: `npm run check`, todas as etapas, build Next 16.3.5, 80 testes Playwright e `prisma validate` — PASS.
+- O ambiente local usa Node 26 e emite `EBADENGINE`; projeto e Vercel permanecem fixados em Node 22.x. Os quatro alertas transitivos conhecidos do Prisma continuam sob a exceção documentada, sem `npm audit fix --force`.
+
+## 2026-09-15 — Dependências sem uso e ADRs
+
+- `rg` e depcheck identificaram `zod` como dependência direta sem uso; removida do manifesto e lockfile. A cópia transitiva exigida pelo Better Auth permanece.
+- O teste do Pix importa `pngjs` diretamente; o pacote 5.0.0 agora é declarado em devDependencies em vez de depender da árvore transitiva de `qrcode`.
+- ADRs 0001 e 0002 registram armazenamento local versionado e a estratégia de paridade Next/preview.
+- Após a alteração: `npm ci`, `npm run check`, todas as etapas e build Next 16.3.5 — PASS; `npm ls` confirma `pngjs` direto/deduplicado e `zod` apenas transitivo do Better Auth.
+- `.gitignore` revisado novamente: ADRs e módulos novos permanecem versionáveis; `.next`, resultados Playwright e diretórios de etapas continuam ignorados. Nenhuma regra nova necessária.

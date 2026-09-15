@@ -59,4 +59,6 @@ Tauri/Rust, superfície mínima de permissões, leitura de hardware e nenhum env
 
 `src/data` e `src/features` permanecem canônicos. `scripts/export-preview-catalog.mjs` gera `preview/engine.mjs` a partir dos módulos puros existentes; o build sempre regenera esse arquivo. Validação, defaults, perfil demo, catálogo, estimadores e recomendações são compartilhados. A chave de perfil é `838.hardwareProfile`; o preview migra a chave histórica `838.preview.profile`.
 
+As decisões sobre [armazenamento local versionado](docs/adr/0001-armazenamento-local-versionado.md) e [paridade entre Next e preview](docs/adr/0002-paridade-next-preview.md) registram os contratos de persistência, privacidade e manutenção.
+
 O frontend trata armazenamento indisponível ou perfil malformado e identifica o fallback demo. Onboarding é a única entrada/edição de hardware; dashboard e perfil apontam para esse fluxo.

@@ -56,8 +56,7 @@
     "pg": "^8.16.0",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
-    "tailwind-merge": "^3.3.1",
-    "zod": "^4.6.2"
+    "tailwind-merge": "^3.3.1"
   },
   "devDependencies": {
     "@axe-core/playwright": "4.13.0",
@@ -67,13 +66,14 @@
     "@types/pg": "^8.15.0",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
-    "eslint": "^10.10.0",
+    "eslint": "^9.39.5",
     "eslint-config-next": "16.3.5",
     "jsqr": "^1.4.0",
+    "pngjs": "^5.0.0",
     "prisma": "7.10.0",
     "qrcode": "^1.5.4",
     "tailwindcss": "^4.3.0",
-    "typescript": "^7.0.2"
+    "typescript": "^5.9.3"
   },
   "allowScripts": {
     "@prisma/engines@7.10.0": true,

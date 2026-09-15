@@ -10,6 +10,15 @@
 .scenario-explanations { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 18px 0 0; padding: 16px 0 0; border-top: 1px solid var(--border); list-style: none; }
 .scenario-explanations li { color: var(--muted); font-size: 11px; line-height: 1.7; }
 .scenario-explanations li::before { content: "·"; margin-right: 7px; color: var(--accent); }
+.scenario-saved { margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--border); }
+.scenario-saved summary { width: fit-content; cursor: pointer; color: var(--foreground); font-size: 13px; font-weight: 600; }
+.scenario-saved > p { margin-top: 10px; color: var(--muted); font-size: 11px; line-height: 1.6; }
+.scenario-save-row { display: flex; align-items: end; flex-wrap: wrap; gap: 9px; margin-top: 14px; }
+.scenario-save-row label { flex: 1 1 210px; color: var(--muted); font-size: 11px; }
+.scenario-save-row :is(input, select) { display: block; width: 100%; min-height: 42px; margin-top: 6px; padding: 9px 11px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface-raised); color: var(--foreground); }
+.scenario-save-row button { min-height: 42px; padding: 9px 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface-raised); color: var(--foreground); cursor: pointer; }
+.scenario-save-row button:disabled { cursor: not-allowed; opacity: .45; }
+.scenario-storage-message { min-height: 18px; }
 .scenario-result-count, .scenario-disclaimer { margin-top: 18px; color: var(--muted); font-size: 12px; line-height: 1.7; }
 .recommendation-list { display: grid; gap: 12px; margin-top: 16px; }
 .recommendation-card { display: grid; grid-template-columns: 52px minmax(0, 1fr) 110px; gap: 16px; padding: 20px; }
@@ -22,6 +31,6 @@
 .recommendation-card .recommendation-cost { font-size: 11px; }
 .recommendation-score strong { display: block; font-size: 20px; }
 .recommendation-score a { display: inline-block; margin-top: 12px; color: var(--accent); font-size: 11px; }
-.scenario-presets button:focus-visible, .scenario-fields :is(input, select):focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.scenario-presets button:focus-visible, .scenario-fields :is(input, select):focus-visible, .scenario-saved :is(summary, input, select, button):focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 @media (max-width: 800px) { .scenario-fields { grid-template-columns: repeat(2, minmax(0, 1fr)); } .scenario-explanations { grid-template-columns: 1fr; } }
 @media (max-width: 520px) { .scenario-panel { padding: 17px; } .scenario-fields { grid-template-columns: 1fr; } .recommendation-card { grid-template-columns: 38px minmax(0, 1fr); } .recommendation-score { grid-column: 2; } }

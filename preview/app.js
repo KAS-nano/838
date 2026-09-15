@@ -1,10 +1,11 @@
 import { createFavoritesStore } from './model-favorites.mjs';
 import { initializeComparison } from './comparison.mjs';
-import { seedModels as models, seedBenchmarks, estimateMemory, estimatePerformance, calculateCompatibility, recommendHybrid, seedApiModels, scenarioPresets, scenarioExplanations, hardwareStrength, primaryBottleneck, suggestUpgrades, recommendSystems, recipeFor } from './engine.mjs';
+import { seedModels as models, seedBenchmarks, estimateMemory, estimatePerformance, calculateCompatibility, recommendHybrid, seedApiModels, scenarioPresets, scenarioExplanations, validateScenario, hardwareStrength, primaryBottleneck, suggestUpgrades, recommendSystems, recipeFor } from './engine.mjs';
 import { demoProfile, readProfile, escapeHtml as html, profileSummary } from './shared.mjs';
 import { getModelExternalLinks, modelExternalLinks } from './engine.mjs';
 import { renderModelLinks } from './model-links.mjs';
 import { initProjectSupport } from './support.mjs';
+import { createScenarioShareUrl, listSavedScenarios, loadSavedScenario, readScenarioShareUrl, removeSavedScenario, saveScenario } from './scenario-storage.mjs';
 
 initProjectSupport();
 
@@ -19,6 +20,8 @@ let selected = models.find(model => model.id === 'qwen3-8b') || models[0];
 let quant = 'Q4_K_M';
 let contextK = 8;
 let recommendationScenario = { ...scenarioPresets[0] };
+let savedScenarios = [];
+let selectedSavedScenario = '';
 try {
   const saved = JSON.parse(localStorage.getItem('838.preview.selection') || 'null');
   if (saved) {
@@ -103,6 +106,26 @@ function renderRecommendations() {
   $('#scenarioResultCount').textContent = `${recommendations.length} alternativas para ${recommendationScenario.label.toLocaleLowerCase('pt-BR')} · objetivo ${recommendationScenario.objective.toLocaleLowerCase('pt-BR')}`;
   $('#recommendations').innerHTML = recommendations.slice(0, 6).map((item, index) => `<article class="recommendation-card panel"><strong class="recommendation-rank">#${index + 1}</strong><div><div class="recommendation-title"><span>${item.mode === 'local' ? 'IA local' : 'API'}</span><h2>${html(item.name)}</h2></div><p>${html(item.reason)}</p>${item.scenarioReasons.map(reason => `<p class="scenario-reason">${html(reason)}</p>`).join('')}<p class="recommendation-cost">${html(item.costNote)}</p></div><div class="recommendation-score"><strong>${item.score}/100</strong><a href="${item.mode === 'local' ? '#modelos' : '#ferramentas'}">${item.mode === 'local' ? 'Configurar →' : 'Ver ferramentas →'}</a></div></article>`).join('');
 }
+function setScenarioMessage(message) { $('#scenarioStorageMessage').textContent = message; if (message) $('#scenarioLibrary').open = true; }
+function renderScenarioLibrary() {
+  const select = $('#savedScenarioChoice');
+  select.innerHTML = `<option value="">Selecione</option>${savedScenarios.map(item => `<option value="${html(item.name)}">${html(item.name)}</option>`).join('')}`;
+  select.value = savedScenarios.some(item => item.name === selectedSavedScenario) ? selectedSavedScenario : '';
+  selectedSavedScenario = select.value;
+  $('#openSavedScenario').disabled = !selectedSavedScenario;
+  $('#deleteSavedScenario').disabled = !selectedSavedScenario;
+}
+function loadScenarioState() {
+  try {
+    savedScenarios = listSavedScenarios(validateScenario);
+    const shared = readScenarioShareUrl(location.href, validateScenario);
+    if (shared) {
+      recommendationScenario = shared;
+      setScenarioMessage('Cenário carregado do link. Ele ainda não foi salvo neste navegador.');
+    }
+  } catch (error) { setScenarioMessage(error.message || 'Não foi possível carregar os cenários.'); }
+  renderScenarioLibrary();
+}
 const renderCompareTable = initializeComparison(profile, 8, !savedProfile);
 const tools = [['Ollama', 'Runtime', 'Gerenciador local com API para modelos.'], ['LM Studio', 'Runtime', 'Interface desktop e servidor local.'], ['llama.cpp', 'Runtime', 'Inferência local e servidor para GGUF.'], ['VS Code', 'IDE', 'Editor extensível para programação.'], ['Zed', 'IDE', 'Editor com integração de ferramentas de IA.'], ['OBS Studio', 'Vídeo', 'Captura e gravação.'], ['Kdenlive', 'Vídeo', 'Editor de vídeo livre.'], ['Krita', 'Imagem', 'Criação e edição de imagens.'], ['Audacity', 'Áudio', 'Edição e gravação de áudio.'], ['OpenRouter', 'API', 'Acesso a modelos hospedados.']];
 function renderTools() { $('#toolGrid').innerHTML = tools.map(([name, category, description]) => `<article class="tool-card"><div class="eyebrow">${category}</div><h3>${name}</h3><p class="muted">${description}</p>${category === 'Runtime' && name !== 'llama.cpp' ? '<a class="ghost" href="#instalar">Ver instalação</a>' : ''}</article>`).join(''); }
@@ -178,6 +201,32 @@ for (const [selector, field, minimum, maximum] of [['#scenarioContext', 'context
 }
 $('#scenarioLatency').addEventListener('change', event => { recommendationScenario = { ...recommendationScenario, latency: event.target.value }; renderRecommendations(); });
 $('#scenarioPriority').addEventListener('change', event => { recommendationScenario = { ...recommendationScenario, priority: event.target.value }; renderRecommendations(); });
+$('#savedScenarioChoice').addEventListener('change', event => { selectedSavedScenario = event.target.value; renderScenarioLibrary(); });
+$('#saveScenario').addEventListener('click', () => {
+  try {
+    recommendationScenario = saveScenario($('#scenarioName').value, recommendationScenario, validateScenario);
+    savedScenarios = listSavedScenarios(validateScenario);
+    selectedSavedScenario = recommendationScenario.label;
+    $('#scenarioName').value = '';
+    renderScenarioLibrary(); renderRecommendations();
+    setScenarioMessage('Cenário salvo somente neste navegador.');
+  } catch (error) { setScenarioMessage(error.message || 'Não foi possível salvar o cenário.'); }
+});
+$('#openSavedScenario').addEventListener('click', () => {
+  try { recommendationScenario = loadSavedScenario(selectedSavedScenario, validateScenario); renderRecommendations(); setScenarioMessage(`Cenário “${recommendationScenario.label}” aberto.`); }
+  catch (error) { setScenarioMessage(error.message || 'Não foi possível abrir o cenário.'); }
+});
+$('#deleteSavedScenario').addEventListener('click', () => {
+  try { savedScenarios = removeSavedScenario(selectedSavedScenario, validateScenario); selectedSavedScenario = ''; renderScenarioLibrary(); setScenarioMessage('Cenário excluído. A configuração aberta foi mantida.'); }
+  catch (error) { setScenarioMessage(error.message || 'Não foi possível excluir o cenário.'); }
+});
+$('#shareScenario').addEventListener('click', async () => {
+  try {
+    const url = createScenarioShareUrl(recommendationScenario, validateScenario, location.href);
+    await navigator.clipboard.writeText(url);
+    setScenarioMessage('Link copiado. Ele contém somente os parâmetros técnicos do cenário.');
+  } catch { setScenarioMessage('Não foi possível copiar. Verifique a permissão da área de transferência.'); }
+});
 $('#installTool').addEventListener('change', renderInstall);
 $('#installOs').addEventListener('change', renderInstall);
 $('#mobileMenu').addEventListener('click', () => { const open = $('#sidebar').classList.toggle('open'); $('#menuBackdrop').classList.toggle('visible', open); $('#mobileMenu').setAttribute('aria-expanded', String(open)); $('#mobileMenu').setAttribute('aria-label', open ? 'Fechar menu' : 'Abrir menu'); $('#main').inert = open; document.body.style.overflow = open ? 'hidden' : ''; if (open) $('#nav a').focus(); });
@@ -196,4 +245,4 @@ $('#fakeBenchmark').addEventListener('click', () => { $('#benchmarkOutput').text
 window.addEventListener('hashchange', navigate);
 $('#profileSummary').innerHTML = profileSummary(profile);
 $('#profileMessage').textContent = savedProfile ? 'Perfil salvo neste navegador. Edite hardware e objetivos no onboarding.' : 'Perfil de demonstração. Configure sua máquina para salvar um perfil local.';
-fillControls(); renderModels(); renderTools(); updateDashboard(); renderStrength(); renderUpgrades(); renderSystems(); renderInstall(); navigate();
+loadScenarioState(); fillControls(); renderModels(); renderTools(); updateDashboard(); renderStrength(); renderUpgrades(); renderSystems(); renderInstall(); navigate();

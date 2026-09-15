@@ -30,7 +30,7 @@ O perfil pode ficar salvo no navegador. A análise inicial funciona sem conta e 
 | Dashboard | Analisar modelo × computador, ajustando quantização e contexto. |
 | Modelos | Buscar modelos, consultar arquivos por precisão e guardar favoritos locais. |
 | Comparador | Comparar alternativas com filtros, ordenação e métricas; guardar até 10 comparações nomeadas no navegador e exportar/importar configurações em JSON. |
-| Recomendações e ferramentas | Comparar opções locais e APIs por cenário, ajustando contexto, resposta, concorrência, latência e prioridade. |
+| Recomendações e ferramentas | Comparar opções locais e APIs por cenário, guardar até 10 configurações no navegador e compartilhar somente os parâmetros técnicos. |
 | Hardware e upgrades | Entender limitações da máquina e simular alterações de capacidade. |
 | Instalação | Consultar receitas por sistema, GPU e runtime, com comandos visíveis. |
 | Perfil | Editar, importar e exportar sua configuração local. |
@@ -117,6 +117,7 @@ Para validar somente acessibilidade, após o build, use `npm run test:a11y`. Par
 | Configurar banco, autenticação e integrações | [Configuração avançada](docs/CONFIGURACAO.md) |
 | Entender a proposta e o percurso do usuário | [Direção do produto](docs/PRODUTO.md) |
 | Entender a arquitetura | [Arquitetura](ARCHITECTURE.md) |
+| Consultar decisões arquiteturais | [ADRs](docs/adr/README.md) |
 | Consultar objetivos e tarefas concluídas | [Planejamento](planning/00-INDICE-E-PRIORIDADES.txt) e [progresso](planning/PROGRESSO.txt) |
 | Conferir testes e pendências | [Validação](TEST_REPORT.md) e [problemas conhecidos](KNOWN_ISSUES.md) |
 | Entender o uso de dados | [Privacidade](PRIVACY.md) |

@@ -8,5 +8,10 @@ for (const file of required) {
   else console.log(`PASS ${file}`);
 }
 const pkg = JSON.parse(fs.readFileSync("package.json", "utf8"));
-if (pkg.dependencies.next !== "16.3.3") { console.error("FAIL Next.js version"); failed = true; } else console.log("PASS Next.js 16.3.3");
+const nextVersion = pkg.dependencies?.next;
+const configVersion = pkg.devDependencies?.["eslint-config-next"];
+if (typeof nextVersion !== "string" || !/^\d+\.\d+\.\d+$/.test(nextVersion) || nextVersion !== configVersion) {
+  console.error("FAIL Next.js and eslint-config-next must use the same exact version");
+  failed = true;
+} else console.log(`PASS Next.js ${nextVersion} aligned with eslint-config-next`);
 process.exit(failed ? 1 : 0);

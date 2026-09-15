@@ -1,6 +1,6 @@
 CONTROLE DE PROGRESSO DAS MELHORIAS DO 838
-Atualizado em: 2026-09-14
-Progresso global: 61%
+Atualizado em: 2026-09-15
+Progresso global: 63%
 
 LEGENDA
 [x] concluído e validado
@@ -160,7 +160,9 @@ P2.4 — FAVORITOS, CENÁRIOS E COMPARAÇÕES: EM ANDAMENTO [~]
 [x] Exportação/importação JSON para levar a configuração entre navegadores, sem hardware ou resultados.
 [x] Até 10 comparações nomeadas locais, com recuperação e exclusão individual.
 [x] Cenários versionados com seis presets e parâmetros próprios influenciam e explicam o ranking.
-[ ] Persistência de cenários personalizados, sincronização opcional e links públicos.
+[x] Até 10 cenários personalizados persistem localmente com validação, exclusão e recuperação segura.
+[x] Link público contém somente parâmetros técnicos e é carregado por escolha explícita, sem nome, hardware ou perfil.
+[ ] Sincronização opcional após autenticação, preservando a cópia local em conflitos e falhas.
 P2.5 — INSTALAÇÃO GUIADA: 0% [ ]
 P3.1 — RENDERIZAÇÃO NEXT/PREVIEW E PUBLICAÇÃO: 97% [~]
 [x] Build Next de produção e preview gerado validados.
@@ -181,11 +183,14 @@ P3.2 — PWA E CACHE OFFLINE: 45% [~]
 [x] Stage42 cobre manifesto, registro e exclusões de cache; typecheck e build passam.
 [ ] Testar instalação, atualização e recuperação offline em dispositivo físico e navegadores alvo.
 [ ] Definir estratégia de invalidação por release e medir uso offline após publicação.
-P3.3 — MANUTENÇÃO E LIMPEZA LOCAL: 35% [~]
+P3.3 — MANUTENÇÃO E LIMPEZA LOCAL: 70% [~]
 [x] Comandos clean:local e clean:local:dry removem somente artefatos conhecidos.
 [x] Teste isolado preserva .env.local, node_modules e fontes versionadas.
 [x] Saídas geradas de Tauri e Playwright não entram na análise do ESLint.
-[ ] Avaliar dependências sem uso, duplicação Next/preview e ADRs.
+[x] zod removido das dependências diretas após busca, depcheck e regressão confirmarem ausência de uso próprio; a cópia transitiva do Better Auth permanece.
+[x] pngjs, usado diretamente no teste independente do QR, declarado sem depender da árvore transitiva.
+[x] ADRs de armazenamento local e paridade Next/preview registrados e ligados à arquitetura.
+[ ] Continuar reduzindo duplicação de interface sem retirar o preview estático.
 
 ÚLTIMA VALIDAÇÃO
 Data: 2026-09-09
@@ -394,4 +399,26 @@ PASS typecheck, ESLint dos arquivos alterados, sintaxe do preview e git diff --c
 PASS build padrão Next/Turbopack: 22 páginas/rotas; 4 testes Playwright em Next e preview, incluindo 320 px e axe.
 [x] Revisão .gitignore: .test-stage43, test-results, playwright-report e .next cobertos; fontes, CSS e testes preservados. Nenhuma regra nova necessária.
 [ ] Persistência e compartilhamento seguro de cenários permanecem pendentes.
+
+RODADA 2026-09-15 — CENÁRIOS SALVOS E LINK TÉCNICO [x]
+[x] Biblioteca local de até 10 cenários personalizados, separada por origem e com schema versionado.
+[x] Nomes vazios, longos ou duplicados são recusados sem sobrescrever a lista existente.
+[x] Leitura valida cada campo; armazenamento corrompido é preservado para recuperação e não quebra a página.
+[x] Link compartilhável exclui nome, ID local, hardware e perfil; campos extras e versão incompatível são recusados.
+[x] Next e preview carregam o link, mostram confirmação e mantêm paridade de interface e comportamento.
+PASS preview:generate, typecheck, lint, teste unitário de storage, stage43 e build Next/Turbopack.
+PASS Playwright 6/6 em Next e preview: ranking, 320 px/axe, persistência, reload, link e reabertura.
+[x] ESLint 10 e TypeScript 7 incompatíveis com os peers do Next foram revertidos; majors bloqueados no Dependabot até suporte da cadeia.
+PASS regressão comum: npm ci; npm run check; build Next 16.3.5; Playwright 80/80; Prisma validate.
+[x] Revisão .gitignore: .next, test-results, playwright-report e .test-stage43 já cobertos; fontes e testes novos permanecem versionáveis. Nenhuma regra nova necessária.
+[ ] Sincronização por conta permanece pendente e continuará desativada até autenticação e direitos de dados estarem completos.
+
+RODADA 2026-09-15 — DEPENDÊNCIAS E ADRS [x]
+[x] Busca completa e depcheck confirmaram zod sem uso próprio; dependência direta removida do manifesto e lockfile, preservando a cópia transitiva exigida pelo Better Auth.
+[x] O import direto de pngjs no teste do QR deixou de depender acidentalmente da dependência transitiva de qrcode.
+[x] ADR 0001 registra schema local, limites, preservação de falhas e minimização do link de cenário.
+[x] ADR 0002 registra motor canônico, geração do preview, declarações e critério de paridade.
+[ ] A marcação das interfaces Next/preview ainda possui duplicação e será reduzida em entregas específicas.
+PASS npm ci; npm run check; build Next 16.3.5; npm ls zod/pngjs; git diff --check.
+[x] Revisão .gitignore: ADRs/fontes/testes versionáveis e artefatos locais cobertos; nenhuma regra nova necessária.
 O VS Code criou o commit 51adef1 durante a execução com a implementação principal; correções finais, testes e documentação ficaram fora dele. Nenhum push ou deploy executado por esta rodada.
