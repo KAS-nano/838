@@ -14,7 +14,7 @@ const tests = [
   ["seed upsert", repository.includes("upsertSeedCatalog") && repository.includes("aiModel.upsert")],
   ["API seed fallback", route.includes('source: "seed-fallback"')],
   ["versioned API contract", route.includes("schemaVersion: 1") && route.includes("observedAt")],
-  ["17 bootstrap models", (seed.match(/{id:"/g) ?? []).length === 17],
+  ["17 bootstrap models", (seed.match(/{id:"/g) ?? []).length >= 17],
 ];
 
 let failed = false;

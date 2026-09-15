@@ -67,7 +67,7 @@ export default function ModelsPage() {
           {links.note && <p className="model-source-note">{links.note}</p>}
           <p className="model-source-verified">Links conferidos em <time dateTime={links.variants[0]?.verifiedAt}>{links.variants[0]?.verifiedAt.split("-").reverse().join("/")}</time>. Acesso sujeito aos termos do publicador.</p>
         </section>}
-        <div className="model-card-footer"><span>Requisitos e desempenho estimados</span><Link href={`/dashboard?model=${model.id}`}>Analisar no meu PC →</Link></div>
+        <div className="model-card-footer"><span>Requisitos e desempenho estimados</span><span className="flex flex-wrap gap-3"><Link href={`/instalar?tool=ollama&model=${model.id}`}>Instalar com Ollama →</Link><Link href={`/dashboard?model=${model.id}`}>Analisar no meu PC →</Link></span></div>
       </article>;
     })}</div>
   </section></div></main>;

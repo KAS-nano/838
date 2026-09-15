@@ -10,4 +10,9 @@ export const tools:ToolEntry[]=[
  {slug:"krita",name:"Krita",category:"image",description:"Pintura e edição de imagem, útil com pipelines generativos.",systems:["Windows","Linux","macOS"],homepage:"https://krita.org"},
  {slug:"audacity",name:"Audacity",category:"audio",description:"Editor de áudio multiplataforma.",systems:["Windows","Linux","macOS"],homepage:"https://www.audacityteam.org"},
  {slug:"openrouter",name:"OpenRouter",category:"api",description:"Catálogo unificado de modelos hospedados e preços dinâmicos.",systems:["Web"],homepage:"https://openrouter.ai",integration:"openrouter"},
+ {slug:"comfyui",name:"ComfyUI",category:"image",description:"Interface modular para workflows de geração e edição de imagem e vídeo.",systems:["Windows","Linux","macOS"],homepage:"https://github.com/comfyanonymous/ComfyUI",integration:"github"},
+ {slug:"whisper-cpp",name:"whisper.cpp",category:"audio",description:"Transcrição de áudio local com baixo consumo e execução offline.",systems:["Windows","Linux","macOS"],homepage:"https://github.com/ggerganov/whisper.cpp",integration:"github"},
+ {slug:"continue",name:"Continue",category:"ide",description:"Assistente de programação para VS Code e JetBrains com modelos locais ou API.",systems:["Windows","Linux","macOS"],homepage:"https://www.continue.dev"},
+ {slug:"jan",name:"Jan",category:"runtime",description:"Aplicativo desktop para executar modelos locais e conectar provedores remotos.",systems:["Windows","Linux","macOS"],homepage:"https://jan.ai"},
+ {slug:"automatic1111",name:"Stable Diffusion WebUI",category:"image",description:"Interface conhecida para geração de imagens com modelos Stable Diffusion.",systems:["Windows","Linux"],homepage:"https://github.com/AUTOMATIC1111/stable-diffusion-webui",integration:"github"},
 ];

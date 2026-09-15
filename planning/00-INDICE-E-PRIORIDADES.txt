@@ -4,6 +4,9 @@ Versão do plano: 2026-09-11
 OBJETIVO
 Transformar a auditoria técnica em trabalho implementável, revisável e testável. Este diretório é um plano; marcar um item como concluído somente após aplicar as mudanças e registrar evidências dos testes.
 
+PROPOSTA DE EXPANSÃO
+O desenho de modelos, orquestração, funcionalidades, roadmap e riscos está em docs/PROPOSTA-EXPANSAO.md. Ele é uma proposta de evolução e não marca integrações externas como concluídas.
+
 COMO USAR
 0. Consultar e atualizar planning/PROGRESSO.txt; ele é a fonte de verdade do que já foi feito.
 1. Criar uma issue ou branch para uma etapa pequena.

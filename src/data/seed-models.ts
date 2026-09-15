@@ -24,6 +24,10 @@ export const seedModels:AiModel[]=[
  {id:"granite-8b-code",name:"Granite 8B Code",family:"Granite",paramsB:8,contextK:8,modalities:["text"],objectives:["Programação","Documentos","Assistente geral"],license:"Ver model card",source:"seed",description:"Opção IBM voltada a código. Configurações e requisitos demonstrativos.",variants:v(5.1),benchmarkClass:"small"},
  {id:"command-r-35b",name:"Command R 35B",family:"Command R",paramsB:35,contextK:128,modalities:["text"],objectives:["Documentos","Escrita","Produtividade","Assistente geral"],license:"Ver model card",source:"seed",description:"Modelo Cohere de maior porte para documentos e assistência. Requisitos estimados.",variants:v(21.5),benchmarkClass:"large"},
  {id:"nemotron-15b",name:"Apriel-Nemotron 15B Thinker",family:"Nemotron",paramsB:15,contextK:128,modalities:["text"],objectives:["Programação","Criação de ideias","Documentos","Assistente geral"],license:"Ver model card",source:"seed",description:"Modelo de raciocínio publicado pela ServiceNow AI, com contribuição de pesquisa reconhecida à NVIDIA. Requisitos estimados.",variants:v(9.8),benchmarkClass:"medium"},
+ {id:"llama-3.2-3b",name:"Llama 3.2 3B Instruct",family:"Llama",paramsB:3,contextK:128,modalities:["text","vision"],objectives:["Programação","Documentos","Produtividade","Assistente geral"],license:"Llama Community",source:"seed",description:"Modelo compacto da Meta para máquinas com pouca memória e respostas rápidas.",variants:v(2.1),benchmarkClass:"small"},
+ {id:"mistral-nemo-12b",name:"Mistral NeMo 12B",family:"Mistral",paramsB:12,contextK:128,modalities:["text"],objectives:["Programação","Escrita","Documentos","Assistente geral"],license:"Apache 2.0",source:"seed",description:"Modelo de contexto amplo para escrita, código e documentos em hardware intermediário.",variants:v(8),benchmarkClass:"medium"},
+ {id:"smollm2-1.7b",name:"SmolLM2 1.7B Instruct",family:"SmolLM2",paramsB:1.7,contextK:8,modalities:["text"],objectives:["Produtividade","Assistente geral","Criação de ideias"],license:"Apache 2.0",source:"seed",description:"Opção muito leve para experimentar inferência local em notebooks e mini PCs.",variants:v(1.1),benchmarkClass:"small"},
+ {id:"qwen2.5-vl-7b",name:"Qwen2.5-VL 7B Instruct",family:"Qwen2.5-VL",paramsB:7,contextK:32,modalities:["text","vision"],objectives:["Imagem","Documentos","Programação","Assistente geral"],license:"Apache 2.0",source:"seed",description:"Modelo multimodal para interpretar imagens, documentos e telas com requisitos estimados.",variants:v(4.8),benchmarkClass:"small"},
 ];
 const sourceUrls:Record<string,string>={
  "qwen3-coder-30b":"https://huggingface.co/Qwen/Qwen3-Coder-30B-A3B-Instruct",
@@ -41,6 +45,10 @@ const sourceUrls:Record<string,string>={
  "granite-8b-code":"https://huggingface.co/ibm-granite/granite-8b-code-instruct-4k",
  "command-r-35b":"https://huggingface.co/CohereLabs/c4ai-command-r-v01",
  "nemotron-15b":"https://huggingface.co/ServiceNow-AI/Apriel-Nemotron-15b-Thinker",
+ "llama-3.2-3b":"https://huggingface.co/meta-llama/Llama-3.2-3B-Instruct",
+ "mistral-nemo-12b":"https://huggingface.co/mistralai/Mistral-Nemo-Instruct-2407",
+ "smollm2-1.7b":"https://huggingface.co/HuggingFaceTB/SmolLM2-1.7B-Instruct",
+ "qwen2.5-vl-7b":"https://huggingface.co/Qwen/Qwen2.5-VL-7B-Instruct",
 };
 for (const model of seedModels) model.sourceUrl ??= sourceUrls[model.id];
 export const getModel=(id:string)=>seedModels.find(m=>m.id===id);

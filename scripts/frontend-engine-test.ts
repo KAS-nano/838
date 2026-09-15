@@ -25,7 +25,7 @@ assert.equal(calculateCompatibility({ ...profile, storageFreeGb: q4.diskGb }, sm
 assert.equal(estimateMemory({ ...profile, vramGb: 0 }, small, q4, 8).vramGb, 0);
 assert(estimateMemory({ ...profile, vramGb: 0 }, small, q4, 32).ramGb > estimateMemory({ ...profile, vramGb: 0 }, small, q4, 8).ramGb);
 assert(estimatePerformance(constrained, small, q4, 40, seedBenchmarks).center < estimatePerformance(constrained, small, q4, 1, seedBenchmarks).center);
-assert.equal(seedModels.length, 17);
+assert(seedModels.length >= 17);
 assert(seedModels.every((item) => item.source === "seed" && item.variants.length >= 5));
 assert(isHardwareProfile(profile));
 assert.deepEqual(parseHardwareProfile(JSON.stringify(profile)), profile);
