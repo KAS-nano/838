@@ -29,7 +29,7 @@ export default defineConfig({
       timeout: 60_000,
     },
     {
-      command: "python3 -m http.server 8080 --bind 127.0.0.1 -d preview",
+      command: `${process.platform === "win32" ? "python" : "python3"} scripts/serve-preview.py`,
       url: "http://127.0.0.1:8080/home.html",
       reuseExistingServer: !process.env.CI,
       timeout: 30_000,

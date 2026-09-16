@@ -36,7 +36,7 @@ type DatabaseModel = {
   }>;
 };
 
-const quantizations = new Set<Quantization>(["Q8_0", "Q6_K", "Q5_K_M", "Q4_K_M", "Q3_K_M"]);
+const quantizations = new Set<Quantization>(["BF16", "FP16", "Q8_0", "Q6_K", "Q5_K_M", "Q4_K_M", "Q3_K_M"]);
 const modalities = new Set<ModelModality>(["text", "vision", "audio", "video"]);
 const benchmarkClasses = new Set<AiModel["benchmarkClass"]>(["small", "medium", "large", "moe"]);
 

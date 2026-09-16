@@ -1,5 +1,6 @@
+import type { ModelModality } from "../features/catalog/types";
 export type ApiBenchmark={outputTokensPerSecond?:number;timeToFirstTokenMs?:number;latencyMs?:number;source:string;date:string;region?:string;confidence:"high"|"medium"|"low"};
-export type SeedApiModel={id:string;name:string;provider:string;inputUsdPerM:number;outputUsdPerM:number;contextK:number;strengths:string[];source:"demo-seed";availabilityType:"api"|"both";benchmark?:ApiBenchmark};
+export type SeedApiModel={id:string;name:string;provider:string;inputUsdPerM:number;outputUsdPerM:number;contextK:number;strengths:string[];modalities?:ModelModality[];source:"demo-seed";availabilityType:"api"|"both";benchmark?:ApiBenchmark};
 export const seedApiModels:SeedApiModel[]=[
  {id:"api-fast",name:"API econômica (exemplo)",provider:"Catálogo demonstrativo",inputUsdPerM:.2,outputUsdPerM:.8,contextK:128,strengths:["Programação","Escrita","Produtividade"],source:"demo-seed",availabilityType:"api"},
  {id:"api-quality",name:"API qualidade (exemplo)",provider:"Catálogo demonstrativo",inputUsdPerM:2,outputUsdPerM:8,contextK:256,strengths:["Programação","Documentos","Criação de ideias"],source:"demo-seed",availabilityType:"api"},

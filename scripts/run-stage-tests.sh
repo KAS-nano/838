@@ -10,3 +10,5 @@ for s in \
   echo "===== $s ====="
   case "$s" in *.sh) bash "$s";; *.py) python3 "$s";; *) node "$s";; esac
 done
+
+node --experimental-strip-types --loader ./scripts/ts-loader.mjs scripts/catalog-loader-test.mjs

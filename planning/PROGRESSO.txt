@@ -454,3 +454,20 @@ RODADA 2026-09-15 — DEPENDÊNCIAS E ADRS [x]
 PASS npm ci; npm run check; build Next 16.3.5; npm ls zod/pngjs; git diff --check.
 [x] Revisão .gitignore: ADRs/fontes/testes versionáveis e artefatos locais cobertos; nenhuma regra nova necessária.
 O VS Code criou o commit 51adef1 durante a execução com a implementação principal; correções finais, testes e documentação ficaram fora dele. Nenhum push ou deploy executado por esta rodada.
+
+
+RODADA 2026-09-16 — CORREÇÕES DA AUDITORIA
+[x] Motor filtra modalidade e contexto antes do ranking; transcrição não sugere modelos somente de texto.
+[x] Prioridades custo e velocidade têm pesos distintos, com regressão usando APIs controladas.
+[x] Telas modelos, dashboard, comparador e recomendações consultam o catálogo configurado no servidor.
+[x] API de recomendação consulta o mesmo carregador; fallback indisponível/vazio/sem variantes é identificado.
+[x] Catálogo persistente e snapshots aceitam BF16/FP16, alinhados ao contrato de variantes.
+[x] Preços demonstrativos estão explícitos; ausência de capacidade compatível tem estado vazio no Next e preview.
+[x] Rate limit tem limpeza de buckets expirados e teto de 10 mil entradas.
+[x] Preview HTTP usa MIME explícito para módulos, corrigindo execução no Windows.
+[x] KNOWN_ISSUES atualizado para distinguir banco local histórico, CSP aplicada e integrações ainda pendentes.
+[!] Dados externos verificados, autenticação hospedada e rate limit distribuído continuam dependendo de integrações. Nenhuma medição ou preço real foi inventado.
+PASS typecheck, lint, build Next/Turbopack, preview:check, higiene, versões e suíte completa de etapas.
+PASS Playwright final: 82/82 em Next e preview. Falhas iniciais do servidor Windows corrigidas (MIME e fila de conexões).
+PASS git diff --check; caches e resultados ignorados, fontes e testes preservados. Nenhuma regra nova de .gitignore.
+Evidências e limitações: reports/CORRECOES-AUDITORIA-2026-09-16.md. Validação em Node 24.21.0; runtime fixado Node 22 não executado nesta rodada. Nenhum banco real ou deploy nesta sessão.

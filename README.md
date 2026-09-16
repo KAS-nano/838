@@ -70,8 +70,10 @@ npm run start
 No VS Code, abra `preview/home.html` e use **Open with Live Server**. Alternativamente:
 
 ```bash
-python3 -m http.server 8080 -d preview
+python3 scripts/serve-preview.py
 ```
+
+No Windows, use `python scripts/serve-preview.py`. O servidor define o MIME dos módulos JavaScript explicitamente.
 
 Abra **http://localhost:8080/home.html**. Para ver a aplicação Next completa, use `npm run dev`; o Live Server serve somente o preview estático.
 

@@ -48,7 +48,7 @@ export function validateCatalogCandidate(candidate: CatalogCandidate): CatalogVa
     ids.add(model.id);
     if (!model.name.trim() || !model.family.trim() || model.paramsB <= 0 || model.contextK <= 0 || !model.variants.length) errors.push(`Modelo incompleto: ${model.id}.`);
     if (!model.modalities.every((value) => ["text", "vision", "audio", "video"].includes(value))) errors.push(`Modalidade inválida no modelo ${model.id}.`);
-    if (!model.variants.every((variant) => ["Q8_0", "Q6_K", "Q5_K_M", "Q4_K_M", "Q3_K_M"].includes(variant.quantization))) errors.push(`Quantização inválida no modelo ${model.id}.`);
+    if (!model.variants.every((variant) => ["BF16", "FP16", "Q8_0", "Q6_K", "Q5_K_M", "Q4_K_M", "Q3_K_M"].includes(variant.quantization))) errors.push(`Quantização inválida no modelo ${model.id}.`);
   }
   const artifactUrls = new Set<string>();
   for (const artifact of candidate.artifacts) {

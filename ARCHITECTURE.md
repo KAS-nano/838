@@ -62,3 +62,9 @@ Tauri/Rust, superfície mínima de permissões, leitura de hardware e nenhum env
 As decisões sobre [armazenamento local versionado](docs/adr/0001-armazenamento-local-versionado.md) e [paridade entre Next e preview](docs/adr/0002-paridade-next-preview.md) registram os contratos de persistência, privacidade e manutenção.
 
 O frontend trata armazenamento indisponível ou perfil malformado e identifica o fallback demo. Onboarding é a única entrada/edição de hardware; dashboard e perfil apontam para esse fluxo.
+
+## Catálogo nas telas (2026-09-16)
+
+Modelos, dashboard, comparador e recomendações usam páginas de servidor dinâmicas que carregam o repositório configurado e passam modelos serializáveis aos componentes `client.tsx`. `src/server/catalog/load.ts` identifica persistência ou fallback local. Comparações iniciais usam IDs disponíveis no catálogo e favoritos são criados com esses IDs. O preview continua sendo uma demonstração estática.
+
+O ranking filtra modalidade e janela de contexto antes da pontuação. Modalidades API ausentes significam somente texto; preços seed continuam demonstrativos. O score é heurístico, inclusive os pesos de prioridade. Não representa avaliação de qualidade de respostas ou garantia de velocidade.

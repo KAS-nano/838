@@ -1,6 +1,14 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 
+test("transcrição sem modelos de áudio apresenta estado vazio", async ({ page }, info) => {
+  await page.goto(info.project.name === "next" ? "/recomendacoes" : "/index.html#recomendacoes");
+  await page.getByRole("button", { name: "Transcrição", exact: true }).click();
+  await expect(page.locator("#scenarioResultCount, .scenario-result-count")).toContainText("0 alternativas");
+  await expect(page.locator(".recommendation-empty").first()).toContainText("Nenhum modelo cadastrado atende");
+  await expect(page.locator(".recommendation-feature, .recommendation-card")).toHaveCount(0);
+});
+
 test("presets alteram o ranking e explicam os campos do cenário", async ({ page }, info) => {
   await page.goto(info.project.name === "next" ? "/recomendacoes" : "/index.html#recomendacoes");
   const result = page.locator("#scenarioResultCount, .scenario-result-count");

@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import ts from "typescript";
 
-const page = fs.readFileSync("src/app/comparar/page.tsx", "utf8");
+const page = fs.readFileSync("src/app/comparar/client.tsx", "utf8");
 const engine = fs.readFileSync("src/features/comparison/engine.ts", "utf8");
 const styles = fs.readFileSync("preview/comparison.css", "utf8");
 const output = ts.transpileModule(page, { compilerOptions: { jsx: ts.JsxEmit.ReactJSX, module: ts.ModuleKind.ESNext, target: ts.ScriptTarget.ES2022 }, reportDiagnostics: true });

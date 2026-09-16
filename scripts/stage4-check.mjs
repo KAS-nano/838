@@ -1,6 +1,6 @@
 import fs from "node:fs";
 import ts from "typescript";
-const files=["src/features/dashboard/metrics.ts","src/components/gauges/speed-gauge.tsx","src/app/dashboard/page.tsx"];
+const files=["src/features/dashboard/metrics.ts","src/components/gauges/speed-gauge.tsx","src/app/dashboard/client.tsx"];
 let failed=false;
 for(const f of files){const s=fs.readFileSync(f,"utf8");const out=ts.transpileModule(s,{compilerOptions:{jsx:ts.JsxEmit.ReactJSX,target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.ESNext},reportDiagnostics:true});const bad=(out.diagnostics||[]).filter(d=>d.category===ts.DiagnosticCategory.Error);console.log(`${bad.length?"FAIL":"PASS"} syntax ${f}`);if(bad.length)failed=true;}
 const source=fs.readFileSync("src/features/dashboard/metrics.ts","utf8");

@@ -1,4 +1,4 @@
-import { seedModels } from "@/data/seed-models";
+import { loadCatalog } from "@/server/catalog/load";
 import { rankModels } from "@/features/recommendation/engine";
 import { objectives, type Objective } from "@/features/onboarding/types";
 import { isHardwareProfile } from "@/features/onboarding/validation";
@@ -21,6 +21,8 @@ export async function POST(request: Request) {
   if (typeof contextK !== "number" || !Number.isFinite(contextK) || contextK < 1 || contextK > 2048) {
     throw new HttpError(400, "invalid_context", "Contexto inválido.");
   }
+  const catalog = await loadCatalog();
+  const seedModels = catalog.models;
   const quantization = input.quantization ?? "Q4_K_M";
   if (typeof quantization !== "string" || !seedModels.some((model) => model.variants.some((variant) => variant.quantization === quantization))) {
     throw new HttpError(400, "invalid_quantization", "Quantização inválida.");
@@ -38,7 +40,7 @@ export async function POST(request: Request) {
     source: model.source,
   }));
     return observedJsonResponse(
-      { objective, source: "838-engine-v1", dataState: "seed", warning: "Requisitos e compatibilidade heurísticos baseados no catálogo seed.", result },
+      { objective, source: "838-engine-v1", dataState: catalog.dataState, catalogSource: catalog.source, warning: "Requisitos e compatibilidade heurísticos; persistência não significa medição.", result },
       { headers: { "Cache-Control": "no-store" } },
       id,
       { route: "/api/recommend", startedAt, cacheStatus: "bypass", estimatorVersion: "2.0.0" },

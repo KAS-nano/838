@@ -495,6 +495,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.inferBackend = inferBackend;
 exports.calculateCompatibility = calculateCompatibility;
 exports.rankModels = rankModels;
+const eligibility_1 = load("src/features/recommendation/eligibility.ts");
 const memory_1 = load("src/features/estimation/memory.ts");
 function inferBackend(profile) {
     const gpu = profile.gpu.toLowerCase();
@@ -547,7 +548,21 @@ function calculateCompatibility(profile, model, variant, objective, contextK = 8
     return { score, fit, vramEstimatedGb, ramEstimatedGb, diskGb: memory.diskGb, backend: inferBackend(profile), flags, reasons, confidence: "low" };
 }
 function rankModels(profile, models, objective, quantization = "Q4_K_M", contextK = 8) {
-    return models.map(model => { const variant = model.variants.find(v => v.quantization === quantization) ?? model.variants[0]; return { model, variant, result: calculateCompatibility(profile, model, variant, objective, contextK) }; }).sort((a, b) => b.result.score - a.result.score);
+    return models.filter(model => model.contextK >= contextK && (0, eligibility_1.supportsObjective)(model.modalities, objective)).map(model => { const variant = model.variants.find(v => v.quantization === quantization) ?? model.variants[0]; return { model, variant, result: calculateCompatibility(profile, model, variant, objective, contextK) }; }).sort((a, b) => b.result.score - a.result.score);
+}
+},
+"src/features/recommendation/eligibility.ts": (exports, load) => {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.supportsObjective = supportsObjective;
+function supportsObjective(modalities, objective) {
+    if (objective === "Imagem")
+        return modalities.includes("vision");
+    if (["Áudio", "Áudio e voz", "Transcrição"].includes(objective))
+        return modalities.includes("audio");
+    if (["Vídeo", "Edição de vídeo", "Cortes automáticos", "Geração de vídeo"].includes(objective))
+        return modalities.includes("video");
+    return modalities.includes("text");
 }
 },
 "src/features/recommendation/hybrid.ts": (exports, load) => {
@@ -556,6 +571,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.apiScoringWeights = void 0;
 exports.recommendHybrid = recommendHybrid;
 const scenario_1 = load("src/features/recommendation/scenario.ts");
+const eligibility_1 = load("src/features/recommendation/eligibility.ts");
 const engine_1 = load("src/features/recommendation/engine.ts");
 exports.apiScoringWeights = { taskSuitability: 30, outputSpeed: 28, ttft: 18, reliability: 10, price: 8, context: 6 };
 const bounded = (score) => Math.min(100, Math.max(0, Math.round(score)));
@@ -564,9 +580,47 @@ const runtimeFor = (profile) => profile.os === "macos" ? "llama.cpp / Ollama / L
 const speedEstimate = (score, size) => { const center = Math.max(3, Math.round((score * .72) / Math.max(1, size / 8))); return { min: Math.max(2, Math.round(center * .82)), max: Math.max(3, Math.round(center * 1.18)) }; };
 function localRecommendations(profile, objective, models, scenario) {
     const contextK = scenario?.contextK ?? 8;
-    return models.flatMap(model => model.variants.map(variant => { const result = (0, engine_1.calculateCompatibility)(profile, model, variant, objective, contextK); const rank = quantizationRank.indexOf(variant.quantization); const speed = speedEstimate(result.score, model.paramsB); return { model, variant, result, speed, score: bounded(result.score + (rank < 0 ? 0 : 8 - rank) + (scenario?.priority === "quality" ? variant.qualityFactor * 4 : 0)) }; })).filter(item => item.result.fit !== "incompatible").sort((a, b) => b.score - a.score);
+    const requiredContext = Math.max(contextK, Math.ceil((scenario?.responseTokens ?? 512) / 1024));
+    const priority = scenario?.priority ?? profile.priority;
+    return models.filter(model => model.contextK >= requiredContext && (0, eligibility_1.supportsObjective)(model.modalities, objective))
+        .flatMap(model => model.variants.map(variant => {
+        const result = (0, engine_1.calculateCompatibility)(profile, model, variant, objective, requiredContext);
+        const rank = quantizationRank.indexOf(variant.quantization);
+        const speed = speedEstimate(result.score, model.paramsB);
+        const efficiency = 100 / (1 + variant.weightVramGb / 4);
+        const signal = priority === "quality" ? variant.qualityFactor * 100
+            : priority === "speed" ? Math.min(100, speed.min * 2)
+                : priority === "efficiency" || priority === "cost" ? efficiency
+                    : priority === "ease" ? (result.fit === "gpu" ? 100 : 30) : 70;
+        const latencyBonus = scenario?.latency === "responsive" ? Math.min(5, speed.min / 10) : 0;
+        return { model, variant, result, speed, score: bounded(result.score * .7 + signal * .2 + (rank < 0 ? 0 : 8 - rank) + latencyBonus) };
+    })).filter(item => item.result.fit !== "incompatible").sort((a, b) => b.score - a.score);
 }
-function apiScore(api, objective, scenario) { const benchmark = api.benchmark; const task = api.strengths.includes(objective) ? 100 : 55; const speed = benchmark?.outputTokensPerSecond ? Math.min(100, benchmark.outputTokensPerSecond / 3) : 50; const ttft = benchmark?.timeToFirstTokenMs ? Math.max(0, 100 - benchmark.timeToFirstTokenMs / 5) : 50; const price = Math.max(0, 100 - api.outputUsdPerM * 8); const context = Math.min(100, api.contextK / 2.56); const latency = scenario?.latency === "responsive" ? 1.25 : 1; return bounded((task * exports.apiScoringWeights.taskSuitability + speed * exports.apiScoringWeights.outputSpeed * latency + ttft * exports.apiScoringWeights.ttft * latency + 70 * exports.apiScoringWeights.reliability + price * exports.apiScoringWeights.price + context * exports.apiScoringWeights.context) / 100); }
+function apiScore(api, objective, scenario) {
+    const task = api.strengths.includes(objective) ? 100 : 55;
+    const speed = api.benchmark?.outputTokensPerSecond ? Math.min(100, api.benchmark.outputTokensPerSecond / 3) : 50;
+    const ttft = api.benchmark?.timeToFirstTokenMs ? Math.max(0, 100 - api.benchmark.timeToFirstTokenMs / 5) : 50;
+    // An illustrative request cost, not a claim about actual prompt usage.
+    const requestCost = (api.inputUsdPerM * (scenario?.contextK ?? 8) * 1024 + api.outputUsdPerM * (scenario?.responseTokens ?? 512)) / 1_000_000;
+    const price = 100 / (1 + requestCost * 100);
+    const weights = { ...exports.apiScoringWeights };
+    if (scenario?.priority === "cost")
+        weights.price = 100;
+    if (scenario?.priority === "efficiency")
+        weights.price = 50;
+    if (scenario?.priority === "speed") {
+        weights.outputSpeed = 70;
+        weights.ttft = 35;
+    }
+    if (scenario?.priority === "quality")
+        weights.taskSuitability = 80;
+    if (scenario?.latency === "responsive") {
+        weights.outputSpeed *= 1.25;
+        weights.ttft *= 1.25;
+    }
+    const total = Object.values(weights).reduce((sum, weight) => sum + weight, 0);
+    return bounded((task * weights.taskSuitability + speed * weights.outputSpeed + ttft * weights.ttft + 50 * weights.reliability + price * weights.price + Math.min(100, api.contextK / 2.56) * weights.context) / total);
+}
 function recommendHybrid(profile, objective, models, apis, scenario) {
     const active = scenario ? (0, scenario_1.validateScenario)(scenario) : undefined;
     const target = active?.objective ?? objective;
@@ -580,7 +634,7 @@ function recommendHybrid(profile, objective, models, apis, scenario) {
         score += 10;
         scenarioReasons.push("Privacidade favorece processamento local.");
     } return { mode: "local", name: item.model.name, modelId: item.model.id, quantization: item.variant.quantization, score: bounded(score), availabilityType: "local", reason: item.result.reasons[0], scenarioReasons, costNote: "Sem custo por token; energia e hardware continuam contando.", runtime: runtimeFor(profile), vramEstimatedGb: item.result.vramEstimatedGb, ramEstimatedGb: item.result.ramEstimatedGb, contextK: Math.min(active?.contextK ?? 8, item.model.contextK), speedRange: item.speed, speedStatus: "estimate", confidence: item.result.confidence, alternatives: [], reasons: [{ sourceType: "heuristic", text: "Velocidade baseada em compatibilidade, tamanho, quantização e backend; não é medição desta máquina." }] }; });
-    const remote = apis.map(api => { const benchmark = api.benchmark; let score = apiScore(api, target, active); const scenarioReasons = active ? [`Contexto disponível: ${api.contextK}K.`] : []; if (active?.concurrency && active.concurrency > 1) {
+    const remote = apis.filter(api => api.contextK >= Math.max(active?.contextK ?? 8, Math.ceil((active?.responseTokens ?? 512) / 1024)) && (0, eligibility_1.supportsObjective)(api.modalities ?? ["text"], target)).map(api => { const benchmark = api.benchmark; let score = apiScore(api, target, active); const scenarioReasons = active ? [`Contexto disponível: ${api.contextK}K.`] : []; if (active?.concurrency && active.concurrency > 1) {
         score += 20;
         scenarioReasons.push("A API evita concentrar execuções simultâneas nesta máquina.");
     } if (active?.responseTokens && active.responseTokens > 2048) {
@@ -589,7 +643,7 @@ function recommendHybrid(profile, objective, models, apis, scenario) {
     } if (active?.priority === "privacy") {
         score -= 18;
         scenarioReasons.push("API requer envio dos dados ao provedor.");
-    } return { mode: "api", name: api.name, provider: api.provider, score: bounded(score), availabilityType: api.availabilityType, reason: api.strengths.includes(target) ? `Adequado para ${target}, com prioridade para experiência de velocidade.` : "Alternativa de API com capacidade geral para o cenário.", scenarioReasons, costNote: `US$ ${api.inputUsdPerM}/M entrada · US$ ${api.outputUsdPerM}/M saída.`, runtime: "API do provedor", contextK: api.contextK, outputTokensPerSecond: benchmark?.outputTokensPerSecond, ttftMs: benchmark?.timeToFirstTokenMs, priceInput: api.inputUsdPerM, priceOutput: api.outputUsdPerM, speedStatus: benchmark ? "measured" : "unknown", confidence: benchmark?.confidence ?? "low", benchmarkSource: benchmark?.source, benchmarkDate: benchmark?.date, alternatives: [], reasons: [{ sourceType: benchmark ? "exact_benchmark" : "heuristic", text: benchmark ? `Benchmark informado por ${benchmark.source}; confirme região e data.` : "Benchmark real ainda não disponível; velocidade e TTFT não foram inventados." }] }; }).sort((a, b) => b.score - a.score).slice(0, 8);
+    } return { mode: "api", name: api.name, provider: api.provider, score: bounded(score), availabilityType: api.availabilityType, reason: api.strengths.includes(target) ? `Adequado para ${target}, ponderado conforme o cenário escolhido.` : "Alternativa de API com capacidade geral para o cenário.", scenarioReasons, costNote: `Preço demonstrativo, não verificado: US$ ${api.inputUsdPerM}/M entrada · US$ ${api.outputUsdPerM}/M saída.`, runtime: "API do provedor", contextK: api.contextK, outputTokensPerSecond: benchmark?.outputTokensPerSecond, ttftMs: benchmark?.timeToFirstTokenMs, priceInput: api.inputUsdPerM, priceOutput: api.outputUsdPerM, speedStatus: benchmark ? "measured" : "unknown", confidence: benchmark?.confidence ?? "low", benchmarkSource: benchmark?.source, benchmarkDate: benchmark?.date, alternatives: [], reasons: [{ sourceType: benchmark ? "exact_benchmark" : "heuristic", text: benchmark ? `Benchmark informado por ${benchmark.source}; confirme região e data.` : "Benchmark real ainda não disponível; velocidade e TTFT não foram inventados." }] }; }).sort((a, b) => b.score - a.score).slice(0, 8);
     if (locals[0])
         locals[0].alternatives = locals.slice(1, 4).map(item => ({ name: item.name, detail: `${item.quantization} · ${item.speedRange?.min}-${item.speedRange?.max} t/s estimados`, score: item.score }));
     if (remote[0])

@@ -1,5 +1,6 @@
 import type { AiModel, ModelVariant } from "../catalog/types";
 import type { HardwareProfile, Objective } from "../onboarding/types";
+import { supportsObjective } from "./eligibility";
 import { estimateMemory } from "../estimation/memory";
 
 export type FitState = "gpu" | "offload" | "incompatible";
@@ -44,5 +45,5 @@ export function calculateCompatibility(profile:HardwareProfile, model:AiModel, v
 }
 
 export function rankModels(profile:HardwareProfile, models:AiModel[], objective:Objective, quantization="Q4_K_M", contextK=8){
- return models.map(model=>{const variant=model.variants.find(v=>v.quantization===quantization)??model.variants[0];return {model,variant,result:calculateCompatibility(profile,model,variant,objective,contextK)}}).sort((a,b)=>b.result.score-a.result.score);
+ return models.filter(model=>model.contextK>=contextK && supportsObjective(model.modalities,objective)).map(model=>{const variant=model.variants.find(v=>v.quantization===quantization)??model.variants[0];return {model,variant,result:calculateCompatibility(profile,model,variant,objective,contextK)}}).sort((a,b)=>b.result.score-a.result.score);
 }

@@ -37,6 +37,20 @@ async function main() {
     tests.push(["rate limit", expectHttpError(error, 429)]);
   }
 
+  const realNow = Date.now;
+  try {
+    let now = realNow();
+    Date.now = () => now;
+    let rejected = false;
+    for (let index = 0; index < 10_001; index++) {
+      try { rateLimit(limitedRequest, { name: `capacity-${index}`, limit: 1, windowMs: 1000 }); }
+      catch (error) { rejected = expectHttpError(error, 429); break; }
+    }
+    tests.push(["bucket capacity is bounded", rejected]);
+    now += 60_001;
+    tests.push(["expired buckets release capacity", rateLimit(limitedRequest, { name: "after-cleanup", limit: 2, windowMs: 1000 }).remaining === 1]);
+  } finally { Date.now = realNow; }
+
   let failed = false;
   for (const [name, passed] of tests) {
     console.log(`${passed ? "PASS" : "FAIL"} ${name}`);

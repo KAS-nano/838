@@ -1,0 +1,141 @@
+"use client";
+
+import Link from "next/link";
+import { renameNamedComparison, updateNamedComparison, listNamedComparisons, addNamedComparison, loadNamedComparison, removeNamedComparison, type NamedComparison } from "../../../preview/named-comparisons.mjs";
+import { saveComparison, loadComparison, deleteComparison, readComparisonFile, downloadComparison } from "../../../preview/comparison-storage.mjs";
+import { useMemo, useState } from "react";
+import type { AiModel } from "@/features/catalog/types";
+import { useHardwareProfile } from "@/features/profile/use-hardware-profile";
+import type { Quantization } from "@/features/catalog/types";
+import {
+  COMPARISON_METRICS, CONFIDENCE_LABELS, DEFAULT_SELECTIONS, FIT_LABELS, ORIGIN_LABELS,
+  createComparisonRows, filterCatalog, filterComparisonRows, formatMetric, metricScale,
+  metricValue, sortComparisonRows, type ComparisonFit, type ComparisonMetric,
+  type ComparisonRow, type ComparisonSelection, type ComparisonSort,
+} from "@/features/comparison/engine";
+import "../../../preview/comparison.css";
+
+
+const numberFormat = new Intl.NumberFormat("pt-BR", { maximumFractionDigits: 2 });
+const gb = (value: number) => `${numberFormat.format(value)} GB`;
+
+export default function ComparePage({ catalogModels }: { catalogModels: AiModel[] }) {
+  const families = [...new Set(catalogModels.map(model => model.family))].sort();
+  const [named, setNamed] = useState<NamedComparison[]>([]);
+  const [comparisonName, setComparisonName] = useState("");
+  const [chosenName, setChosenName] = useState("");
+  const [namedMessage, setNamedMessage] = useState("");
+  const [importing, setImporting] = useState(false);
+  const [savedMessage, setSavedMessage] = useState("");
+  const [selections, setSelections] = useState<ComparisonSelection[]>(() => DEFAULT_SELECTIONS.map((selection, index) => { const model = catalogModels.find(model => model.id === selection.modelId) ?? catalogModels[index % catalogModels.length]; return { ...selection, modelId: model.id, quantization: model.variants.find(variant => variant.quantization === selection.quantization)?.quantization ?? model.variants[0].quantization }; }));
+  const [query, setQuery] = useState("");
+  const [family, setFamily] = useState("all");
+  const [contextInput, setContextInput] = useState("8");
+  const [fit, setFit] = useState<ComparisonFit>("all");
+  const [sort, setSort] = useState<ComparisonSort>("selection");
+  const [metric, setMetric] = useState<ComparisonMetric>("compatibility");
+  const { profile, isDemo } = useHardwareProfile();
+  const parsedContext = Number(contextInput);
+  const contextK = Math.max(1, Math.min(256, contextInput.trim() === "" || !Number.isFinite(parsedContext) ? 8 : parsedContext));
+  const candidates = useMemo(() => filterCatalog(catalogModels, { query, family }), [catalogModels, query, family]);
+  const rows = useMemo(() => createComparisonRows(profile, catalogModels, selections, contextK), [catalogModels, profile, selections, contextK]);
+  const visibleRows = useMemo(() => sortComparisonRows(filterComparisonRows(rows, fit), sort), [rows, fit, sort]);
+  const metricSpec = COMPARISON_METRICS.find((item) => item.key === metric)!;
+  const scale = metricScale(visibleRows, metric);
+
+  function selectModel(slotId: string, modelId: string) {
+    const model = catalogModels.find((item) => item.id === modelId);
+    if (!model) return;
+    setSelections((current) => current.map((item) => item.slotId === slotId ? {
+      ...item, modelId,
+      quantization: model.variants.some((variant) => variant.quantization === item.quantization) ? item.quantization : model.variants[0].quantization,
+    } : item));
+  }
+  function manageSaved(action: "save" | "load" | "delete" | "export") {
+    try {
+      if (action === "export") { downloadComparison(catalogModels, selections, contextK); setSavedMessage("Download solicitado. O arquivo contém somente modelos, quantizações e contexto."); }
+      if (action === "save") { saveComparison(catalogModels, selections, contextK); setSavedMessage("Comparação salva neste navegador. A versão anterior foi substituída."); }
+      if (action === "load") { const saved = loadComparison(catalogModels); setSelections(saved.selections); setContextInput(String(saved.contextK)); resetFilters(); setSavedMessage("Comparação recuperada e recalculada com o hardware atual."); }
+      if (action === "delete") { deleteComparison(); setSavedMessage("Cópia salva apagada. A comparação aberta foi mantida."); }
+    } catch (error) { setSavedMessage(error instanceof Error ? error.message : "Não foi possível acessar a comparação salva."); }
+  }
+  async function importFile(file: File) {
+    setImporting(true);
+    try {
+      const saved = await readComparisonFile(file, catalogModels);
+      setSelections(saved.selections); setContextInput(String(saved.contextK)); resetFilters();
+      setSavedMessage("Comparação importada e recalculada. Use Salvar comparação para guardar uma cópia neste navegador.");
+    } catch (error) { setSavedMessage(error instanceof Error ? error.message : "Não foi possível importar o arquivo."); }
+    finally { setImporting(false); }
+  }
+  function manageNamed(action: "list" | "save" | "load" | "remove" | "rename" | "update") {
+    try {
+      if (action === "rename") { setNamed(renameNamedComparison(chosenName, comparisonName)); setChosenName(comparisonName.trim()); setComparisonName(""); setNamedMessage("Comparação renomeada. A configuração guardada foi mantida."); }
+      if (action === "update") { setNamed(updateNamedComparison(chosenName, catalogModels, selections, contextK)); setNamedMessage("Comparação selecionada atualizada com os modelos, quantizações e contexto da tela."); }
+      if (action === "list") { const items = listNamedComparisons(); setNamed(items); setChosenName(current => items.some(item => item.name === current) ? current : ""); setNamedMessage(""); }
+      if (action === "save") { setNamed(addNamedComparison(comparisonName, catalogModels, selections, contextK)); setChosenName(comparisonName.trim()); setComparisonName(""); setNamedMessage("Comparação nomeada salva."); }
+      if (action === "load") { const saved = loadNamedComparison(chosenName, catalogModels); setSelections(saved.selections); setContextInput(String(saved.contextK)); resetFilters(); setNamedMessage("Comparação nomeada aberta com o hardware atual."); }
+      if (action === "remove") { setNamed(removeNamedComparison(chosenName)); setChosenName(""); setNamedMessage("Comparação nomeada excluída. A tela aberta foi mantida."); }
+    } catch (error) { setNamedMessage(error instanceof Error ? error.message : "Não foi possível acessar a lista."); }
+  }
+  function resetFilters() { setQuery(""); setFamily("all"); setFit("all"); setSort("selection"); }
+  const tableRows: { label: string; value: (row: ComparisonRow) => string }[] = [
+    { label: "Quantização simulada", value: (row) => row.variant.quantization },
+    { label: "Contexto efetivo", value: (row) => `${row.contextK}K${row.contextK < contextK ? " · limite do modelo" : ""}` },
+    { label: "Compatibilidade", value: (row) => `${row.compat.score}/100 · ${FIT_LABELS[row.compat.fit]}` },
+    { label: "VRAM para carga total", value: (row) => gb(row.memory.totalGpuTargetGb) },
+    { label: "VRAM alocada no seu perfil", value: (row) => gb(row.memory.vramGb) },
+    { label: "Pesos na GPU", value: (row) => `${row.memory.gpuLayersPercent}%` },
+    { label: "RAM estimada", value: (row) => gb(row.memory.ramGb) },
+    { label: "Disco estimado", value: (row) => gb(row.memory.diskGb) },
+    { label: "Geração estimada", value: (row) => formatMetric(row, "speed") },
+    { label: "Origem do desempenho", value: (row) => ORIGIN_LABELS[row.perf.dataState] },
+    { label: "Confiança no desempenho", value: (row) => CONFIDENCE_LABELS[row.perf.confidence] },
+    { label: "Base da estimativa", value: (row) => row.perf.note },
+    { label: "Razões de compatibilidade", value: (row) => row.compat.reasons.join(" ") },
+  ];
+
+  return <main><div className="page-container compare-page">
+    <div className="page-heading"><div><p className="eyebrow">Comparador</p><h1 className="page-title">Leia as opções lado a lado</h1><p className="page-description">Compare versões, consumo e velocidade para a sua máquina. Você também pode selecionar duas quantizações do mesmo modelo.</p></div><Link href="/modelos" className="text-sm text-accent">Ver catálogo</Link></div>
+    <p className="compare-profile">{isDemo ? "Perfil de demonstração" : "Seu perfil"} · {profile.gpu} · {profile.vramGb} GB VRAM · {profile.ramGb} GB RAM · {profile.storageFreeGb} GB livres. <Link href="/onboarding">Editar hardware</Link></p>
+
+    <section className="compare-saved" aria-label="Comparação salva">
+      <div><h2>Retome sua comparação</h2><p>Salve modelos, quantizações e contexto neste navegador. Um novo salvamento substitui o anterior; os resultados usam sempre o hardware atual.</p></div>
+      <div className="compare-saved-actions"><button type="button" onClick={() => manageSaved("save")}>Salvar comparação</button><button type="button" onClick={() => manageSaved("load")}>Recuperar comparação</button><button type="button" onClick={() => manageSaved("delete")}>Apagar cópia salva</button></div>
+      <div className="compare-transfer"><button type="button" onClick={() => manageSaved("export")}>Exportar comparação</button><label>Importar comparação (JSON)<input type="file" accept=".json,application/json" disabled={importing} onChange={event => { const file = event.target.files?.[0]; event.target.value = ""; if (file) void importFile(file); }} /></label></div>
+      <p>O arquivo não inclui seu hardware. Importar altera a comparação aberta; a cópia salva só muda quando você salva novamente.</p>
+      <p role="status">{savedMessage}</p>
+    </section>
+    <details className="compare-saved compare-named" onToggle={event => { if (event.currentTarget.open) manageNamed("list"); }}>
+      <summary>Minhas comparações nomeadas</summary>
+      <p>Guarde até 10 configurações neste navegador. A cópia rápida acima continua separada. Reabra esta seção para atualizar a lista.</p>
+      <div className="compare-transfer"><label>Nome da comparação<input value={comparisonName} maxLength={60} onChange={event => setComparisonName(event.target.value)} placeholder="Ex.: Programação 32K" /></label><button type="button" onClick={() => manageNamed("save")}>Guardar com nome</button></div>
+      <div className="compare-transfer"><label>Comparações guardadas<select value={chosenName} onChange={event => setChosenName(event.target.value)}><option value="">Selecione uma comparação</option>{named.map(item => <option key={item.name} value={item.name}>{item.name}</option>)}</select></label><button type="button" disabled={!chosenName} onClick={() => manageNamed("load")}>Abrir selecionada</button><button type="button" disabled={!chosenName} onClick={() => manageNamed("remove")}>Excluir selecionada</button></div>
+      <div className="compare-transfer"><button type="button" disabled={!chosenName || !comparisonName.trim()} onClick={() => manageNamed("rename")}>Renomear selecionada</button><button type="button" disabled={!chosenName} onClick={() => manageNamed("update")}>Substituir selecionada pela comparação aberta</button></div>
+      <p>Para renomear, preencha o campo Nome da comparação. Substituir grava os modelos e o contexto da tela na entrada selecionada.</p>
+      <p role="status">{namedMessage}</p>
+    </details>
+    <div className="compare-slots" id="compareControls">{selections.map((selection, index) => {
+      const selected = catalogModels.find((model) => model.id === selection.modelId)!;
+      const options = candidates.some((model) => model.id === selected.id) ? candidates : [selected, ...candidates];
+      return <fieldset className="compare-slot" key={selection.slotId}><legend>Modelo {index + 1}</legend>
+        <label>Modelo<select aria-label={`Modelo ${index + 1}`} value={selection.modelId} onChange={(event) => selectModel(selection.slotId, event.target.value)}>{options.map((model) => <option key={model.id} value={model.id}>{model.name}{candidates.includes(model) ? "" : " · seleção atual"}</option>)}</select></label>
+        <label>Quantização simulada<select aria-label={`Quantização ${index + 1}`} value={selection.quantization} onChange={(event) => setSelections((current) => current.map((item) => item.slotId === selection.slotId ? { ...item, quantization: event.target.value as Quantization } : item))}>{selected.variants.map((variant) => <option key={variant.quantization}>{variant.quantization}</option>)}</select></label>
+      </fieldset>;
+    })}</div>
+
+    <section className="compare-filters" aria-label="Filtros da comparação">
+      <div className="compare-filter-row"><label>Buscar no catálogo<input id="compareSearch" type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Nome, família ou objetivo"/></label><label>Família<select id="compareFamily" value={family} onChange={(event) => setFamily(event.target.value)}><option value="all">Todas as famílias</option>{families.map((name) => <option key={name}>{name}</option>)}</select></label><label>Contexto solicitado (K)<input id="compareContext" type="number" min="1" max="256" step="1" value={contextInput} onChange={(event) => setContextInput(event.target.value)} onBlur={() => setContextInput(String(contextK))} aria-describedby="compareContextHelp"/></label></div>
+      <p className="compare-help" id="compareCatalogCount" role="status">{candidates.length} modelos disponíveis nos filtros. As escolhas atuais são preservadas.</p><p className="compare-help" id="compareContextHelp">Contexto de 1K a 256K tokens, limitado ao máximo de cada modelo. As quantizações acima são estimativas do catálogo; consulte os arquivos disponíveis na página de modelos.</p>
+      <div className="compare-filter-row"><label>Compatibilidade<select id="compareFit" aria-label="Filtro de compatibilidade" value={fit} onChange={(event) => setFit(event.target.value as ComparisonFit)}><option value="all">Todos os encaixes</option>{Object.entries(FIT_LABELS).map(([key, label]) => <option key={key} value={key}>{label}</option>)}</select></label><label>Ordenar por<select id="compareSort" aria-label="Ordenar comparação" value={sort} onChange={(event) => setSort(event.target.value as ComparisonSort)}><option value="selection">Ordem escolhida</option>{COMPARISON_METRICS.map((item) => <option key={item.key} value={item.key}>{item.label} · {item.direction === "higher" ? "maior" : "menor"} primeiro</option>)}</select></label><label>Métrica do gráfico<select id="compareMetric" value={metric} onChange={(event) => setMetric(event.target.value as ComparisonMetric)}>{COMPARISON_METRICS.map((item) => <option key={item.key} value={item.key}>{item.label}</option>)}</select></label></div>
+      <div className="compare-filter-footer"><p className="compare-help" id="compareResultCount" role="status">{visibleRows.length} de {rows.length} modelos na comparação · contexto solicitado {contextK}K</p><button id="compareReset" type="button" onClick={resetFilters}>Limpar filtros e ordenação</button></div>
+    </section>
+
+    {visibleRows.length === 0 ? <div className="compare-empty" id="compareEmpty"><h2>Nenhum modelo com esse encaixe</h2><p>Escolha outro filtro de compatibilidade ou ajuste as versões selecionadas.</p><button type="button" onClick={() => setFit("all")}>Mostrar todos os encaixes</button></div> : <div id="compareResults">
+      <figure className="compare-chart-panel" aria-labelledby="compareChartTitle" aria-describedby="compareChartCaption"><h2 id="compareChartTitle">{metricSpec.label}</h2><figcaption id="compareChartCaption">{metricSpec.description} Barras proporcionais, com escala a partir de zero.</figcaption><div id="compareChart">{visibleRows.map((row) => <div className="compare-chart-row" data-model={row.model.id} data-value={metricValue(row, metric)} key={row.slotId}><div className="compare-chart-label"><strong>{row.model.name}</strong><span>{row.variant.quantization} · {row.contextK}K</span><span>{FIT_LABELS[row.compat.fit]}</span></div><div className="compare-chart-track" aria-hidden="true"><i style={{ width: `${Math.max(0, Math.min(100, metricValue(row, metric) / scale * 100))}%` }}/></div><b>{formatMetric(row, metric)}</b></div>)}</div></figure>
+      <div className="compare-cards" id="compareCards">{visibleRows.map((row) => <article className="compare-card" data-model={row.model.id} key={row.slotId}><p className="compare-kicker">{row.model.family}</p><h2>{row.model.name}</h2><p className="compare-version">{row.variant.quantization} · {row.contextK}K{row.contextK < contextK ? " (limite do modelo)" : ""}</p><span className="compare-fit" data-fit={row.compat.fit}>{FIT_LABELS[row.compat.fit]}</span><dl className="compare-metrics">{COMPARISON_METRICS.map((item) => <div key={item.key}><dt>{item.label}</dt><dd>{formatMetric(row, item.key)}</dd></div>)}</dl><p className="compare-evidence">{ORIGIN_LABELS[row.perf.dataState]} · confiança {CONFIDENCE_LABELS[row.perf.confidence].toLowerCase()}</p><p className="compare-reason">{row.compat.reasons[0]}</p></article>)}</div>
+      <div className="compare-table-wrap" tabIndex={0} role="region" aria-label="Tabela de comparação com rolagem horizontal"><table id="compareTable" className="compare-table"><caption>Comparação detalhada no seu perfil de hardware</caption><thead><tr><th scope="col">Métrica</th>{visibleRows.map((row) => <th scope="col" key={row.slotId}>{row.model.name}<small>{row.variant.quantization} · {row.contextK}K</small></th>)}</tr></thead><tbody>{tableRows.map((item) => <tr key={item.label}><th scope="row">{item.label}</th>{visibleRows.map((row) => <td key={row.slotId}>{item.value(row)}</td>)}</tr>)}</tbody></table></div>
+      <p className="compare-help compare-footnote">VRAM para carga total indica a memória necessária para colocar o modelo inteiro na GPU. A VRAM alocada respeita a reserva do seu perfil; o restante pode exigir RAM/CPU. Memória e disco usam heurísticas de baixa confiança. Compatibilidade não mede a qualidade das respostas.</p>
+    </div>}
+  </div></main>;
+}
